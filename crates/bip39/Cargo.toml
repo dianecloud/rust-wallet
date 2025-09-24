@@ -1,0 +1,9 @@
+[package]
+name = "bip39"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bip39-upstream = { package = "bip39", version = "2.0" }
+thiserror = "1.0"
+rand = "0.8"
