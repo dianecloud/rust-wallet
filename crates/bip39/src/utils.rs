@@ -21,13 +21,16 @@
 //! assert!(validate_phrase(invalid_phrase).is_err());
 //! ```
 
-use crate::{Error, Result, WordCount};
+use crate::{Error, Result, WordCount, Language};
 
-/// Validates a BIP39 mnemonic phrase.
+/// Validates a BIP39 mnemonic phrase in English.
 ///
-/// This function performs comprehensive validation of a mnemonic phrase including:
+/// This is a convenience function that validates a mnemonic phrase using the English
+/// word list. For other languages, use [`validate_phrase_in_language`].
+///
+/// This function performs comprehensive validation including:
 /// - Word count validation (must be 12, 15, 18, 21, or 24 words)
-/// - Word list validation (all words must be in the BIP39 word list)
+/// - Word list validation (all words must be in the English BIP39 word list)
 /// - Checksum validation (phrase must have valid BIP39 checksum)
 ///
 /// # Arguments
@@ -52,7 +55,7 @@ use crate::{Error, Result, WordCount};
 /// ```rust
 /// use bip39::validate_phrase;
 ///
-/// // Valid 12-word mnemonic
+/// // Valid 12-word English mnemonic
 /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 /// assert!(validate_phrase(phrase).is_ok());
 ///
@@ -60,11 +63,52 @@ use crate::{Error, Result, WordCount};
 /// let phrase = "abandon abandon abandon";
 /// assert!(validate_phrase(phrase).is_err());
 ///
-/// // Invalid word
+/// // Invalid English word
 /// let phrase = "invalid abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 /// assert!(validate_phrase(phrase).is_err());
 /// ```
 pub fn validate_phrase(phrase: &str) -> Result<()> {
+    validate_phrase_in_language(phrase, Language::English)
+}
+
+/// Validates a BIP39 mnemonic phrase in the specified language.
+///
+/// This function performs comprehensive validation of a mnemonic phrase including:
+/// - Word count validation (must be 12, 15, 18, 21, or 24 words)
+/// - Word list validation (all words must be in the specified language's BIP39 word list)
+/// - Checksum validation (phrase must have valid BIP39 checksum)
+///
+/// # Arguments
+///
+/// * `phrase` - The mnemonic phrase to validate as a string slice
+/// * `language` - The language to use for word list validation
+///
+/// # Returns
+///
+/// * `Ok(())` if the phrase is valid
+/// * `Err(Error)` with specific error information if validation fails
+///
+/// # Errors
+///
+/// * [`Error::InvalidMnemonic`] - For malformed or empty phrases
+/// * [`Error::InvalidWordCount`] - For unsupported word counts
+/// * [`Error::InvalidWord`] - For words not in the specified language's word list
+/// * [`Error::InvalidChecksum`] - For phrases with invalid checksums
+/// * [`Error::Bip39Error`] - For other BIP39-related validation errors
+///
+/// # Examples
+///
+/// ```rust
+/// use bip39::{validate_phrase_in_language, Language};
+///
+/// // Valid English mnemonic
+/// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+/// assert!(validate_phrase_in_language(phrase, Language::English).is_ok());
+///
+/// // Same phrase would be invalid in Japanese (cross-language validation)
+/// assert!(validate_phrase_in_language(phrase, Language::Japanese).is_err());
+/// ```
+pub fn validate_phrase_in_language(phrase: &str, language: Language) -> Result<()> {
     // Step 1: Normalize whitespace and handle empty strings
     let normalized = phrase.trim();
     if normalized.is_empty() {
@@ -79,12 +123,13 @@ pub fn validate_phrase(phrase: &str) -> Result<()> {
     // Step 2: Validate word count using our WordCount enum
     let _word_count = WordCount::from_word_count(words.len())?;
 
-    // Step 3: Check each word against BIP39 word list
+    // Step 3: Check each word against BIP39 word list for the specified language
+    let upstream_language = language.to_upstream();
     for (index, word) in words.iter().enumerate() {
         let word_lower = word.to_lowercase();
         
-        // Check if word is in the BIP39 word list using the upstream crate
-        let word_list = bip39_upstream::Language::English.word_list();
+        // Check if word is in the BIP39 word list for the specified language
+        let word_list = upstream_language.word_list();
         let is_valid_word = word_list.iter().any(|&w| w == word_lower);
             
         if !is_valid_word {
@@ -95,10 +140,10 @@ pub fn validate_phrase(phrase: &str) -> Result<()> {
         }
     }
 
-    // Step 4: Now validate the complete phrase including checksum
+    // Step 4: Now validate the complete phrase including checksum in the specified language
     let normalized_phrase = words.iter().map(|w| w.to_lowercase()).collect::<Vec<_>>().join(" ");
     
-    match bip39_upstream::Mnemonic::parse(&normalized_phrase) {
+    match bip39_upstream::Mnemonic::parse_in_normalized(upstream_language, &normalized_phrase) {
         Ok(_) => Ok(()),
         Err(_) => {
             // At this point, words are valid but checksum is wrong
@@ -389,6 +434,55 @@ mod tests {
             // Validate that our WordCount enum accepts this count
             assert!(WordCount::from_word_count(*expected_count).is_ok(), 
                 "WordCount should accept {} words", expected_count);
+        }
+    }
+
+    // Test language-specific validation
+    #[test]
+    fn test_validate_phrase_in_language_english() {
+        let result = validate_phrase_in_language(VALID_12_WORD_PHRASE, Language::English);
+        assert!(result.is_ok(), "Valid English phrase should pass validation");
+    }
+
+    #[test]
+    fn test_validate_phrase_in_language_different_languages() {
+        // Test that English validation works
+        let result = validate_phrase_in_language(VALID_12_WORD_PHRASE, Language::English);
+        assert!(result.is_ok(), "English phrase should pass English validation");
+        
+        // English phrase should fail validation in other languages
+        let result = validate_phrase_in_language(VALID_12_WORD_PHRASE, Language::Japanese);
+        assert!(result.is_err(), "English phrase should fail Japanese validation");
+        
+        match result.unwrap_err() {
+            Error::InvalidWord { word, position } => {
+                assert_eq!(word, "abandon", "First English word should be invalid in Japanese");
+                assert_eq!(position, 0, "Should report first position");
+            }
+            _ => panic!("Expected InvalidWord error for cross-language validation"),
+        }
+        
+        // Test with an invalid phrase to ensure validation still works
+        let invalid_result = validate_phrase_in_language("invalid phrase", Language::Korean);
+        assert!(invalid_result.is_err(), "Invalid phrase should fail in any language");
+    }
+
+    #[test]
+    fn test_validate_phrase_convenience_function() {
+        // Test that the convenience function (validate_phrase) works the same as English
+        let result1 = validate_phrase(VALID_12_WORD_PHRASE);
+        let result2 = validate_phrase_in_language(VALID_12_WORD_PHRASE, Language::English);
+        
+        assert_eq!(result1.is_ok(), result2.is_ok(), "Both functions should give same result");
+    }
+
+    #[test]
+    fn test_language_integration() {
+        // Test that all supported languages can be used (even if we don't have test phrases)
+        for &language in Language::all_variants() {
+            // This should not panic and should handle the language parameter correctly
+            let result = validate_phrase_in_language("invalid phrase", language);
+            assert!(result.is_err(), "Invalid phrase should fail in {} language", language.name());
         }
     }
 }
