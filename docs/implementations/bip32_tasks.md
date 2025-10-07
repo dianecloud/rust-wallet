@@ -5,10 +5,10 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 01: Add required dependencies (hmac, sha2, ripemd, base58, secp256k1, thiserror) to Cargo.toml
 - ✅ Task 02: Add bip39 crate as a local dependency
 - ✅ Task 03: Define Error enum with proper error types using thiserror
-- 🔲 Task 04: Define Network enum (Bitcoin Mainnet, Testnet, etc.)
-- 🔲 Task 05: Define KeyType enum (Private, Public) for extended keys
-- 🔲 Task 06: Write tests for Network enum serialization prefixes
-- 🔲 Task 07: Implement Network enum methods (TDD)
+- ✅ Task 04: Define Network enum (Bitcoin Mainnet, Testnet, etc.)
+- ✅ Task 05: Define KeyType enum (Private, Public) for extended keys
+- ✅ Task 06: Write tests for Network enum serialization prefixes
+- ✅ Task 07: Implement Network enum methods (TDD)
 
 ## 🔑 PHASE 2: Core Cryptographic Types (HIGH Priority)
 - 🔲 Task 08: Define ChainCode struct (32-byte wrapper)

@@ -40,6 +40,8 @@
 
 // Module declarations
 mod error;
+mod network;
 
 // Public re-exports
 pub use error::{Error, Result};
+pub use network::{KeyType, Network};
