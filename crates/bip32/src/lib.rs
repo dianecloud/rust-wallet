@@ -38,6 +38,8 @@
 //! let child_key = master_key.derive_path(&path)?;
 //! ```
 
-// Module declarations will be added as we implement tasks
+// Module declarations
+mod error;
 
-// Public re-exports will be added as we implement tasks
+// Public re-exports
+pub use error::{Error, Result};
