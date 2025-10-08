@@ -3,7 +3,7 @@
 //! This module provides the core ExtendedPrivateKey type which combines a private key
 //! with metadata necessary for hierarchical key derivation according to BIP-32.
 
-use crate::{ChainCode, Error, Network, PrivateKey, Result};
+use crate::{ChainCode, Error, ExtendedPublicKey, Network, PrivateKey, PublicKey, Result};
 use hmac::{Hmac, Mac};
 use sha2::Sha512;
 
@@ -213,6 +213,47 @@ impl ExtendedPrivateKey {
     /// Returns a reference to the private key.
     pub fn private_key(&self) -> &PrivateKey {
         &self.private_key
+    }
+
+    /// Converts this extended private key to an extended public key.
+    ///
+    /// This creates an extended public key with the same metadata (network, depth,
+    /// parent fingerprint, child number, chain code) but with the public key derived
+    /// from the private key.
+    ///
+    /// # Important
+    ///
+    /// The chain code is **copied** to the extended public key. This is critical for
+    /// BIP-32 derivation: both the extended private key and its corresponding extended
+    /// public key must have the same chain code for child key derivation to work correctly.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use bip32::{ExtendedPrivateKey, Network};
+    ///
+    /// let seed = [0x01; 32];
+    /// let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
+    /// let ext_pub = ext_priv.to_extended_public_key();
+    ///
+    /// // Metadata is preserved
+    /// assert_eq!(ext_pub.network(), ext_priv.network());
+    /// assert_eq!(ext_pub.depth(), ext_priv.depth());
+    /// assert_eq!(ext_pub.chain_code(), ext_priv.chain_code());
+    /// # Ok::<(), bip32::Error>(())
+    /// ```
+    pub fn to_extended_public_key(&self) -> ExtendedPublicKey {
+        // Derive public key from private key
+        let public_key = PublicKey::from_private_key(&self.private_key);
+
+        ExtendedPublicKey::new(
+            self.network,
+            self.depth,
+            self.parent_fingerprint,
+            self.child_number,
+            self.chain_code.clone(),
+            public_key,
+        )
     }
 }
 
@@ -477,5 +518,105 @@ mod tests {
         assert!(debug_output.contains("[REDACTED]"));
         assert!(!debug_output.contains(&hex::encode(ext_key.private_key().to_bytes())));
         assert!(!debug_output.contains(&hex::encode(ext_key.chain_code().as_bytes())));
+    }
+
+    // Task 21: Tests for to_extended_public_key()
+
+    #[test]
+    fn test_to_extended_public_key_basic() {
+        let seed = [0x01; 32];
+        let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let ext_pub = ext_priv.to_extended_public_key();
+
+        // Public key should match private key's public key
+        assert_eq!(ext_pub.public_key().to_bytes(), ext_priv.private_key().public_key().serialize());
+    }
+
+    #[test]
+    fn test_to_extended_public_key_preserves_metadata() {
+        let seed = [0x02; 32];
+        let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let ext_pub = ext_priv.to_extended_public_key();
+
+        // All metadata should be preserved
+        assert_eq!(ext_pub.network(), ext_priv.network());
+        assert_eq!(ext_pub.depth(), ext_priv.depth());
+        assert_eq!(ext_pub.parent_fingerprint(), ext_priv.parent_fingerprint());
+        assert_eq!(ext_pub.child_number(), ext_priv.child_number());
+        assert_eq!(ext_pub.chain_code().as_bytes(), ext_priv.chain_code().as_bytes());
+    }
+
+    #[test]
+    fn test_to_extended_public_key_chain_code_same() {
+        // Critical: chain code MUST be the same for derivation to work
+        let seed = [0x03; 32];
+        let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let ext_pub = ext_priv.to_extended_public_key();
+
+        assert_eq!(ext_pub.chain_code(), ext_priv.chain_code());
+    }
+
+    #[test]
+    fn test_to_extended_public_key_different_networks() {
+        let seed = [0x04; 32];
+        
+        let mainnet_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let mainnet_pub = mainnet_priv.to_extended_public_key();
+        
+        let testnet_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinTestnet).unwrap();
+        let testnet_pub = testnet_priv.to_extended_public_key();
+
+        // Same seed but different networks
+        assert_eq!(mainnet_pub.network(), Network::BitcoinMainnet);
+        assert_eq!(testnet_pub.network(), Network::BitcoinTestnet);
+        
+        // Keys and chain codes should be the same (only network differs)
+        assert_eq!(mainnet_pub.public_key().to_bytes(), testnet_pub.public_key().to_bytes());
+        assert_eq!(mainnet_pub.chain_code().as_bytes(), testnet_pub.chain_code().as_bytes());
+    }
+
+    #[test]
+    fn test_to_extended_public_key_deterministic() {
+        let seed = [0x05; 32];
+        let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let ext_pub1 = ext_priv.to_extended_public_key();
+        let ext_pub2 = ext_priv.to_extended_public_key();
+
+        // Should produce the same result every time
+        assert_eq!(ext_pub1, ext_pub2);
+    }
+
+    #[test]
+    fn test_to_extended_public_key_master_key() {
+        let seed = [0x06; 32];
+        let master_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let master_pub = master_priv.to_extended_public_key();
+
+        // Master key properties should be preserved
+        assert_eq!(master_pub.depth(), 0);
+        assert_eq!(master_pub.child_number(), 0);
+        assert_eq!(master_pub.parent_fingerprint(), &[0, 0, 0, 0]);
+    }
+
+    #[test]
+    fn test_to_extended_public_key_bip32_test_vector() {
+        // BIP-32 Test Vector 1
+        let seed = hex::decode("000102030405060708090a0b0c0d0e0f").unwrap();
+        let master_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let master_pub = master_priv.to_extended_public_key();
+
+        // Expected master public key from BIP-32 test vectors
+        let expected_pubkey = hex::decode(
+            "0339a36013301597daef41fbe593a02cc513d0b55527ec2df1050e2e8ff49c85c2"
+        ).unwrap();
+
+        assert_eq!(master_pub.public_key().to_bytes(), expected_pubkey.as_slice());
+        
+        // Chain code should match private key's chain code
+        let expected_chain = hex::decode(
+            "873dff81c02f525623fd1fe5167eac3a55a049de3d314bb42ee227ffed37d508"
+        ).unwrap();
+        assert_eq!(master_pub.chain_code().as_bytes(), expected_chain.as_slice());
     }
 }

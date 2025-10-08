@@ -117,4 +117,93 @@ impl ExtendedPublicKey {
     ///
     /// **Note**: Extended public keys cannot derive hardened children.
     pub const HARDENED_BIT: u32 = 0x80000000; // 2^31
+
+    /// Creates a new `ExtendedPublicKey`.
+    ///
+    /// # Arguments
+    ///
+    /// * `network` - The network this key belongs to
+    /// * `depth` - Depth in the derivation tree (0 for master)
+    /// * `parent_fingerprint` - First 4 bytes of parent public key hash
+    /// * `child_number` - Index of this child
+    /// * `chain_code` - Chain code for derivation
+    /// * `public_key` - The public key
+    ///
+    /// # Examples
+    ///
+    /// ```rust,ignore
+    /// use bip32::{ExtendedPublicKey, PublicKey, ChainCode, Network};
+    ///
+    /// let public_key = PublicKey::from_bytes(&[/* ... */])?;
+    /// let chain_code = ChainCode::from_bytes(&[/* ... */])?;
+    ///
+    /// let ext_pub = ExtendedPublicKey::new(
+    ///     Network::BitcoinMainnet,
+    ///     0,
+    ///     [0, 0, 0, 0],
+    ///     0,
+    ///     chain_code,
+    ///     public_key,
+    /// );
+    /// ```
+    pub fn new(
+        network: Network,
+        depth: u8,
+        parent_fingerprint: [u8; 4],
+        child_number: u32,
+        chain_code: ChainCode,
+        public_key: PublicKey,
+    ) -> Self {
+        ExtendedPublicKey {
+            network,
+            depth,
+            parent_fingerprint,
+            child_number,
+            chain_code,
+            public_key,
+        }
+    }
+
+    /// Returns the network this key belongs to.
+    pub fn network(&self) -> Network {
+        self.network
+    }
+
+    /// Returns the depth of this key in the derivation tree.
+    pub fn depth(&self) -> u8 {
+        self.depth
+    }
+
+    /// Returns the parent fingerprint.
+    pub fn parent_fingerprint(&self) -> &[u8; 4] {
+        &self.parent_fingerprint
+    }
+
+    /// Returns the child number.
+    pub fn child_number(&self) -> u32 {
+        self.child_number
+    }
+
+    /// Returns a reference to the chain code.
+    pub fn chain_code(&self) -> &ChainCode {
+        &self.chain_code
+    }
+
+    /// Returns a reference to the public key.
+    pub fn public_key(&self) -> &PublicKey {
+        &self.public_key
+    }
+}
+
+impl std::fmt::Debug for ExtendedPublicKey {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ExtendedPublicKey")
+            .field("network", &self.network)
+            .field("depth", &self.depth)
+            .field("parent_fingerprint", &self.parent_fingerprint)
+            .field("child_number", &self.child_number)
+            .field("chain_code", &hex::encode(self.chain_code.as_bytes()))
+            .field("public_key", &self.public_key)
+            .finish()
+    }
 }
