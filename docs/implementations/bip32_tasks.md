@@ -26,8 +26,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 18: Define ExtendedPublicKey struct (key + chain_code + depth + fingerprint + child_number)
 - ✅ Task 19: Write tests for ExtendedPrivateKey::from_seed() (master key generation)
 - ✅ Task 20: Implement ExtendedPrivateKey::from_seed() with HMAC-SHA512 (TDD)
-- 🔲 Task 21: Write tests for ExtendedPrivateKey::to_extended_public_key()
-- 🔲 Task 22: Implement ExtendedPrivateKey::to_extended_public_key() (TDD)
+- ✅ Task 21: Write tests for ExtendedPrivateKey::to_extended_public_key()
+- ✅ Task 22: Implement ExtendedPrivateKey::to_extended_public_key() (TDD)
 - 🔲 Task 23: Write tests for fingerprint calculation
 - 🔲 Task 24: Implement fingerprint calculation methods (TDD)
 
