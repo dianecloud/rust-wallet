@@ -15,8 +15,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 09: Write tests for ChainCode creation and validation
 - ✅ Task 10: Implement ChainCode methods (TDD)
 - ✅ Task 11: Define PrivateKey struct (32-byte secp256k1 key)
-- 🔲 Task 12: Write tests for PrivateKey creation and validation
-- 🔲 Task 13: Implement PrivateKey methods (TDD)
+- ✅ Task 12: Write tests for PrivateKey creation and validation
+- ✅ Task 13: Implement PrivateKey methods (TDD)
 - 🔲 Task 14: Define PublicKey struct (33-byte compressed secp256k1 key)
 - 🔲 Task 15: Write tests for PublicKey creation and derivation from PrivateKey
 - 🔲 Task 16: Implement PublicKey methods (TDD)
