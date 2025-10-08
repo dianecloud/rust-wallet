@@ -39,9 +39,11 @@
 //! ```
 
 // Module declarations
+mod chain_code;
 mod error;
 mod network;
 
 // Public re-exports
+pub use chain_code::ChainCode;
 pub use error::{Error, Result};
 pub use network::{KeyType, Network};

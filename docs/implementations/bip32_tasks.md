@@ -11,9 +11,9 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 07: Implement Network enum methods (TDD)
 
 ## 🔑 PHASE 2: Core Cryptographic Types (HIGH Priority)
-- 🔲 Task 08: Define ChainCode struct (32-byte wrapper)
-- 🔲 Task 09: Write tests for ChainCode creation and validation
-- 🔲 Task 10: Implement ChainCode methods (TDD)
+- ✅ Task 08: Define ChainCode struct (32-byte wrapper)
+- ✅ Task 09: Write tests for ChainCode creation and validation
+- ✅ Task 10: Implement ChainCode methods (TDD)
 - 🔲 Task 11: Define PrivateKey struct (32-byte secp256k1 key)
 - 🔲 Task 12: Write tests for PrivateKey creation and validation
 - 🔲 Task 13: Implement PrivateKey methods (TDD)
