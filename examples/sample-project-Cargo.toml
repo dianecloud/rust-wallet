@@ -1,0 +1,95 @@
+# Sample Cargo.toml for projects using khodpay-wallet libraries
+#
+# Copy this configuration to integrate bip39 and bip32 into your project
+
+[package]
+name = "my-bitcoin-wallet"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.70"
+
+[dependencies]
+# ============================================================================
+# Option 1: Local Path Dependencies (for development/testing)
+# ============================================================================
+# Uncomment these if the khodpay-wallet repo is on your local machine
+# bip39 = { path = "../khodpay-wallet/crates/bip39" }
+# bip32 = { path = "../khodpay-wallet/crates/bip32" }
+
+# ============================================================================
+# Option 2: Git Dependencies (recommended for production)
+# ============================================================================
+# Uncomment and update the git URL when the repo is published
+# bip39 = { git = "https://github.com/your-org/khodpay-wallet", tag = "v0.1.0" }
+# bip32 = { git = "https://github.com/your-org/khodpay-wallet", tag = "v0.1.0" }
+
+# ============================================================================
+# Option 3: Published Crates (when published to crates.io)
+# ============================================================================
+# bip39 = "0.1.0"
+# bip32 = "0.1.0"
+
+# ============================================================================
+# Additional Dependencies (if needed)
+# ============================================================================
+# For hex encoding/decoding
+hex = "0.4"
+
+# For error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# For serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# For secure random generation
+rand = "0.8"
+
+# ============================================================================
+# Development Dependencies
+# ============================================================================
+[dev-dependencies]
+# For testing
+criterion = "0.5"  # For benchmarks
+
+# ============================================================================
+# Features (optional)
+# ============================================================================
+[features]
+default = []
+
+# Example: Enable all features
+full = []
+
+# Example: Enable specific functionality
+mainnet-only = []
+testnet-only = []
+
+# ============================================================================
+# Build Configuration
+# ============================================================================
+[profile.release]
+opt-level = 3          # Maximum optimization
+lto = true             # Link-time optimization
+codegen-units = 1      # Better optimization, slower compile
+strip = true           # Strip symbols
+panic = 'abort'        # Smaller binary size
+
+[profile.dev]
+opt-level = 0          # No optimization for faster compilation
+
+# ============================================================================
+# Example Binary
+# ============================================================================
+[[bin]]
+name = "wallet-cli"
+path = "src/main.rs"
+
+# ============================================================================
+# Example Library
+# ============================================================================
+[lib]
+name = "my_wallet"
+path = "src/lib.rs"
+crate-type = ["lib", "rlib"]
