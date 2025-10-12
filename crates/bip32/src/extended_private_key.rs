@@ -427,6 +427,52 @@ impl ExtendedPrivateKey {
             private_key: child_private_key,
         })
     }
+
+    /// Derives an extended private key from a derivation path.
+    ///
+    /// This is a convenience method that iteratively calls `derive_child()` for each
+    /// component in the path. It supports both normal and hardened derivation at any level.
+    ///
+    /// # Arguments
+    ///
+    /// * `path` - A `DerivationPath` specifying the full derivation from master key
+    ///
+    /// # Returns
+    ///
+    /// Returns the extended private key at the end of the derivation path.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if any step of the derivation fails (e.g., max depth exceeded,
+    /// invalid key generated).
+    ///
+    /// # Examples
+    ///
+    /// ```rust,ignore
+    /// use bip32::{ExtendedPrivateKey, DerivationPath, Network};
+    /// use std::str::FromStr;
+    ///
+    /// let seed = [0u8; 64];
+    /// let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
+    ///
+    /// // BIP-44 Bitcoin path
+    /// let path = DerivationPath::from_str("m/44'/0'/0'/0/0")?;
+    /// let address_key = master.derive_path(&path)?;
+    ///
+    /// assert_eq!(address_key.depth(), 5);
+    /// # Ok::<(), bip32::Error>(())
+    /// ```
+    pub fn derive_path(&self, path: &crate::DerivationPath) -> Result<Self> {
+        // Start with current key
+        let mut current = self.clone();
+        
+        // Derive each child in the path
+        for child_number in path.iter() {
+            current = current.derive_child(*child_number)?;
+        }
+        
+        Ok(current)
+    }
 }
 
 impl std::fmt::Debug for ExtendedPrivateKey {
@@ -445,6 +491,8 @@ impl std::fmt::Debug for ExtendedPrivateKey {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::DerivationPath;
+    use std::str::FromStr;
 
     #[test]
     fn test_from_seed_valid_16_bytes() {
@@ -1150,5 +1198,230 @@ mod tests {
         }
         
         assert_eq!(current.depth(), 10);
+    }
+
+    // ========================================================================
+    // Task 39: Tests for derive_path() (multi-level derivation)
+    // ========================================================================
+
+    #[test]
+    fn test_derive_path_master_key() {
+        let seed = [0x01; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Master path "m" should return same key
+        let path = DerivationPath::from_str("m").unwrap();
+        let result = master.derive_path(&path).unwrap();
+        
+        assert_eq!(result, master);
+    }
+
+    #[test]
+    fn test_derive_path_single_level() {
+        let seed = [0x02; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Single level path "m/0"
+        let path = DerivationPath::from_str("m/0").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        // Should be same as derive_child
+        let expected = master.derive_child(ChildNumber::Normal(0)).unwrap();
+        assert_eq!(derived, expected);
+    }
+
+    #[test]
+    fn test_derive_path_multi_level() {
+        let seed = [0x03; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Multi-level path "m/0/1/2"
+        let path = DerivationPath::from_str("m/0/1/2").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        // Manual derivation
+        let child_0 = master.derive_child(ChildNumber::Normal(0)).unwrap();
+        let child_0_1 = child_0.derive_child(ChildNumber::Normal(1)).unwrap();
+        let child_0_1_2 = child_0_1.derive_child(ChildNumber::Normal(2)).unwrap();
+        
+        assert_eq!(derived, child_0_1_2);
+        assert_eq!(derived.depth(), 3);
+    }
+
+    #[test]
+    fn test_derive_path_hardened() {
+        let seed = [0x04; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Hardened path "m/0'"
+        let path = DerivationPath::from_str("m/0'").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        let expected = master.derive_child(ChildNumber::Hardened(0)).unwrap();
+        assert_eq!(derived, expected);
+    }
+
+    #[test]
+    fn test_derive_path_mixed_hardened_normal() {
+        let seed = [0x05; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Mixed path "m/0'/1/2'"
+        let path = DerivationPath::from_str("m/0'/1/2'").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        // Manual derivation
+        let child_0h = master.derive_child(ChildNumber::Hardened(0)).unwrap();
+        let child_0h_1 = child_0h.derive_child(ChildNumber::Normal(1)).unwrap();
+        let child_0h_1_2h = child_0h_1.derive_child(ChildNumber::Hardened(2)).unwrap();
+        
+        assert_eq!(derived, child_0h_1_2h);
+    }
+
+    #[test]
+    fn test_derive_path_bip44() {
+        let seed = [0x06; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // BIP-44 path: m/44'/0'/0'/0/0
+        let path = DerivationPath::from_str("m/44'/0'/0'/0/0").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        assert_eq!(derived.depth(), 5);
+        assert_eq!(derived.child_number(), ChildNumber::Normal(0));
+        
+        // Verify each level
+        let purpose = master.derive_child(ChildNumber::Hardened(44)).unwrap();
+        let coin = purpose.derive_child(ChildNumber::Hardened(0)).unwrap();
+        let account = coin.derive_child(ChildNumber::Hardened(0)).unwrap();
+        let change = account.derive_child(ChildNumber::Normal(0)).unwrap();
+        let address = change.derive_child(ChildNumber::Normal(0)).unwrap();
+        
+        assert_eq!(derived, address);
+    }
+
+    #[test]
+    fn test_derive_path_bip49() {
+        let seed = [0x07; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // BIP-49 path (P2WPKH-nested-in-P2SH)
+        let path = DerivationPath::from_str("m/49'/0'/0'/0/0").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        assert_eq!(derived.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_path_bip84() {
+        let seed = [0x08; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // BIP-84 path (Native SegWit)
+        let path = DerivationPath::from_str("m/84'/0'/0'/0/0").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        assert_eq!(derived.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_path_deterministic() {
+        let seed = [0x09; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let path = DerivationPath::from_str("m/0'/1/2").unwrap();
+        
+        // Derive same path twice
+        let derived1 = master.derive_path(&path).unwrap();
+        let derived2 = master.derive_path(&path).unwrap();
+        
+        assert_eq!(derived1, derived2);
+    }
+
+    #[test]
+    fn test_derive_path_preserves_network() {
+        let seed = [0x0A; 32];
+        
+        let mainnet = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        let testnet = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinTestnet).unwrap();
+        
+        let path = DerivationPath::from_str("m/0/1").unwrap();
+        
+        let mainnet_derived = mainnet.derive_path(&path).unwrap();
+        let testnet_derived = testnet.derive_path(&path).unwrap();
+        
+        assert_eq!(mainnet_derived.network(), Network::BitcoinMainnet);
+        assert_eq!(testnet_derived.network(), Network::BitcoinTestnet);
+    }
+
+    #[test]
+    fn test_derive_path_deep() {
+        let seed = [0x0B; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Create a deep path (10 levels)
+        let path = DerivationPath::from_str("m/0/1/2/3/4/5/6/7/8/9").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        assert_eq!(derived.depth(), 10);
+        assert_eq!(derived.child_number(), ChildNumber::Normal(9));
+    }
+
+    #[test]
+    fn test_derive_path_bip32_test_vector() {
+        // BIP-32 Test Vector 1: m/0'/1
+        let seed = hex::decode("000102030405060708090a0b0c0d0e0f").unwrap();
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let path = DerivationPath::from_str("m/0'/1").unwrap();
+        let derived = master.derive_path(&path).unwrap();
+        
+        // Expected values from BIP-32 test vectors (Chain m/0'/1)
+        let expected_key = hex::decode(
+            "3c6cb8d0f6a264c91ea8b5030fadaa8e538b020f0a387421a12de9319dc93368"
+        ).unwrap();
+        
+        assert_eq!(derived.private_key().to_bytes(), expected_key.as_slice());
+        assert_eq!(derived.depth(), 2);
+    }
+
+    #[test]
+    fn test_derive_path_multiple_accounts() {
+        let seed = [0x0C; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Derive multiple accounts
+        let account_0 = master.derive_path(&DerivationPath::from_str("m/44'/0'/0'").unwrap()).unwrap();
+        let account_1 = master.derive_path(&DerivationPath::from_str("m/44'/0'/1'").unwrap()).unwrap();
+        let account_2 = master.derive_path(&DerivationPath::from_str("m/44'/0'/2'").unwrap()).unwrap();
+        
+        // All should be at depth 3
+        assert_eq!(account_0.depth(), 3);
+        assert_eq!(account_1.depth(), 3);
+        assert_eq!(account_2.depth(), 3);
+        
+        // All should be different
+        assert_ne!(account_0, account_1);
+        assert_ne!(account_0, account_2);
+        assert_ne!(account_1, account_2);
+    }
+
+    #[test]
+    fn test_derive_path_address_generation() {
+        let seed = [0x0D; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        // Derive account
+        let account_path = DerivationPath::from_str("m/44'/0'/0'").unwrap();
+        let _account = master.derive_path(&account_path).unwrap();
+        
+        // Generate 5 addresses from external chain
+        for i in 0..5 {
+            let addr_path = DerivationPath::from_str(&format!("m/44'/0'/0'/0/{}", i)).unwrap();
+            let address_key = master.derive_path(&addr_path).unwrap();
+            
+            assert_eq!(address_key.depth(), 5);
+            assert_eq!(address_key.child_number(), ChildNumber::Normal(i));
+        }
     }
 }
