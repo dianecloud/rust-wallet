@@ -48,8 +48,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 36: Implement hardened derivation logic (covered in Task 34)
 - ✅ Task 37: Write tests for ExtendedPublicKey::derive_child() (normal only)
 - ✅ Task 38: Implement ExtendedPublicKey::derive_child() (TDD)
-- 🔲 Task 39: Write tests for ExtendedPrivateKey::derive_path() (multi-level)
-- 🔲 Task 40: Implement ExtendedPrivateKey::derive_path() (TDD)
+- ✅ Task 39: Write tests for ExtendedPrivateKey::derive_path() (multi-level)
+- ✅ Task 40: Implement ExtendedPrivateKey::derive_path() (TDD)
 - 🔲 Task 41: Write tests for ExtendedPublicKey::derive_path() (normal only)
 - 🔲 Task 42: Implement ExtendedPublicKey::derive_path() (TDD)
 
