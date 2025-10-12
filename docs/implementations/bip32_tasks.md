@@ -54,8 +54,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 42: Implement ExtendedPublicKey::derive_path() (TDD)
 
 ## 📦 PHASE 6: Serialization & Deserialization (MEDIUM Priority)
-- 🔲 Task 43: Write tests for ExtendedPrivateKey Base58Check serialization (xprv)
-- 🔲 Task 44: Implement ExtendedPrivateKey::to_string() serialization (TDD)
+- ✅ Task 43: Write tests for ExtendedPrivateKey Base58Check serialization (xprv)
+- ✅ Task 44: Implement ExtendedPrivateKey::to_string() serialization (TDD)
 - 🔲 Task 45: Write tests for ExtendedPrivateKey Base58Check deserialization
 - 🔲 Task 46: Implement ExtendedPrivateKey::from_str() deserialization (TDD)
 - 🔲 Task 47: Write tests for ExtendedPublicKey Base58Check serialization (xpub)
