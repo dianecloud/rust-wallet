@@ -34,8 +34,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 ## 🛤️ PHASE 4: Derivation Path Parsing (MEDIUM Priority)
 - ✅ Task 25: Define DerivationPath struct to hold path components
 - ✅ Task 26: Define ChildNumber enum (Normal(u32), Hardened(u32))
-- 🔲 Task 27: Write tests for ChildNumber hardened/normal conversion
-- 🔲 Task 28: Implement ChildNumber methods (TDD)
+- ✅ Task 27: Write tests for ChildNumber hardened/normal conversion
+- ✅ Task 28: Implement ChildNumber methods (TDD)
 - 🔲 Task 29: Write tests for DerivationPath parsing (e.g., "m/44'/0'/0'/0/0")
 - 🔲 Task 30: Implement DerivationPath::from_str() parser (TDD)
 - 🔲 Task 31: Write tests for DerivationPath validation
