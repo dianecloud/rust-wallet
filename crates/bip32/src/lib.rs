@@ -18,25 +18,30 @@
 //! - **Network Support** - Bitcoin mainnet and testnet
 //! - **Zero Unsafe Code** - Pure safe Rust implementation
 //!
-//! ## Quick Start
-//!
-//! ```rust,ignore
-//! use bip32::{ExtendedPrivateKey, DerivationPath};
-//! use bip39::{Mnemonic, WordCount, Language};
-//!
-//! // Generate a mnemonic (using BIP39)
-//! let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English)?;
-//!
-//! // Convert mnemonic to seed
-//! let seed = mnemonic.to_seed("")?;
-//!
-//! // Create master extended private key
-//! let master_key = ExtendedPrivateKey::from_seed(&seed)?;
-//!
-//! // Derive child keys using a path
-//! let path: DerivationPath = "m/0'/0'/0'".parse()?;
-//! let child_key = master_key.derive_path(&path)?;
-//! ```
+/// ## Quick Start
+///
+/// ```rust
+/// use bip32::{ExtendedPrivateKey, Network, DerivationPath};
+/// use bip39::{Mnemonic, WordCount, Language};
+/// use std::str::FromStr;
+///
+/// // Generate a mnemonic (using BIP39)
+/// let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English)?;
+///
+/// // Create master extended private key directly from mnemonic
+/// let master_key = ExtendedPrivateKey::from_mnemonic(
+///     &mnemonic,
+///     None,  // Optional passphrase
+///     Network::BitcoinMainnet
+/// )?;
+///
+/// // Derive child keys using a BIP-44 path
+/// let path = DerivationPath::from_str("m/44'/0'/0'")?;
+/// let account_key = master_key.derive_path(&path)?;
+///
+/// assert_eq!(account_key.depth(), 3);
+/// # Ok::<(), Box<dyn std::error::Error>>(())
+/// ```
 
 // Module declarations
 mod chain_code;
