@@ -54,6 +54,12 @@ mod network;
 mod private_key;
 mod public_key;
 
+/// Utility functions and convenience methods for common BIP32 operations.
+///
+/// This module provides ergonomic wrappers around common patterns to reduce
+/// boilerplate in application code.
+pub mod utils;
+
 // Public re-exports
 pub use chain_code::ChainCode;
 pub use child_number::ChildNumber;
