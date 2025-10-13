@@ -74,8 +74,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 58: Document BIP39 integration examples [from_mnemonic() docs + examples/wallet_creation.rs + lib.rs]
 
 ## 🎨 PHASE 8: Utility Functions & Convenience Methods (LOW Priority)
-- 🔲 Task 59: Write tests for keypair generation helper
-- 🔲 Task 60: Implement generate_master_keypair() utility (TDD)
+- ✅ Task 59: Write tests for keypair generation helper
+- ✅ Task 60: Implement generate_master_keypair() utility (TDD)
 - 🔲 Task 61: Write tests for derive_keypair_from_path() helper
 - 🔲 Task 62: Implement derive_keypair_from_path() utility (TDD)
 
