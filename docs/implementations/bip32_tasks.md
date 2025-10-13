@@ -84,8 +84,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 64: Implement point validation and edge case handling (TDD)
 - ✅ Task 65: Write tests for key overflow handling (key >= n)
 - ✅ Task 66: Implement key range validation (TDD)
-- 🔲 Task 67: Write tests for zero keys rejection
-- 🔲 Task 68: Implement zero key detection and error handling (TDD)
+- ✅ Task 67: Write tests for zero keys rejection
+- ✅ Task 68: Implement zero key detection and error handling (TDD)
 - 🔲 Task 69: Add tests for maximum derivation depth limits
 - 🔲 Task 70: Implement depth validation (TDD)
 

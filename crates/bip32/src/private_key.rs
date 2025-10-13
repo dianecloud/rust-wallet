@@ -12,6 +12,26 @@ use zeroize::Zeroize;
 /// Private keys are scalar values on the secp256k1 elliptic curve. They must be
 /// non-zero and less than the curve order to be valid.
 ///
+/// # Valid Range
+///
+/// A private key must satisfy: **1 ≤ key < n**
+///
+/// Where **n** is the secp256k1 curve order:
+/// ```text
+/// n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+/// ```
+///
+/// ## Zero Key Prohibition
+///
+/// **Zero keys (all zeros) are explicitly rejected** because they would:
+/// - Produce the point at infinity as a public key (invalid)
+/// - Generate zero signatures (completely insecure)
+/// - Allow anyone to forge signatures
+/// - Violate the discrete logarithm problem assumptions
+/// - Produce predictable child keys in derivation
+///
+/// All construction methods validate that the key is non-zero.
+///
 /// # Security
 ///
 /// Private keys must be kept secret. Anyone with access to a private key can
@@ -25,13 +45,17 @@ use zeroize::Zeroize;
 /// ```rust
 /// use bip32::PrivateKey;
 ///
-/// // Create from raw bytes
+/// // Valid: Create from non-zero bytes
 /// let bytes = [1u8; 32];
 /// let private_key = PrivateKey::from_bytes(&bytes)?;
 ///
 /// // Get the bytes back
 /// let key_bytes = private_key.to_bytes();
 /// assert_eq!(key_bytes.len(), 32);
+///
+/// // Invalid: Zero key is rejected
+/// let zero = [0u8; 32];
+/// assert!(PrivateKey::from_bytes(&zero).is_err());
 /// # Ok::<(), bip32::Error>(())
 /// ```
 #[derive(Clone)]
@@ -828,5 +852,199 @@ mod tests {
         // Should be able to get secret key reference
         let secret_key = private_key.secret_key();
         assert_eq!(secret_key.secret_bytes(), n_minus_1);
+    }
+
+    #[test]
+    fn test_zero_key_all_zeros() {
+        // All zeros is invalid
+        let zero = [0x00; 32];
+        let result = PrivateKey::from_bytes(&zero);
+        
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), Error::InvalidPrivateKey { .. }));
+    }
+
+    #[test]
+    fn test_zero_key_from_array() {
+        // Test zero key rejection with from_array
+        let zero = [0x00; 32];
+        let result = PrivateKey::from_array(zero);
+        
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), Error::InvalidPrivateKey { .. }));
+    }
+
+    #[test]
+    fn test_zero_key_try_from_slice() {
+        // Test zero key rejection with TryFrom trait
+        let zero: &[u8] = &[0x00; 32];
+        let result = PrivateKey::try_from(zero);
+        
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_zero_key_try_from_array() {
+        // Test zero key rejection with TryFrom trait for arrays
+        let zero = [0x00; 32];
+        let result = PrivateKey::try_from(zero);
+        
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_zero_key_error_message() {
+        // Verify error message is clear
+        let zero = [0x00; 32];
+        let result = PrivateKey::from_bytes(&zero);
+        
+        assert!(result.is_err());
+        let error_msg = result.unwrap_err().to_string();
+        assert!(
+            error_msg.contains("Invalid private key") || error_msg.contains("secp256k1"),
+            "Error message should mention invalid key: {}",
+            error_msg
+        );
+    }
+
+    #[test]
+    fn test_zero_key_vs_one() {
+        // Verify that 1 is valid but 0 is not
+        let zero = [0x00; 32];
+        let mut one = [0x00; 32];
+        one[31] = 0x01;
+        
+        assert!(PrivateKey::from_bytes(&zero).is_err(), "Zero key should be rejected");
+        assert!(PrivateKey::from_bytes(&one).is_ok(), "Key value 1 should be valid");
+    }
+
+    #[test]
+    fn test_zero_key_prevents_public_key_generation() {
+        // Zero key should never reach public key generation
+        let zero = [0x00; 32];
+        
+        // Should fail at key creation
+        let result = PrivateKey::from_bytes(&zero);
+        assert!(result.is_err());
+        
+        // Never gets to public key derivation
+        // This test verifies the validation happens early
+    }
+
+    #[test]
+    fn test_zero_key_security_boundary() {
+        // Test the security boundary: 0 invalid, 1 valid
+        
+        // Zero (invalid)
+        let zero = [0x00; 32];
+        assert!(PrivateKey::from_bytes(&zero).is_err());
+        
+        // One (minimum valid)
+        let mut one = [0x00; 32];
+        one[31] = 0x01;
+        assert!(PrivateKey::from_bytes(&one).is_ok());
+        
+        // Two (also valid)
+        let mut two = [0x00; 32];
+        two[31] = 0x02;
+        assert!(PrivateKey::from_bytes(&two).is_ok());
+    }
+
+    #[test]
+    fn test_zero_key_tweak_result() {
+        // Even if a tweak operation could theoretically produce zero,
+        // it should be handled properly
+        let bytes = [0x05; 32];
+        let private_key = PrivateKey::from_bytes(&bytes).unwrap();
+        
+        // Adding a zero tweak should work (key + 0 = key)
+        let zero_tweak = [0x00; 32];
+        let result = private_key.tweak_add(&zero_tweak);
+        
+        // This should succeed (adding zero doesn't make the key zero)
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_zero_key_cannot_be_constructed() {
+        // Comprehensive test: zero key cannot be constructed via any method
+        let zero = [0x00; 32];
+        
+        // Method 1: from_bytes
+        assert!(PrivateKey::from_bytes(&zero).is_err());
+        
+        // Method 2: from_array
+        assert!(PrivateKey::from_array(zero).is_err());
+        
+        // Method 3: TryFrom<&[u8]>
+        assert!(PrivateKey::try_from(&zero[..]).is_err());
+        
+        // Method 4: TryFrom<[u8; 32]>
+        assert!(PrivateKey::try_from(zero).is_err());
+    }
+
+    #[test]
+    fn test_zero_key_explicit_validation() {
+        // Explicitly test that zero is caught by secp256k1 validation
+        let zero = [0x00; 32];
+        
+        // This should fail at SecretKey::from_slice
+        let result = PrivateKey::from_bytes(&zero);
+        assert!(result.is_err());
+        
+        // Verify it's an InvalidPrivateKey error
+        match result {
+            Err(Error::InvalidPrivateKey { reason }) => {
+                // Error should mention secp256k1 or invalid key
+                assert!(
+                    reason.contains("secp256k1") || reason.contains("invalid"),
+                    "Expected secp256k1 or invalid in error, got: {}",
+                    reason
+                );
+            }
+            _ => panic!("Expected InvalidPrivateKey error"),
+        }
+    }
+
+    #[test]
+    fn test_zero_key_prevents_cryptographic_operations() {
+        // Zero key should never be allowed into the system
+        // because it would break all cryptographic properties
+        let zero = [0x00; 32];
+        
+        // Key creation fails
+        assert!(PrivateKey::from_bytes(&zero).is_err());
+        
+        // This means we can't:
+        // - Generate a public key (would be point at infinity)
+        // - Sign messages (signature would be zero)
+        // - Derive child keys (would produce zero children)
+        // All of these are prevented by rejecting zero at construction
+    }
+
+    #[test]
+    fn test_zero_key_comparison_with_valid_keys() {
+        // Test zero against various valid keys to ensure clear distinction
+        let zero = [0x00; 32];
+        
+        // Test against small valid keys
+        for value in 1..=10u8 {
+            let mut valid = [0x00; 32];
+            valid[31] = value;
+            
+            assert!(PrivateKey::from_bytes(&zero).is_err(), "Zero should be invalid");
+            assert!(PrivateKey::from_bytes(&valid).is_ok(), "Value {} should be valid", value);
+        }
+    }
+
+    #[test]
+    fn test_zero_key_documentation_example() {
+        // This test verifies the example in the documentation
+        let zero_key = [0u8; 32];
+        assert!(PrivateKey::from_bytes(&zero_key).is_err());
+        
+        // Compare with valid key from docs
+        let valid_key = [1u8; 32];
+        assert!(PrivateKey::from_bytes(&valid_key).is_ok());
     }
 }
