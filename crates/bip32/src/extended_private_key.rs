@@ -100,7 +100,31 @@ pub struct ExtendedPrivateKey {
 
 impl ExtendedPrivateKey {
     /// The maximum allowed depth in the derivation tree.
-    /// This is a BIP-32 specification limit.
+    ///
+    /// BIP-32 uses a single byte to represent depth, which limits the maximum
+    /// derivation depth to **255**. This allows for 256 total levels (0-255):
+    ///
+    /// - Depth 0: Master key
+    /// - Depth 1-254: Intermediate keys
+    /// - Depth 255: Maximum depth (cannot derive further)
+    ///
+    /// Attempting to derive a child key from a key at depth 255 will result
+    /// in an [`Error::MaxDepthExceeded`] error.
+    ///
+    /// In practice, most wallet implementations use depths far below this limit:
+    /// - BIP-44: Uses depth 5 (m/44'/coin'/account'/change/address_index)
+    /// - BIP-49: Uses depth 5 (m/49'/coin'/account'/change/address_index)
+    /// - BIP-84: Uses depth 5 (m/84'/coin'/account'/change/address_index)
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// use bip32::ExtendedPrivateKey;
+    ///
+    /// // Maximum depth is 255
+    /// assert_eq!(ExtendedPrivateKey::MAX_DEPTH, 255);
+    /// assert_eq!(ExtendedPrivateKey::MAX_DEPTH, u8::MAX);
+    /// ```
     pub const MAX_DEPTH: u8 = 255;
 
     /// The threshold for hardened derivation.
@@ -467,6 +491,24 @@ impl ExtendedPrivateKey {
     /// - Parent fingerprint set to this key's fingerprint
     /// - Child number set to the provided value
     /// - Derived private key and chain code
+    ///
+    /// # Depth Validation
+    ///
+    /// BIP-32 uses a single byte for depth, limiting derivation to a maximum depth of **255**.
+    /// This means you can derive up to 256 levels in total (depth 0 through 255):
+    ///
+    /// - **Master key**: depth = 0
+    /// - **First derivation**: depth = 1
+    /// - **...continuing...**
+    /// - **Maximum depth**: depth = 255
+    ///
+    /// Once a key reaches depth 255, no further child derivation is possible.
+    /// The key can still be used for:
+    /// - Signing transactions
+    /// - Deriving public keys
+    /// - Serialization/deserialization
+    ///
+    /// But attempting to call `derive_child()` will return [`Error::MaxDepthExceeded`].
     ///
     /// # Errors
     ///
@@ -2353,5 +2395,293 @@ mod tests {
         
         assert_eq!(receiving.depth(), 5);
         assert_eq!(receiving.child_number(), ChildNumber::Normal(0));
+    }
+
+    #[test]
+    fn test_max_depth_constant() {
+        // Verify MAX_DEPTH is 255 (BIP-32 spec)
+        assert_eq!(ExtendedPrivateKey::MAX_DEPTH, 255);
+    }
+
+    #[test]
+    fn test_max_depth_at_boundary() {
+        // Create a key at max depth (depth 255)
+        let seed = [0xAA; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: ExtendedPrivateKey::MAX_DEPTH,
+            parent_fingerprint: [1, 2, 3, 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Key at depth 255 should be valid
+        assert_eq!(max_depth_key.depth(), 255);
+        
+        // Can still use it for operations (just can't derive children)
+        let _pubkey = max_depth_key.to_extended_public_key();
+        let _serialized = max_depth_key.to_string();
+    }
+
+    #[test]
+    fn test_max_depth_cannot_derive_child() {
+        // Key at depth 255 cannot derive children
+        let seed = [0xBB; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: ExtendedPrivateKey::MAX_DEPTH,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Try to derive a normal child
+        let result = max_depth_key.derive_child(ChildNumber::Normal(0));
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), Error::MaxDepthExceeded { .. }));
+        
+        // Try to derive a hardened child
+        let result = max_depth_key.derive_child(ChildNumber::Hardened(0));
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), Error::MaxDepthExceeded { .. }));
+    }
+
+    #[test]
+    fn test_max_depth_error_message() {
+        let seed = [0xCC; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        let result = max_depth_key.derive_child(ChildNumber::Normal(0));
+        
+        match result {
+            Err(Error::MaxDepthExceeded { depth }) => {
+                assert_eq!(depth, 255);
+                let error_msg = Error::MaxDepthExceeded { depth }.to_string();
+                assert!(error_msg.contains("255"));
+                assert!(error_msg.contains("Maximum derivation depth"));
+            }
+            _ => panic!("Expected MaxDepthExceeded error"),
+        }
+    }
+
+    #[test]
+    fn test_max_depth_one_below_maximum() {
+        // Key at depth 254 can still derive one more level
+        let seed = [0xDD; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let depth_254_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 254,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Can derive to depth 255
+        let child = depth_254_key.derive_child(ChildNumber::Normal(0)).unwrap();
+        assert_eq!(child.depth(), 255);
+        
+        // But this child (at 255) cannot derive further
+        let result = child.derive_child(ChildNumber::Normal(0));
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_max_depth_path_derivation() {
+        // Test that derive_path also respects max depth
+        let seed = [0xEE; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Trying to derive any path from depth 255 should fail
+        let path = DerivationPath::from_str("m/0").unwrap();
+        let result = max_depth_key.derive_path(&path);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_max_depth_serialization_roundtrip() {
+        // Key at max depth should serialize and deserialize correctly
+        let seed = [0xFF; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [1, 2, 3, 4],
+            child_number: ChildNumber::Normal(42),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Serialize
+        let serialized = max_depth_key.to_string();
+        
+        // Deserialize
+        let deserialized: ExtendedPrivateKey = serialized.parse().unwrap();
+        
+        // Verify depth is preserved
+        assert_eq!(deserialized.depth(), 255);
+        assert_eq!(deserialized.child_number(), ChildNumber::Normal(42));
+    }
+
+    #[test]
+    fn test_max_depth_various_depths() {
+        // Test keys at various depths below maximum
+        let seed = [0x11; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let test_depths = [0, 1, 10, 100, 250, 253, 254, 255];
+        
+        for depth in test_depths {
+            let key = ExtendedPrivateKey {
+                network: master.network(),
+                depth,
+                parent_fingerprint: [0; 4],
+                child_number: ChildNumber::Normal(0),
+                chain_code: master.chain_code().clone(),
+                private_key: master.private_key().clone(),
+            };
+            
+            assert_eq!(key.depth(), depth);
+            
+            if depth < 255 {
+                // Can derive child
+                assert!(key.derive_child(ChildNumber::Normal(0)).is_ok());
+            } else {
+                // Cannot derive child at max depth
+                assert!(key.derive_child(ChildNumber::Normal(0)).is_err());
+            }
+        }
+    }
+
+    #[test]
+    fn test_max_depth_master_key_is_depth_zero() {
+        // Master keys always have depth 0
+        let seed = [0x22; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        assert_eq!(master.depth(), 0);
+        
+        // Can derive 255 levels from master
+        // (0 -> 1 -> 2 -> ... -> 255)
+    }
+
+    #[test]
+    fn test_max_depth_sequential_derivation_to_limit() {
+        // Derive sequentially up to depth 10 (testing the pattern)
+        let seed = [0x33; 32];
+        let mut current = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        assert_eq!(current.depth(), 0);
+        
+        // Derive 10 levels
+        for i in 1..=10 {
+            current = current.derive_child(ChildNumber::Normal(0)).unwrap();
+            assert_eq!(current.depth(), i);
+        }
+        
+        // Verify we're at depth 10
+        assert_eq!(current.depth(), 10);
+    }
+
+    #[test]
+    fn test_max_depth_public_key_at_max_depth() {
+        // Public key can be derived from private key at max depth
+        let seed = [0x44; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Can derive public key
+        let public_key = max_depth_key.to_extended_public_key();
+        assert_eq!(public_key.depth(), 255);
+        
+        // Public key also cannot derive children at max depth
+        let result = public_key.derive_child(ChildNumber::Normal(0));
+        assert!(result.is_err());
+        assert!(matches!(result.unwrap_err(), Error::MaxDepthExceeded { .. }));
+    }
+
+    #[test]
+    fn test_max_depth_hardened_vs_normal_at_limit() {
+        // Both hardened and normal derivation fail at max depth
+        let seed = [0x55; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let max_depth_key = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Normal derivation fails
+        assert!(max_depth_key.derive_child(ChildNumber::Normal(0)).is_err());
+        assert!(max_depth_key.derive_child(ChildNumber::Normal(999)).is_err());
+        
+        // Hardened derivation fails
+        assert!(max_depth_key.derive_child(ChildNumber::Hardened(0)).is_err());
+        assert!(max_depth_key.derive_child(ChildNumber::Hardened(999)).is_err());
+    }
+
+    #[test]
+    fn test_max_depth_bip32_compliance() {
+        // BIP-32 specifies depth as a single byte (0-255)
+        // This test verifies we comply with the spec
+        
+        // Depth field is u8, so max is 255
+        let max = ExtendedPrivateKey::MAX_DEPTH;
+        assert_eq!(max, u8::MAX);
+        
+        // Cannot exceed this limit
+        let seed = [0x66; 32];
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+        
+        let key_at_255 = ExtendedPrivateKey {
+            network: master.network(),
+            depth: 255,
+            parent_fingerprint: [0; 4],
+            child_number: ChildNumber::Normal(0),
+            chain_code: master.chain_code().clone(),
+            private_key: master.private_key().clone(),
+        };
+        
+        // Attempting to derive would need depth 256, which exceeds u8
+        assert!(key_at_255.derive_child(ChildNumber::Normal(0)).is_err());
     }
 }

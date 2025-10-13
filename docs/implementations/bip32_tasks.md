@@ -86,8 +86,8 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 - ✅ Task 66: Implement key range validation (TDD)
 - ✅ Task 67: Write tests for zero keys rejection
 - ✅ Task 68: Implement zero key detection and error handling (TDD)
-- 🔲 Task 69: Add tests for maximum derivation depth limits
-- 🔲 Task 70: Implement depth validation (TDD)
+- ✅ Task 69: Add tests for maximum derivation depth limits
+- ✅ Task 70: Implement depth validation (TDD)
 
 ## 🧪 PHASE 10: Test Vectors & Compliance (MEDIUM Priority)
 - 🔲 Task 71: Import BIP32 official test vectors
