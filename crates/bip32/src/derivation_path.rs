@@ -559,7 +559,7 @@ impl FromStr for DerivationPath {
 
 /// Parse a single child number component.
 ///
-/// Handles both normal ("0", "1", "2") and hardened ("0'", "1h") notation.
+/// Handles both normal ("0", "1", "2") and hardened ("0'", "1h", "1H") notation.
 fn parse_child_number(component: &str, full_path: &str) -> Result<ChildNumber> {
     if component.is_empty() {
         return Err(Error::InvalidDerivationPath {
@@ -568,10 +568,10 @@ fn parse_child_number(component: &str, full_path: &str) -> Result<ChildNumber> {
         });
     }
 
-    // Check for hardened suffix
+    // Check for hardened suffix (supports ', h, or H)
     let (is_hardened, number_str) = if component.ends_with('\'') {
         (true, &component[..component.len() - 1])
-    } else if component.ends_with('h') {
+    } else if component.ends_with('h') || component.ends_with('H') {
         (true, &component[..component.len() - 1])
     } else {
         (false, component)
@@ -657,6 +657,13 @@ mod tests {
     #[test]
     fn test_parse_single_hardened_h() {
         let path = DerivationPath::from_str("m/0h").unwrap();
+        assert_eq!(path.depth(), 1);
+        assert_eq!(path.as_slice()[0], ChildNumber::Hardened(0));
+    }
+
+    #[test]
+    fn test_parse_single_hardened_uppercase_h() {
+        let path = DerivationPath::from_str("m/0H").unwrap();
         assert_eq!(path.depth(), 1);
         assert_eq!(path.as_slice()[0], ChildNumber::Hardened(0));
     }

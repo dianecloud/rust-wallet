@@ -12,9 +12,8 @@
 //! - **Test Vector 4**: Retention of leading zeros (btcsuite/btcutil#172)
 //! - **Test Vector 5**: Invalid extended keys (for error handling tests)
 
-// Note: The types below will be used for actual test vector validation
-// use bip32::{DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
-// use std::str::FromStr;
+use bip32::{DerivationPath, ExtendedPrivateKey, Network};
+use std::str::FromStr;
 
 /// Represents a single derivation step in a test vector
 #[derive(Debug, Clone)]
@@ -297,5 +296,315 @@ mod tests {
         assert_eq!(bytes.len(), 16);
         assert_eq!(bytes[0], 0x00);
         assert_eq!(bytes[15], 0x0f);
+    }
+
+    // ============================================================================
+    // Test Vector 1 - Basic derivation paths
+    // ============================================================================
+
+    /// Helper function to validate a single derivation step
+    fn validate_derivation_step(
+        master_key: &ExtendedPrivateKey,
+        step: &DerivationStep,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        // Parse the path
+        let path = DerivationPath::from_str(step.path)?;
+
+        // Derive the private key
+        let derived_prv = master_key.derive_path(&path)?;
+        let derived_prv_str = derived_prv.to_string();
+
+        // Derive the public key
+        let derived_pub = derived_prv.to_extended_public_key();
+        let derived_pub_str = derived_pub.to_string();
+
+        // Validate against expected values
+        assert_eq!(
+            derived_prv_str, step.ext_prv,
+            "Private key mismatch for path {}\nExpected: {}\nGot:      {}",
+            step.path, step.ext_prv, derived_prv_str
+        );
+
+        assert_eq!(
+            derived_pub_str, step.ext_pub,
+            "Public key mismatch for path {}\nExpected: {}\nGot:      {}",
+            step.path, step.ext_pub, derived_pub_str
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_vector_1_master_key() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test the master key (m)
+        let master_step = &TEST_VECTOR_1.derivations[0];
+        assert_eq!(master_step.path, "m");
+
+        let master_prv_str = master_key.to_string();
+        let master_pub_str = master_key.to_extended_public_key().to_string();
+
+        assert_eq!(
+            master_prv_str, master_step.ext_prv,
+            "Master private key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_prv, master_prv_str
+        );
+
+        assert_eq!(
+            master_pub_str, master_step.ext_pub,
+            "Master public key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_pub, master_pub_str
+        );
+    }
+
+    #[test]
+    fn test_vector_1_derivation_m_0h() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H
+        let step = &TEST_VECTOR_1.derivations[1];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H derivation");
+    }
+
+    #[test]
+    fn test_vector_1_derivation_m_0h_1() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H/1
+        let step = &TEST_VECTOR_1.derivations[2];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H/1 derivation");
+    }
+
+    #[test]
+    fn test_vector_1_derivation_m_0h_1_2h() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H/1/2H
+        let step = &TEST_VECTOR_1.derivations[3];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H/1/2H derivation");
+    }
+
+    #[test]
+    fn test_vector_1_derivation_m_0h_1_2h_2() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H/1/2H/2
+        let step = &TEST_VECTOR_1.derivations[4];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H/1/2H/2 derivation");
+    }
+
+    #[test]
+    fn test_vector_1_derivation_m_0h_1_2h_2_1000000000() {
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H/1/2H/2/1000000000
+        let step = &TEST_VECTOR_1.derivations[5];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H/1/2H/2/1000000000 derivation");
+    }
+
+    #[test]
+    fn test_vector_1_complete() {
+        // Test all derivations in Test Vector 1 in one comprehensive test
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        for step in TEST_VECTOR_1.derivations {
+            validate_derivation_step(&master_key, step)
+                .unwrap_or_else(|e| panic!("Failed to validate path {}: {}", step.path, e));
+        }
+    }
+
+    // ============================================================================
+    // Test Vector 2 - Maximum hardened derivation values
+    // ============================================================================
+
+    #[test]
+    fn test_vector_2_master_key() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test the master key (m)
+        let master_step = &TEST_VECTOR_2.derivations[0];
+        assert_eq!(master_step.path, "m");
+
+        let master_prv_str = master_key.to_string();
+        let master_pub_str = master_key.to_extended_public_key().to_string();
+
+        assert_eq!(
+            master_prv_str, master_step.ext_prv,
+            "Master private key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_prv, master_prv_str
+        );
+
+        assert_eq!(
+            master_pub_str, master_step.ext_pub,
+            "Master public key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_pub, master_pub_str
+        );
+    }
+
+    #[test]
+    fn test_vector_2_derivation_m_0() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0
+        let step = &TEST_VECTOR_2.derivations[1];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0 derivation");
+    }
+
+    #[test]
+    fn test_vector_2_derivation_m_0_2147483647h() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0/2147483647H
+        let step = &TEST_VECTOR_2.derivations[2];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0/2147483647H derivation");
+    }
+
+    #[test]
+    fn test_vector_2_derivation_m_0_2147483647h_1() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0/2147483647H/1
+        let step = &TEST_VECTOR_2.derivations[3];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0/2147483647H/1 derivation");
+    }
+
+    #[test]
+    fn test_vector_2_derivation_m_0_2147483647h_1_2147483646h() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0/2147483647H/1/2147483646H
+        let step = &TEST_VECTOR_2.derivations[4];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0/2147483647H/1/2147483646H derivation");
+    }
+
+    #[test]
+    fn test_vector_2_derivation_m_0_2147483647h_1_2147483646h_2() {
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0/2147483647H/1/2147483646H/2
+        let step = &TEST_VECTOR_2.derivations[5];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0/2147483647H/1/2147483646H/2 derivation");
+    }
+
+    #[test]
+    fn test_vector_2_complete() {
+        // Test all derivations in Test Vector 2 in one comprehensive test
+        let seed = hex_to_bytes(TEST_VECTOR_2.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        for step in TEST_VECTOR_2.derivations {
+            validate_derivation_step(&master_key, step)
+                .unwrap_or_else(|e| panic!("Failed to validate path {}: {}", step.path, e));
+        }
+    }
+
+    // ============================================================================
+    // Test Vector 3 - Retention of leading zeros
+    // ============================================================================
+
+    #[test]
+    fn test_vector_3_master_key() {
+        let seed = hex_to_bytes(TEST_VECTOR_3.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test the master key (m)
+        let master_step = &TEST_VECTOR_3.derivations[0];
+        assert_eq!(master_step.path, "m");
+
+        let master_prv_str = master_key.to_string();
+        let master_pub_str = master_key.to_extended_public_key().to_string();
+
+        assert_eq!(
+            master_prv_str, master_step.ext_prv,
+            "Master private key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_prv, master_prv_str
+        );
+
+        assert_eq!(
+            master_pub_str, master_step.ext_pub,
+            "Master public key mismatch\nExpected: {}\nGot:      {}",
+            master_step.ext_pub, master_pub_str
+        );
+    }
+
+    #[test]
+    fn test_vector_3_derivation_m_0h() {
+        let seed = hex_to_bytes(TEST_VECTOR_3.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        // Test m/0H
+        let step = &TEST_VECTOR_3.derivations[1];
+        validate_derivation_step(&master_key, step)
+            .expect("Failed to validate m/0H derivation");
+    }
+
+    #[test]
+    fn test_vector_3_complete() {
+        // Test all derivations in Test Vector 3 in one comprehensive test
+        let seed = hex_to_bytes(TEST_VECTOR_3.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        for step in TEST_VECTOR_3.derivations {
+            validate_derivation_step(&master_key, step)
+                .unwrap_or_else(|e| panic!("Failed to validate path {}: {}", step.path, e));
+        }
+    }
+
+    // ============================================================================
+    // Test Vector 4 - Additional leading zeros tests
+    // ============================================================================
+
+    #[test]
+    fn test_vector_4_complete() {
+        // Test all derivations in Test Vector 4
+        let seed = hex_to_bytes(TEST_VECTOR_4.seed_hex).expect("Failed to decode seed");
+        let master_key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+            .expect("Failed to create master key");
+
+        for step in TEST_VECTOR_4.derivations {
+            validate_derivation_step(&master_key, step)
+                .unwrap_or_else(|e| panic!("Failed to validate path {}: {}", step.path, e));
+        }
     }
 }
