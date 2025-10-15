@@ -12,7 +12,7 @@
 //! - **Test Vector 4**: Retention of leading zeros (btcsuite/btcutil#172)
 //! - **Test Vector 5**: Invalid extended keys (for error handling tests)
 
-use bip32::{DerivationPath, ExtendedPrivateKey, Network};
+use bip32::{DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
 use std::str::FromStr;
 
 /// Represents a single derivation step in a test vector
@@ -606,5 +606,728 @@ mod tests {
             validate_derivation_step(&master_key, step)
                 .unwrap_or_else(|e| panic!("Failed to validate path {}: {}", step.path, e));
         }
+    }
+
+    // ============================================================================
+    // Verify all derivation paths in test vectors
+    // ============================================================================
+
+    #[test]
+    fn test_all_paths_parse_correctly() {
+        // Verify that all derivation paths in all test vectors can be parsed
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let result = DerivationPath::from_str(step.path);
+                assert!(
+                    result.is_ok(),
+                    "Failed to parse path '{}' in {}: {:?}",
+                    step.path,
+                    test_vector.description,
+                    result.err()
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_path_depths_are_correct() {
+        // Test Vector 1: depths 0, 1, 2, 3, 4, 5
+        let expected_depths_v1 = [0, 1, 2, 3, 4, 5];
+        for (i, step) in TEST_VECTOR_1.derivations.iter().enumerate() {
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert_eq!(
+                path.depth(),
+                expected_depths_v1[i],
+                "Vector 1, path {} has incorrect depth",
+                step.path
+            );
+        }
+
+        // Test Vector 2: depths 0, 1, 2, 3, 4, 5
+        let expected_depths_v2 = [0, 1, 2, 3, 4, 5];
+        for (i, step) in TEST_VECTOR_2.derivations.iter().enumerate() {
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert_eq!(
+                path.depth(),
+                expected_depths_v2[i],
+                "Vector 2, path {} has incorrect depth",
+                step.path
+            );
+        }
+
+        // Test Vector 3: depths 0, 1
+        let expected_depths_v3 = [0, 1];
+        for (i, step) in TEST_VECTOR_3.derivations.iter().enumerate() {
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert_eq!(
+                path.depth(),
+                expected_depths_v3[i],
+                "Vector 3, path {} has incorrect depth",
+                step.path
+            );
+        }
+
+        // Test Vector 4: depths 0, 1, 2
+        let expected_depths_v4 = [0, 1, 2];
+        for (i, step) in TEST_VECTOR_4.derivations.iter().enumerate() {
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert_eq!(
+                path.depth(),
+                expected_depths_v4[i],
+                "Vector 4, path {} has incorrect depth",
+                step.path
+            );
+        }
+    }
+
+    #[test]
+    fn test_path_hardened_detection() {
+        // Test Vector 1: All paths contain hardened components
+        for step in TEST_VECTOR_1.derivations.iter().skip(1) {
+            // Skip master key
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert!(
+                path.contains_hardened(),
+                "Vector 1, path {} should contain hardened components",
+                step.path
+            );
+        }
+
+        // Test Vector 2: m/0 is normal, all others have hardened
+        let path_m_0 = DerivationPath::from_str("m/0").unwrap();
+        assert!(
+            !path_m_0.contains_hardened(),
+            "Path m/0 should not contain hardened components"
+        );
+
+        for step in TEST_VECTOR_2.derivations.iter().skip(2) {
+            // Skip m and m/0
+            let path = DerivationPath::from_str(step.path).unwrap();
+            assert!(
+                path.contains_hardened(),
+                "Vector 2, path {} should contain hardened components",
+                step.path
+            );
+        }
+
+        // Test Vector 3 & 4: All non-master paths are hardened
+        for test_vector in [&TEST_VECTOR_3, &TEST_VECTOR_4] {
+            for step in test_vector.derivations.iter().skip(1) {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                assert!(
+                    path.contains_hardened(),
+                    "Path {} should contain hardened components",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_path_public_derivation_compatibility() {
+        // Test Vector 1: m/0H/1 has hardened prefix, not fully public derivable
+        let path_m_0h_1 = DerivationPath::from_str("m/0H/1").unwrap();
+        assert!(
+            !path_m_0h_1.is_public_derivable(),
+            "Path m/0H/1 should not be public derivable (contains hardened)"
+        );
+
+        // Test Vector 2: m/0 is fully public derivable (no hardened components)
+        let path_m_0 = DerivationPath::from_str("m/0").unwrap();
+        assert!(
+            path_m_0.is_public_derivable(),
+            "Path m/0 should be public derivable"
+        );
+
+        // Any path with hardened components should not be public derivable
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                if path.contains_hardened() {
+                    assert!(
+                        !path.is_public_derivable(),
+                        "Path {} with hardened components should not be public derivable",
+                        step.path
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_path_string_roundtrip() {
+        // Verify that parsing and converting back to string gives consistent results
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let path_str = path.to_string();
+
+                // The string representation should be parseable back
+                let reparsed = DerivationPath::from_str(&path_str).unwrap();
+                assert_eq!(
+                    path.to_string(),
+                    reparsed.to_string(),
+                    "Path roundtrip failed for {}",
+                    step.path
+                );
+
+                // Depth should remain the same
+                assert_eq!(
+                    path.depth(),
+                    reparsed.depth(),
+                    "Depth changed after roundtrip for {}",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_path_incremental_derivation() {
+        // Test that deriving incrementally matches direct path derivation
+        let seed = hex_to_bytes(TEST_VECTOR_1.seed_hex).unwrap();
+        let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+        // Test path m/0H/1/2H
+        let path_direct = DerivationPath::from_str("m/0H/1/2H").unwrap();
+        let derived_direct = master.derive_path(&path_direct).unwrap();
+
+        // Derive incrementally
+        let path_0h = DerivationPath::from_str("m/0H").unwrap();
+        let derived_0h = master.derive_path(&path_0h).unwrap();
+
+        let path_1 = DerivationPath::from_str("m/1").unwrap();
+        let derived_0h_1 = derived_0h.derive_path(&path_1).unwrap();
+
+        let path_2h = DerivationPath::from_str("m/2H").unwrap();
+        let derived_0h_1_2h = derived_0h_1.derive_path(&path_2h).unwrap();
+
+        // Both approaches should yield the same result
+        assert_eq!(
+            derived_direct.to_string(),
+            derived_0h_1_2h.to_string(),
+            "Incremental derivation doesn't match direct derivation"
+        );
+    }
+
+    #[test]
+    fn test_path_parent_relationships() {
+        // Test that parent() works correctly for all paths
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations.iter().skip(1) {
+                // Skip master key
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let parent = path.parent();
+
+                assert!(
+                    parent.is_some(),
+                    "Path {} should have a parent",
+                    step.path
+                );
+
+                let parent = parent.unwrap();
+                assert_eq!(
+                    parent.depth(),
+                    path.depth() - 1,
+                    "Parent depth incorrect for {}",
+                    step.path
+                );
+            }
+        }
+
+        // Master key should have no parent
+        let master = DerivationPath::from_str("m").unwrap();
+        assert!(master.parent().is_none(), "Master key should have no parent");
+    }
+
+    #[test]
+    fn test_all_paths_have_valid_indices() {
+        // Verify that all child indices are within valid range
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+
+                // Check each level
+                for i in 0..path.depth() {
+                    let child_num = path.child_number_at(i as usize);
+                    assert!(
+                        child_num.is_some(),
+                        "Path {} missing child number at index {}",
+                        step.path,
+                        i
+                    );
+                }
+
+                // Beyond depth should return None
+                assert!(
+                    path.child_number_at(path.depth() as usize).is_none(),
+                    "Path {} should return None for out-of-bounds index",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_path_consistency_across_vectors() {
+        // All test vectors should have master key as first derivation
+        for test_vector in all_test_vectors() {
+            assert!(
+                !test_vector.derivations.is_empty(),
+                "{} has no derivations",
+                test_vector.description
+            );
+
+            let first = &test_vector.derivations[0];
+            assert_eq!(
+                first.path, "m",
+                "{} first derivation should be master key",
+                test_vector.description
+            );
+
+            let master_path = DerivationPath::from_str(first.path).unwrap();
+            assert!(
+                master_path.is_master(),
+                "{} first path should be master",
+                test_vector.description
+            );
+        }
+    }
+
+    #[test]
+    fn test_hardened_vs_normal_notation() {
+        // Test that 'H' and 'h' notations are both supported
+        let path_h_lower = DerivationPath::from_str("m/0h").unwrap();
+        let path_h_upper = DerivationPath::from_str("m/0H").unwrap();
+        let path_apostrophe = DerivationPath::from_str("m/0'").unwrap();
+
+        // All three should represent the same hardened derivation
+        assert_eq!(path_h_lower.depth(), 1);
+        assert_eq!(path_h_upper.depth(), 1);
+        assert_eq!(path_apostrophe.depth(), 1);
+
+        assert!(path_h_lower.contains_hardened());
+        assert!(path_h_upper.contains_hardened());
+        assert!(path_apostrophe.contains_hardened());
+    }
+
+    #[test]
+    fn test_all_vector_paths_comprehensive() {
+        // Comprehensive test ensuring all paths in all vectors work end-to-end
+        let mut total_paths = 0;
+        let mut successful_derivations = 0;
+
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex)
+                .expect(&format!("Failed to decode seed for {}", test_vector.description));
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)
+                .expect(&format!("Failed to create master key for {}", test_vector.description));
+
+            for step in test_vector.derivations {
+                total_paths += 1;
+
+                // Parse path
+                let path = DerivationPath::from_str(step.path)
+                    .expect(&format!("Failed to parse path {}", step.path));
+
+                // Derive key
+                let derived = master.derive_path(&path)
+                    .expect(&format!("Failed to derive path {}", step.path));
+
+                // Verify serialization matches
+                assert_eq!(
+                    derived.to_string(),
+                    step.ext_prv,
+                    "Derived key mismatch for path {}",
+                    step.path
+                );
+
+                successful_derivations += 1;
+            }
+        }
+
+        // Verify we tested all expected paths
+        assert_eq!(total_paths, 17, "Expected 17 total derivation paths across all vectors (6 + 6 + 2 + 3)");
+        assert_eq!(successful_derivations, total_paths, "All paths should derive successfully");
+    }
+
+    // ============================================================================
+    // Verify all serialization formats in test vectors
+    // ============================================================================
+
+    #[test]
+    fn test_all_xprv_serializations_match() {
+        // Verify that all extended private key serializations match expected values
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex).unwrap();
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let derived = master.derive_path(&path).unwrap();
+                let serialized = derived.to_string();
+
+                assert_eq!(
+                    serialized, step.ext_prv,
+                    "{}: xprv serialization mismatch for path {}\nExpected: {}\nGot:      {}",
+                    test_vector.description, step.path, step.ext_prv, serialized
+                );
+
+                // Verify it starts with correct prefix
+                assert!(
+                    serialized.starts_with("xprv"),
+                    "Extended private key should start with 'xprv', got: {}",
+                    &serialized[..4]
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_all_xpub_serializations_match() {
+        // Verify that all extended public key serializations match expected values
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex).unwrap();
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let derived_prv = master.derive_path(&path).unwrap();
+                let derived_pub = derived_prv.to_extended_public_key();
+                let serialized = derived_pub.to_string();
+
+                assert_eq!(
+                    serialized, step.ext_pub,
+                    "{}: xpub serialization mismatch for path {}\nExpected: {}\nGot:      {}",
+                    test_vector.description, step.path, step.ext_pub, serialized
+                );
+
+                // Verify it starts with correct prefix
+                assert!(
+                    serialized.starts_with("xpub"),
+                    "Extended public key should start with 'xpub', got: {}",
+                    &serialized[..4]
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_xprv_deserialization_roundtrip() {
+        // Test that all xprv values can be deserialized and re-serialized consistently
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                // Deserialize from string
+                let deserialized = ExtendedPrivateKey::from_str(step.ext_prv)
+                    .expect(&format!("Failed to deserialize xprv for path {}", step.path));
+
+                // Re-serialize
+                let reserialized = deserialized.to_string();
+
+                assert_eq!(
+                    reserialized, step.ext_prv,
+                    "{}: xprv roundtrip failed for path {}",
+                    test_vector.description, step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_xpub_deserialization_roundtrip() {
+        // Test that all xpub values can be deserialized and re-serialized consistently
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                // Deserialize from string
+                let deserialized = ExtendedPublicKey::from_str(step.ext_pub)
+                    .expect(&format!("Failed to deserialize xpub for path {}", step.path));
+
+                // Re-serialize
+                let reserialized = deserialized.to_string();
+
+                assert_eq!(
+                    reserialized, step.ext_pub,
+                    "{}: xpub roundtrip failed for path {}",
+                    test_vector.description, step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_serialization_format_consistency() {
+        // Verify serialization format consistency across all vectors
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                // Check xprv format
+                assert_eq!(
+                    step.ext_prv.len(), 111,
+                    "xprv for path {} should be 111 characters (Base58Check of 78 bytes)",
+                    step.path
+                );
+
+                // Check xpub format
+                assert_eq!(
+                    step.ext_pub.len(), 111,
+                    "xpub for path {} should be 111 characters (Base58Check of 78 bytes)",
+                    step.path
+                );
+
+                // Verify Base58 character set (only valid Base58 chars)
+                for ch in step.ext_prv.chars() {
+                    assert!(
+                        "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".contains(ch),
+                        "Invalid Base58 character '{}' in xprv for path {}",
+                        ch, step.path
+                    );
+                }
+
+                for ch in step.ext_pub.chars() {
+                    assert!(
+                        "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz".contains(ch),
+                        "Invalid Base58 character '{}' in xpub for path {}",
+                        ch, step.path
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_version_bytes_mainnet() {
+        // Verify that all keys use correct mainnet version bytes (xprv/xpub)
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                // All test vectors use Bitcoin mainnet
+                assert!(
+                    step.ext_prv.starts_with("xprv"),
+                    "Mainnet private keys should start with 'xprv', got: {}",
+                    &step.ext_prv[..4]
+                );
+
+                assert!(
+                    step.ext_pub.starts_with("xpub"),
+                    "Mainnet public keys should start with 'xpub', got: {}",
+                    &step.ext_pub[..4]
+                );
+
+                // Should not use testnet prefixes
+                assert!(
+                    !step.ext_prv.starts_with("tprv"),
+                    "Test vector uses testnet prefix (tprv) instead of mainnet"
+                );
+
+                assert!(
+                    !step.ext_pub.starts_with("tpub"),
+                    "Test vector uses testnet prefix (tpub) instead of mainnet"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_derived_vs_deserialized_equivalence() {
+        // Verify that deriving a key produces the same result as deserializing the expected string
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex).unwrap();
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+
+                // Derived key
+                let derived_prv = master.derive_path(&path).unwrap();
+                let derived_pub = derived_prv.to_extended_public_key();
+
+                // Deserialized key
+                let deserialized_prv = ExtendedPrivateKey::from_str(step.ext_prv).unwrap();
+                let deserialized_pub = ExtendedPublicKey::from_str(step.ext_pub).unwrap();
+
+                // Compare serializations (should be identical)
+                assert_eq!(
+                    derived_prv.to_string(),
+                    deserialized_prv.to_string(),
+                    "Derived and deserialized xprv differ for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    derived_pub.to_string(),
+                    deserialized_pub.to_string(),
+                    "Derived and deserialized xpub differ for path {}",
+                    step.path
+                );
+
+                // Compare depths
+                assert_eq!(
+                    derived_prv.depth(),
+                    deserialized_prv.depth(),
+                    "Depth mismatch for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    derived_pub.depth(),
+                    deserialized_pub.depth(),
+                    "Depth mismatch for path {}",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_private_to_public_serialization_relationship() {
+        // Verify that the public key derived from private key matches expected xpub
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let prv = ExtendedPrivateKey::from_str(step.ext_prv).unwrap();
+                let pub_from_prv = prv.to_extended_public_key();
+                let pub_direct = ExtendedPublicKey::from_str(step.ext_pub).unwrap();
+
+                assert_eq!(
+                    pub_from_prv.to_string(),
+                    pub_direct.to_string(),
+                    "Public key from private doesn't match expected xpub for path {}",
+                    step.path
+                );
+
+                // Verify metadata matches
+                assert_eq!(
+                    pub_from_prv.depth(),
+                    pub_direct.depth(),
+                    "Depth mismatch for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    pub_from_prv.child_number(),
+                    pub_direct.child_number(),
+                    "Child number mismatch for path {}",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_serialization_uniqueness() {
+        // Verify that all serialized keys are unique (no duplicates)
+        let mut xprv_set = std::collections::HashSet::new();
+        let mut xpub_set = std::collections::HashSet::new();
+
+        for test_vector in all_test_vectors() {
+            for step in test_vector.derivations {
+                let inserted_prv = xprv_set.insert(step.ext_prv);
+                assert!(
+                    inserted_prv,
+                    "Duplicate xprv found: {} (path: {})",
+                    step.ext_prv, step.path
+                );
+
+                let inserted_pub = xpub_set.insert(step.ext_pub);
+                assert!(
+                    inserted_pub,
+                    "Duplicate xpub found: {} (path: {})",
+                    step.ext_pub, step.path
+                );
+            }
+        }
+
+        // Verify we collected all expected unique keys
+        assert_eq!(xprv_set.len(), 17, "Should have 17 unique xprv values");
+        assert_eq!(xpub_set.len(), 17, "Should have 17 unique xpub values");
+    }
+
+    #[test]
+    fn test_serialization_metadata_preserved() {
+        // Verify that serialization preserves all metadata (depth, fingerprint, child_number)
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex).unwrap();
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+            for step in test_vector.derivations {
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let derived = master.derive_path(&path).unwrap();
+
+                // Serialize and deserialize
+                let serialized = derived.to_string();
+                let deserialized = ExtendedPrivateKey::from_str(&serialized).unwrap();
+
+                // Verify metadata preserved
+                assert_eq!(
+                    derived.depth(),
+                    deserialized.depth(),
+                    "Depth not preserved for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    derived.child_number(),
+                    deserialized.child_number(),
+                    "Child number not preserved for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    derived.fingerprint(),
+                    deserialized.fingerprint(),
+                    "Fingerprint not preserved for path {}",
+                    step.path
+                );
+
+                assert_eq!(
+                    derived.network(),
+                    deserialized.network(),
+                    "Network not preserved for path {}",
+                    step.path
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn test_all_serializations_comprehensive() {
+        // Comprehensive test ensuring all serializations work end-to-end
+        let mut total_keys = 0;
+        let mut successful_xprv = 0;
+        let mut successful_xpub = 0;
+
+        for test_vector in all_test_vectors() {
+            let seed = hex_to_bytes(test_vector.seed_hex).unwrap();
+            let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet).unwrap();
+
+            for step in test_vector.derivations {
+                total_keys += 1;
+
+                let path = DerivationPath::from_str(step.path).unwrap();
+                let derived_prv = master.derive_path(&path).unwrap();
+                let derived_pub = derived_prv.to_extended_public_key();
+
+                // Test xprv serialization
+                let xprv_str = derived_prv.to_string();
+                if xprv_str == step.ext_prv {
+                    successful_xprv += 1;
+                }
+
+                // Test xpub serialization
+                let xpub_str = derived_pub.to_string();
+                if xpub_str == step.ext_pub {
+                    successful_xpub += 1;
+                }
+
+                // Test xprv deserialization
+                let _ = ExtendedPrivateKey::from_str(step.ext_prv)
+                    .expect(&format!("Failed to deserialize xprv for path {}", step.path));
+
+                // Test xpub deserialization
+                let _ = ExtendedPublicKey::from_str(step.ext_pub)
+                    .expect(&format!("Failed to deserialize xpub for path {}", step.path));
+            }
+        }
+
+        assert_eq!(total_keys, 17, "Expected 17 total keys across all vectors");
+        assert_eq!(successful_xprv, total_keys, "All xprv serializations should match");
+        assert_eq!(successful_xpub, total_keys, "All xpub serializations should match");
     }
 }
