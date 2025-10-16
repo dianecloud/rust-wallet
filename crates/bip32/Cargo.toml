@@ -1,0 +1,36 @@
+[package]
+name = "khodpay-bip32"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.81"
+authors = ["KhodPay Team"]
+license = "MIT OR Apache-2.0"
+description = "Production-ready Rust implementation of BIP32 hierarchical deterministic wallets"
+repository = "https://github.com/khodpay/khodpay-wallet"
+documentation = "https://docs.rs/khodpay-bip32"
+homepage = "https://github.com/khodpay/khodpay-wallet"
+readme = "README.md"
+keywords = ["bitcoin", "cryptocurrency", "bip32", "hd-wallet", "wallet"]
+categories = ["cryptography", "no-std"]
+
+[dependencies]
+khodpay-bip39 = { version = "0.1.0", path = "../bip39" }
+hmac = "0.12"
+sha2 = "0.10"
+ripemd = "0.1"
+bs58 = { version = "0.5", features = ["check"] }
+secp256k1 = { version = "0.29", features = ["global-context", "rand-std"] }
+thiserror = "1.0"
+zeroize = { version = "1.7", features = ["derive"] }
+hex = "0.4"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "key_derivation"
+harness = false
+
+[[bench]]
+name = "serialization"
+harness = false
