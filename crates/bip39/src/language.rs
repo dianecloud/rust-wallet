@@ -12,7 +12,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip39::{Language, validate_phrase_in_language};
+//! use khodpay_bip39::{Language, validate_phrase_in_language};
 //!
 //! // Validate English mnemonic (most common)
 //! let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -101,7 +101,7 @@ impl Language {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::Language;
+    /// # use khodpay_bip39::Language;
     /// assert_eq!(Language::default(), Language::English);
     /// ```
     pub const fn default() -> Self {
@@ -115,7 +115,7 @@ impl Language {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::Language;
+    /// # use khodpay_bip39::Language;
     /// let languages = Language::all_variants();
     /// assert!(languages.contains(&Language::English));
     /// assert!(languages.contains(&Language::Japanese));
@@ -140,7 +140,7 @@ impl Language {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::Language;
+    /// # use khodpay_bip39::Language;
     /// assert_eq!(Language::English.name(), "English");
     /// ```
     pub const fn name(&self) -> &'static str {

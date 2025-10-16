@@ -16,7 +16,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip39::WordCount;
+//! use khodpay_bip39::WordCount;
 //!
 //! // Get word count and entropy length
 //! let wc = WordCount::Twelve;
@@ -58,7 +58,7 @@ pub enum WordCount {
     ///
     /// # Example
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// let wc = WordCount::Twelve;
     /// assert_eq!(wc.word_count(), 12);
     /// assert_eq!(wc.entropy_length(), 16);
@@ -87,7 +87,7 @@ pub enum WordCount {
     ///
     /// # Example
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// let wc = WordCount::TwentyFour;
     /// assert_eq!(wc.word_count(), 24);
     /// assert_eq!(wc.entropy_length(), 32);
@@ -102,7 +102,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// assert_eq!(WordCount::Twelve.word_count(), 12);
     /// assert_eq!(WordCount::TwentyFour.word_count(), 24);
     /// ```
@@ -121,7 +121,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// assert_eq!(WordCount::Twelve.entropy_length(), 16);
     /// assert_eq!(WordCount::TwentyFour.entropy_length(), 32);
     /// ```
@@ -140,7 +140,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// assert_eq!(WordCount::Twelve.checksum_bits(), 4);
     /// assert_eq!(WordCount::TwentyFour.checksum_bits(), 8);
     /// ```
@@ -163,7 +163,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// assert_eq!(WordCount::from_word_count(12).unwrap(), WordCount::Twelve);
     /// assert_eq!(WordCount::from_word_count(24).unwrap(), WordCount::TwentyFour);
     /// assert!(WordCount::from_word_count(13).is_err());
@@ -188,7 +188,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// assert_eq!(WordCount::from_entropy_length(16).unwrap(), WordCount::Twelve);
     /// assert_eq!(WordCount::from_entropy_length(32).unwrap(), WordCount::TwentyFour);
     /// assert!(WordCount::from_entropy_length(10).is_err());
@@ -211,7 +211,7 @@ impl WordCount {
     /// # Examples
     ///
     /// ```rust
-    /// # use bip39::WordCount;
+    /// # use khodpay_bip39::WordCount;
     /// let all_counts = WordCount::all_variants();
     /// assert_eq!(all_counts.len(), 5);
     /// assert!(all_counts.contains(&WordCount::Twelve));

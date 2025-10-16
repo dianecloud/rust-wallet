@@ -21,7 +21,7 @@
 //! ## Quick Start
 //!
 //! ```rust
-//! use bip39::{Mnemonic, WordCount, Language};
+//! use khodpay_bip39::{Mnemonic, WordCount, Language};
 //!
 //! // Generate a new 12-word mnemonic
 //! let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English)?;
@@ -31,7 +31,7 @@
 //!
 //! // Generate a cryptographic seed for key derivation
 //! let seed = mnemonic.to_seed("optional passphrase")?;
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ## Core Types
@@ -68,7 +68,7 @@
 //! ### Creating a New Wallet
 //!
 //! ```rust
-//! use bip39::{Mnemonic, WordCount, Language};
+//! use khodpay_bip39::{Mnemonic, WordCount, Language};
 //!
 //! // Generate a new mnemonic with 24 words (highest security)
 //! let mnemonic = Mnemonic::generate(WordCount::TwentyFour, Language::English)?;
@@ -79,13 +79,13 @@
 //!
 //! // Generate seed with passphrase for additional security
 //! let seed = mnemonic.to_seed("my secure passphrase")?;
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ### Recovering a Wallet
 //!
 //! ```rust
-//! use bip39::{Mnemonic, Language};
+//! use khodpay_bip39::{Mnemonic, Language};
 //!
 //! // User enters their recovery phrase
 //! let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -95,13 +95,13 @@
 //!
 //! // Regenerate the seed (must use same passphrase!)
 //! let seed = mnemonic.to_seed("my secure passphrase")?;
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ### Creating from Known Entropy
 //!
 //! ```rust
-//! use bip39::{Mnemonic, Language};
+//! use khodpay_bip39::{Mnemonic, Language};
 //!
 //! // From hardware wallet or external entropy source
 //! let entropy = [42u8; 32]; // 256 bits = 24 words
@@ -110,13 +110,13 @@
 //! let mnemonic = Mnemonic::new(&entropy, Language::English)?;
 //!
 //! println!("Mnemonic: {}", mnemonic.phrase());
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ### Using Utility Functions
 //!
 //! ```rust
-//! use bip39::{generate_mnemonic, validate_phrase, phrase_to_seed, WordCount};
+//! use khodpay_bip39::{generate_mnemonic, validate_phrase, phrase_to_seed, WordCount};
 //!
 //! // Generate a phrase directly
 //! let phrase = generate_mnemonic(WordCount::Twelve)?;
@@ -126,7 +126,7 @@
 //!
 //! // Generate seed from phrase
 //! let seed = phrase_to_seed(&phrase, "passphrase")?;
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ## Security Considerations
@@ -141,7 +141,7 @@
 //! ### Best Practices
 //!
 //! ```rust
-//! use bip39::{Mnemonic, WordCount, Language};
+//! use khodpay_bip39::{Mnemonic, WordCount, Language};
 //!
 //! // ✓ DO: Generate with maximum entropy
 //! let mnemonic = Mnemonic::generate(WordCount::TwentyFour, Language::English)?;
@@ -151,7 +151,7 @@
 //!
 //! // ✗ DON'T: Store mnemonics in application state
 //! // ✗ DON'T: Log or transmit mnemonics
-//! # Ok::<(), bip39::Error>(())
+//! # Ok::<(), khodpay_bip39::Error>(())
 //! ```
 //!
 //! ## Testing

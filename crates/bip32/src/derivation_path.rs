@@ -15,7 +15,7 @@
 //! # Examples
 //!
 //! ```
-//! use bip32::DerivationPath;
+//! use khodpay_bip32::DerivationPath;
 //! use std::str::FromStr;
 //!
 //! // BIP-44 Bitcoin address derivation
@@ -33,7 +33,7 @@
 //! // Deep normal derivation path
 //! let deep = DerivationPath::from_str("m/1/2/3/4/5")?;
 //! assert!(deep.is_public_derivable());
-//! # Ok::<(), bip32::Error>(())
+//! # Ok::<(), khodpay_bip32::Error>(())
 //! ```
 //!
 //! # Generic Design
@@ -69,7 +69,7 @@ use std::str::FromStr;
 /// ## Basic Usage
 ///
 /// ```
-/// use bip32::DerivationPath;
+/// use khodpay_bip32::DerivationPath;
 /// use std::str::FromStr;
 ///
 /// // Parse a BIP-44 path
@@ -81,13 +81,13 @@ use std::str::FromStr;
 /// let master_path = DerivationPath::master();
 /// assert_eq!(master_path.depth(), 0);
 /// assert!(master_path.is_master());
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 ///
 /// ## Building Paths Programmatically
 ///
 /// ```
-/// use bip32::{DerivationPath, ChildNumber};
+/// use khodpay_bip32::{DerivationPath, ChildNumber};
 ///
 /// // Start with master
 /// let mut path = DerivationPath::master();
@@ -127,7 +127,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     ///
     /// let path = DerivationPath::new(vec![
     ///     ChildNumber::Hardened(44),
@@ -144,7 +144,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     ///
     /// let master = DerivationPath::master();
     /// assert_eq!(master.depth(), 0);
@@ -165,7 +165,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     ///
     /// let path = DerivationPath::new(vec![
     ///     ChildNumber::Normal(0),
@@ -182,7 +182,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     ///
     /// let master = DerivationPath::master();
     /// assert!(master.is_master());
@@ -199,7 +199,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     ///
     /// let path = DerivationPath::new(vec![
     ///     ChildNumber::Hardened(44),
@@ -218,7 +218,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     ///
     /// let path = DerivationPath::new(vec![
     ///     ChildNumber::Normal(0),
@@ -240,7 +240,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     ///
     /// let path = DerivationPath::new(vec![
     ///     ChildNumber::Normal(0),
@@ -260,7 +260,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     ///
     /// let path = DerivationPath::master();
     /// assert!(path.is_empty());
@@ -277,7 +277,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/44'/0'/0'/0/0")?;
@@ -297,7 +297,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let normal = DerivationPath::from_str("m/0/1/2")?;
@@ -318,7 +318,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let normal = DerivationPath::from_str("m/0/1/2")?;
@@ -342,7 +342,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/44'/0/1'")?;
@@ -367,7 +367,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/44'/0'/0'")?;
@@ -385,7 +385,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/44'/0'/0'")?;
@@ -416,7 +416,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     /// use std::str::FromStr;
     ///
     /// let base = DerivationPath::from_str("m/44'/0'")?;
@@ -441,7 +441,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/44'/0'/0'/0/0")?;
@@ -464,7 +464,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let bip44 = DerivationPath::from_str("m/44'/0'/0'/0/1")?;
@@ -488,7 +488,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::DerivationPath;
+    /// use khodpay_bip32::DerivationPath;
     /// use std::str::FromStr;
     ///
     /// let bip44 = DerivationPath::from_str("m/44'/0'/0'/0/1")?;
@@ -510,7 +510,7 @@ impl DerivationPath {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::{DerivationPath, ChildNumber};
+    /// use khodpay_bip32::{DerivationPath, ChildNumber};
     /// use std::str::FromStr;
     ///
     /// let path = DerivationPath::from_str("m/0'/1/2'")?;

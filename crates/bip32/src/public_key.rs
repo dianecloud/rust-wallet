@@ -26,7 +26,7 @@ use secp256k1::{
 /// # Examples
 ///
 /// ```rust
-/// use bip32::{PrivateKey, PublicKey};
+/// use khodpay_bip32::{PrivateKey, PublicKey};
 ///
 /// // Derive from a private key
 /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
@@ -35,7 +35,7 @@ use secp256k1::{
 /// // Get compressed bytes
 /// let bytes = public_key.to_bytes();
 /// assert_eq!(bytes.len(), 33);
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 #[derive(Clone, PartialEq, Eq)]
 pub struct PublicKey {
@@ -59,7 +59,7 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PublicKey;
+    /// use khodpay_bip32::PublicKey;
     /// use secp256k1::{PublicKey as Secp256k1PublicKey, SecretKey, SECP256K1};
     ///
     /// let secret = SecretKey::from_slice(&[1u8; 32]).unwrap();
@@ -114,14 +114,14 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let pubkey_bytes = private_key.public_key().serialize();
     ///
     /// let public_key = PublicKey::from_bytes(&pubkey_bytes)?;
     /// assert_eq!(public_key.to_bytes(), pubkey_bytes);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         // Validation 1: Length check
@@ -186,13 +186,13 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let bytes = private_key.public_key().serialize();
     ///
     /// let public_key = PublicKey::from_array(bytes)?;
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_array(bytes: [u8; 33]) -> Result<Self> {
         Self::from_bytes(&bytes)
@@ -207,11 +207,11 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_private_key(private_key: &PrivateKey) -> Self {
         PublicKey {
@@ -227,7 +227,7 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
@@ -235,7 +235,7 @@ impl PublicKey {
     /// let bytes = public_key.to_bytes();
     /// assert_eq!(bytes.len(), 33);
     /// assert!(bytes[0] == 0x02 || bytes[0] == 0x03);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn to_bytes(&self) -> [u8; 33] {
         self.inner.serialize()
@@ -248,7 +248,7 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
@@ -256,7 +256,7 @@ impl PublicKey {
     /// let bytes = public_key.to_uncompressed();
     /// assert_eq!(bytes.len(), 65);
     /// assert_eq!(bytes[0], 0x04);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn to_uncompressed(&self) -> [u8; 65] {
         self.inner.serialize_uncompressed()
@@ -269,13 +269,13 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
     ///
     /// let secp_pubkey = public_key.public_key();
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn public_key(&self) -> &Secp256k1PublicKey {
         &self.inner
@@ -288,13 +288,13 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
     ///
     /// assert!(public_key.is_compressed());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn is_compressed(&self) -> bool {
         true // BIP32 always uses compressed keys
@@ -319,14 +319,14 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     ///
     /// let private_key = PrivateKey::from_bytes(&[1u8; 32])?;
     /// let public_key = PublicKey::from_private_key(&private_key);
     ///
     /// let tweak = [2u8; 32];
     /// let derived_key = public_key.tweak_add(&tweak)?;
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn tweak_add(&self, tweak: &[u8]) -> Result<Self> {
         if tweak.len() != 32 {
@@ -366,7 +366,7 @@ impl PublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{PrivateKey, PublicKey};
+    /// use khodpay_bip32::{PrivateKey, PublicKey};
     /// use secp256k1::{Message, Secp256k1};
     ///
     /// let secp = Secp256k1::new();
@@ -379,7 +379,7 @@ impl PublicKey {
     ///
     /// // Verify the signature
     /// assert!(public_key.verify_signature(&message, &signature));
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn verify_signature(&self, message: &Message, signature: &Signature) -> bool {
         SECP256K1

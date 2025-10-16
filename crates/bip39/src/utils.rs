@@ -10,7 +10,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip39::validate_phrase;
+//! use khodpay_bip39::validate_phrase;
 //!
 //! // Validate a correct mnemonic phrase
 //! let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -53,7 +53,7 @@ use crate::{Error, Result, WordCount, Language};
 /// # Examples
 ///
 /// ```rust
-/// use bip39::validate_phrase;
+/// use khodpay_bip39::validate_phrase;
 ///
 /// // Valid 12-word English mnemonic
 /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -99,7 +99,7 @@ pub fn validate_phrase(phrase: &str) -> Result<()> {
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{validate_phrase_in_language, Language};
+/// use khodpay_bip39::{validate_phrase_in_language, Language};
 ///
 /// // Valid English mnemonic
 /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -180,7 +180,7 @@ pub fn validate_phrase_in_language(phrase: &str, language: Language) -> Result<(
 /// # Examples
 ///
 /// ```rust
-/// use bip39::phrase_to_seed;
+/// use khodpay_bip39::phrase_to_seed;
 ///
 /// // Without passphrase
 /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -229,7 +229,7 @@ pub fn phrase_to_seed(phrase: &str, passphrase: &str) -> Result<[u8; 64]> {
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{phrase_to_seed_in_language, Language};
+/// use khodpay_bip39::{phrase_to_seed_in_language, Language};
 ///
 /// // English phrase without passphrase
 /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -296,7 +296,7 @@ pub fn phrase_to_seed_in_language(phrase: &str, passphrase: &str, language: Lang
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{generate_mnemonic, WordCount};
+/// use khodpay_bip39::{generate_mnemonic, WordCount};
 ///
 /// // Generate a 12-word mnemonic (most common)
 /// let mnemonic = generate_mnemonic(WordCount::Twelve).unwrap();
@@ -334,7 +334,7 @@ pub fn generate_mnemonic(word_count: WordCount) -> Result<String> {
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{generate_mnemonic_in_language, WordCount, Language};
+/// use khodpay_bip39::{generate_mnemonic_in_language, WordCount, Language};
 ///
 /// // Generate a 12-word English mnemonic
 /// let mnemonic_en = generate_mnemonic_in_language(WordCount::Twelve, Language::English).unwrap();

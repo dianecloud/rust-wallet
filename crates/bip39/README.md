@@ -2,9 +2,11 @@
 
 A comprehensive, production-ready Rust implementation of the BIP39 standard for generating deterministic keys in cryptocurrency wallets.
 
+[![Crates.io](https://img.shields.io/crates/v/khodpay-bip39.svg)](https://crates.io/crates/khodpay-bip39)
+[![Documentation](https://docs.rs/khodpay-bip39/badge.svg)](https://docs.rs/khodpay-bip39)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org/)
 [![Tests](https://img.shields.io/badge/tests-149%20passing-brightgreen.svg)](#testing)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](../../LICENSE-MIT)
 
 ## 📖 Overview
 
@@ -28,13 +30,19 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bip39 = { path = "../bip39" }  # Update path as needed
+khodpay-bip39 = "0.1.0"
+```
+
+Or via cargo:
+
+```bash
+cargo add khodpay-bip39
 ```
 
 ### Basic Usage
 
 ```rust
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 
 // Generate a new 12-word mnemonic
 let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English)?;
@@ -53,7 +61,7 @@ let seed = mnemonic.to_seed("optional passphrase")?;
 ### Creating a New Wallet
 
 ```rust
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 
 // Generate a new mnemonic with 24 words (highest security)
 let mnemonic = Mnemonic::generate(WordCount::TwentyFour, Language::English)?;
@@ -70,7 +78,7 @@ println!("✓ Wallet seed generated ({} bytes)", seed.len());
 ### Recovering a Wallet
 
 ```rust
-use bip39::{Mnemonic, Language};
+use khodpay_bip39::{Mnemonic, Language};
 
 // User enters their recovery phrase
 let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -87,7 +95,7 @@ let seed = mnemonic.to_seed("my secure passphrase")?;
 ### Creating from Known Entropy
 
 ```rust
-use bip39::{Mnemonic, Language};
+use khodpay_bip39::{Mnemonic, Language};
 
 // From hardware wallet or external entropy source
 let entropy = [42u8; 32]; // 256 bits = 24 words
@@ -102,7 +110,7 @@ println!("Entropy: {:?}", mnemonic.entropy());
 ### Multi-Language Support
 
 ```rust
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 
 // Generate Japanese mnemonic
 let mnemonic_ja = Mnemonic::generate(WordCount::Twelve, Language::Japanese)?;
@@ -116,7 +124,7 @@ println!("Español: {}", mnemonic_es.phrase());
 ### All Word Count Options
 
 ```rust
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 
 // 12 words = 128 bits entropy (standard)
 let m12 = Mnemonic::generate(WordCount::Twelve, Language::English)?;
@@ -137,7 +145,7 @@ let m24 = Mnemonic::generate(WordCount::TwentyFour, Language::English)?;
 ### Validating a Phrase
 
 ```rust
-use bip39::{validate_phrase_in_language, Language};
+use khodpay_bip39::{validate_phrase_in_language, Language};
 
 let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
 
@@ -151,7 +159,7 @@ match validate_phrase_in_language(phrase, Language::English) {
 ### Using Utility Functions
 
 ```rust
-use bip39::{generate_mnemonic, phrase_to_seed, validate_phrase};
+use khodpay_bip39::{generate_mnemonic, phrase_to_seed, validate_phrase};
 
 // Generate a phrase directly
 let phrase = generate_mnemonic(WordCount::Twelve)?;
@@ -221,7 +229,7 @@ bip39/
 ### 🛡️ Best Practices
 
 ```rust
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 
 // ✓ DO: Generate with maximum entropy
 let mnemonic = Mnemonic::generate(WordCount::TwentyFour, Language::English)?;
@@ -294,7 +302,12 @@ Contributions are welcome! Please ensure:
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is dual-licensed under:
+
+- MIT License ([LICENSE-MIT](../../LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](../../LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+
+You may choose either license for your use.
 
 ## 🔗 References
 

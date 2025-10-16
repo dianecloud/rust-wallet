@@ -43,7 +43,7 @@ use crate::{ExtendedPrivateKey, ExtendedPublicKey, Network, Result};
 /// ## Basic Usage
 ///
 /// ```rust
-/// use bip32::{utils::generate_master_keypair, Network};
+/// use khodpay_bip32::{utils::generate_master_keypair, Network};
 ///
 /// let seed = [0x01; 64];
 /// let (master_priv, master_pub) = generate_master_keypair(&seed, Network::BitcoinMainnet)?;
@@ -52,14 +52,14 @@ use crate::{ExtendedPrivateKey, ExtendedPublicKey, Network, Result};
 /// assert_eq!(master_priv.depth(), 0);
 /// assert_eq!(master_pub.depth(), 0);
 /// assert_eq!(master_priv.fingerprint(), master_pub.fingerprint());
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 ///
 /// ## Complete Wallet Setup
 ///
 /// ```rust
-/// use bip32::{utils::generate_master_keypair, Network, DerivationPath};
-/// use bip39::{Mnemonic, WordCount, Language};
+/// use khodpay_bip32::{utils::generate_master_keypair, Network, DerivationPath};
+/// use khodpay_bip39::{Mnemonic, WordCount, Language};
 /// use std::str::FromStr;
 ///
 /// // 1. Generate mnemonic
@@ -81,7 +81,7 @@ use crate::{ExtendedPrivateKey, ExtendedPublicKey, Network, Result};
 /// ## Equivalent to Manual Approach
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, Network, utils::generate_master_keypair};
+/// use khodpay_bip32::{ExtendedPrivateKey, Network, utils::generate_master_keypair};
 ///
 /// let seed = [0x02; 64];
 ///
@@ -95,7 +95,7 @@ use crate::{ExtendedPrivateKey, ExtendedPublicKey, Network, Result};
 /// // Results are identical
 /// assert_eq!(priv1.private_key().to_bytes(), priv2.private_key().to_bytes());
 /// assert_eq!(pub1.public_key().to_bytes(), pub2.public_key().to_bytes());
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 pub fn generate_master_keypair(
     seed: &[u8],
@@ -145,7 +145,7 @@ pub fn generate_master_keypair(
 /// ## Basic Usage
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
+/// use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
 /// use std::str::FromStr;
 ///
 /// let seed = [0x01; 64];
@@ -164,8 +164,8 @@ pub fn generate_master_keypair(
 /// ## Complete BIP-44 Wallet
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
-/// use bip39::{Mnemonic, WordCount, Language};
+/// use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
+/// use khodpay_bip39::{Mnemonic, WordCount, Language};
 /// use std::str::FromStr;
 ///
 /// // 1. Generate mnemonic and master key
@@ -190,7 +190,7 @@ pub fn generate_master_keypair(
 /// ## Equivalent to Manual Approach
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
+/// use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, utils::derive_keypair_from_path};
 /// use std::str::FromStr;
 ///
 /// let seed = [0x02; 64];
@@ -395,7 +395,7 @@ mod tests {
 
     #[test]
     fn test_generate_master_keypair_with_mnemonic() {
-        use bip39::{Language, Mnemonic};
+        use khodpay_bip39::{Language, Mnemonic};
 
         let mnemonic = Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
@@ -672,7 +672,7 @@ mod tests {
     #[test]
     fn test_derive_keypair_from_path_with_mnemonic() {
         use crate::DerivationPath;
-        use bip39::{Language, Mnemonic};
+        use khodpay_bip39::{Language, Mnemonic};
         use std::str::FromStr;
 
         let mnemonic = Mnemonic::from_phrase(

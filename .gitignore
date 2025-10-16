@@ -1,2 +1,30 @@
+# Rust
 /target
+**/*.rs.bk
+*.pdb
+
+# IDE
 .idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+*.profraw
+*.profdata
+
+# Documentation
+/target/doc
+
+# Benchmarks
+/target/criterion
+
+# Debug
+debug/
+*.dSYM/
+
+# Internal/Migration Documentation (not for public repo)
+IMPORTANT_NOTES.md
+CRATE_RENAME_SUMMARY.md

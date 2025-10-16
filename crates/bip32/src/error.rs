@@ -15,7 +15,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip32::{Error, Result};
+//! use khodpay_bip32::{Error, Result};
 //!
 //! // Creating and matching specific errors
 //! let seed_error = Error::InvalidSeedLength { length: 10 };
@@ -67,7 +67,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip32::Error;
+    /// # use khodpay_bip32::Error;
     /// let error = Error::InvalidSeedLength { length: 10 };
     /// println!("{}", error); // "Invalid seed length: 10 bytes..."
     /// ```
@@ -83,7 +83,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip32::Error;
+    /// # use khodpay_bip32::Error;
     /// let error = Error::InvalidPrivateKey {
     ///     reason: "Key is all zeros".to_string()
     /// };
@@ -125,7 +125,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip32::Error;
+    /// # use khodpay_bip32::Error;
     /// let error = Error::InvalidDerivationPath {
     ///     path: "invalid/path".to_string(),
     ///     reason: "Must start with 'm'".to_string(),
@@ -156,7 +156,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip32::Error;
+    /// # use khodpay_bip32::Error;
     /// let error = Error::HardenedDerivationFromPublicKey { index: 2147483648 };
     /// println!("{}", error);
     /// ```
@@ -224,7 +224,7 @@ pub enum Error {
     ///
     /// This occurs when integrating with BIP39 for mnemonic-to-seed conversion.
     #[error("BIP39 error: {0}")]
-    Bip39Error(#[from] bip39::Error),
+    Bip39Error(#[from] khodpay_bip39::Error),
 
     /// Base58 decoding error.
     ///
@@ -333,7 +333,7 @@ impl From<bs58::decode::Error> for Error {
 /// # Examples
 ///
 /// ```rust
-/// use bip32::{Result, Error};
+/// use khodpay_bip32::{Result, Error};
 ///
 /// fn validate_seed(seed: &[u8]) -> Result<()> {
 ///     if seed.len() < 16 || seed.len() > 64 {

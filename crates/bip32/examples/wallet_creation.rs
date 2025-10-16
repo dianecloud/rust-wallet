@@ -3,11 +3,11 @@
 //!
 //! Run this example with:
 //! ```bash
-//! cargo run -p bip32 --example wallet_creation
+//! cargo run -p khodpay-bip32 --example wallet_creation
 //! ```
 
-use bip32::{ExtendedPrivateKey, Network};
-use bip39::{Language, Mnemonic, WordCount};
+use khodpay_bip32::{ExtendedPrivateKey, Network};
+use khodpay_bip39::{Language, Mnemonic, WordCount};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("🔐 KhodPay Wallet - Complete Example\n");

@@ -13,7 +13,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip39::{Error, Result};
+//! use khodpay_bip39::{Error, Result};
 //!
 //! // Creating and matching specific errors
 //! let entropy_error = Error::InvalidEntropyLength { length: 10 };
@@ -63,7 +63,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip39::Error;
+    /// # use khodpay_bip39::Error;
     /// let error = Error::InvalidEntropyLength { length: 10 };
     /// println!("{}", error); // "Invalid entropy length: 10 bytes. Valid lengths are..."
     /// ```
@@ -80,7 +80,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip39::Error;
+    /// # use khodpay_bip39::Error;
     /// let error = Error::InvalidMnemonic { 
     ///     reason: "Too few words".to_string() 
     /// };
@@ -110,7 +110,7 @@ pub enum Error {
     ///
     /// # Example
     /// ```rust
-    /// # use bip39::Error;
+    /// # use khodpay_bip39::Error;
     /// let error = Error::InvalidWord {
     ///     word: "invalidword".to_string(),
     ///     position: 5,
@@ -162,7 +162,7 @@ pub enum Error {
 /// # Examples
 ///
 /// ```rust
-/// # use bip39::Error;
+/// # use khodpay_bip39::Error;
 /// let error1 = Error::InvalidWordCount { count: 12 };
 /// let error2 = Error::InvalidWordCount { count: 12 };
 /// let error3 = Error::InvalidWordCount { count: 15 };
@@ -214,7 +214,7 @@ impl From<bip39_upstream::Error> for Error {
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{Result, Error};
+/// use khodpay_bip39::{Result, Error};
 ///
 /// fn validate_entropy(entropy: &[u8]) -> Result<()> {
 ///     if entropy.len() != 32 {

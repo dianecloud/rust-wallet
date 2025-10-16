@@ -12,7 +12,7 @@
 //! - **Test Vector 4**: Retention of leading zeros (btcsuite/btcutil#172)
 //! - **Test Vector 5**: Invalid extended keys (for error handling tests)
 
-use bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
+use khodpay_bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
 use std::str::FromStr;
 
 /// Represents a single derivation step in a test vector

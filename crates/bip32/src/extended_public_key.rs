@@ -55,7 +55,7 @@ use sha2::{Digest, Sha256, Sha512};
 /// # Examples
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, ExtendedPublicKey, Network, ChildNumber};
+/// use khodpay_bip32::{ExtendedPrivateKey, ExtendedPublicKey, Network, ChildNumber};
 ///
 /// // Generate master private key from seed
 /// let seed = [0u8; 64];
@@ -70,7 +70,7 @@ use sha2::{Digest, Sha256, Sha512};
 ///
 /// // Hardened derivation from public key will fail
 /// // let hardened = master_pub.derive_child(ChildNumber::Hardened(0))?;  // ERROR
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 #[derive(Clone, PartialEq, Eq)]
 pub struct ExtendedPublicKey {
@@ -139,7 +139,7 @@ impl ExtendedPublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network, ChildNumber};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network, ChildNumber};
     ///
     /// // Typically you'd use to_extended_public_key() instead of new()
     /// let seed = [0u8; 64];
@@ -148,7 +148,7 @@ impl ExtendedPublicKey {
     ///
     /// assert_eq!(master_pub.depth(), 0);
     /// assert_eq!(master_pub.network(), Network::BitcoinMainnet);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn new(
         network: Network,
@@ -221,7 +221,7 @@ impl ExtendedPublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network};
     ///
     /// let seed = [0x01; 32];
     /// let master_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
@@ -229,7 +229,7 @@ impl ExtendedPublicKey {
     ///
     /// // Private and public extended keys have the same fingerprint
     /// assert_eq!(master_priv.fingerprint(), master_pub.fingerprint());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn fingerprint(&self) -> [u8; 4] {
         // Calculate HASH160: RIPEMD160(SHA256(public_key))
@@ -284,7 +284,7 @@ impl ExtendedPublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, ChildNumber, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, ChildNumber, Network};
     ///
     /// let seed = [0u8; 64];
     /// let master_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
@@ -297,7 +297,7 @@ impl ExtendedPublicKey {
     /// // Hardened derivation fails
     /// let result = master_pub.derive_child(ChildNumber::Hardened(0));
     /// assert!(result.is_err());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn derive_child(&self, child_number: ChildNumber) -> Result<Self> {
         // Check if trying to derive hardened child
@@ -372,7 +372,7 @@ impl ExtendedPublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, DerivationPath, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, DerivationPath, Network};
     /// use std::str::FromStr;
     ///
     /// let seed = [0u8; 64];
@@ -387,7 +387,7 @@ impl ExtendedPublicKey {
     /// // Hardened derivation fails
     /// let hardened_path = DerivationPath::from_str("m/0'/1")?;
     /// assert!(master_pub.derive_path(&hardened_path).is_err());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn derive_path(&self, path: &crate::DerivationPath) -> Result<Self> {
         // Start with current key
@@ -506,12 +506,12 @@ impl std::str::FromStr for ExtendedPublicKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ExtendedPublicKey;
+    /// use khodpay_bip32::ExtendedPublicKey;
     /// use std::str::FromStr;
     ///
     /// let xpub = "xpub661MyMwAqRbcFtXgS5sYJABqqG9YLmC4Q1Rdap9gSE8NqtwybGhePY2gZ29ESFjqJoCu1Rupje8YtGqsefD265TMg7usUDFdp6W1EGMcet8";
     /// let key = ExtendedPublicKey::from_str(xpub)?;
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     fn from_str(s: &str) -> Result<Self> {
         use sha2::{Digest, Sha256};
