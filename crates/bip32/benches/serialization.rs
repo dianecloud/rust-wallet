@@ -10,7 +10,7 @@
 //! target/criterion/report/index.html
 //! ```
 
-use bip32::{DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
+use khodpay_bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use std::str::FromStr;
 
@@ -231,7 +231,7 @@ fn bench_bulk_serialization(c: &mut Criterion) {
 
     // Generate 100 addresses
     let addresses: Vec<ExtendedPrivateKey> = (0..100)
-        .map(|i| account.derive_child(bip32::ChildNumber::Normal(i)).unwrap())
+        .map(|i| account.derive_child(ChildNumber::Normal(i)).unwrap())
         .collect();
 
     c.bench_function("serialize_100_addresses", |b| {
@@ -254,7 +254,7 @@ fn bench_bulk_deserialization(c: &mut Criterion) {
     let serialized_addresses: Vec<String> = (0..100)
         .map(|i| {
             account
-                .derive_child(bip32::ChildNumber::Normal(i))
+                .derive_child(ChildNumber::Normal(i))
                 .unwrap()
                 .to_string()
         })

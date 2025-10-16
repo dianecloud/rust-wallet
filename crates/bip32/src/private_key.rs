@@ -43,7 +43,7 @@ use zeroize::Zeroize;
 /// # Examples
 ///
 /// ```rust
-/// use bip32::PrivateKey;
+/// use khodpay_bip32::PrivateKey;
 ///
 /// // Valid: Create from non-zero bytes
 /// let bytes = [1u8; 32];
@@ -56,7 +56,7 @@ use zeroize::Zeroize;
 /// // Invalid: Zero key is rejected
 /// let zero = [0u8; 32];
 /// assert!(PrivateKey::from_bytes(&zero).is_err());
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 #[derive(Clone)]
 pub struct PrivateKey {
@@ -77,7 +77,7 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     /// use secp256k1::SecretKey;
     ///
     /// let secret_key = SecretKey::from_slice(&[1u8; 32]).unwrap();
@@ -131,7 +131,7 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// // Valid key in range [1, n-1]
     /// let bytes = [1u8; 32];
@@ -148,7 +148,7 @@ impl PrivateKey {
     /// // Invalid: exceeds curve order
     /// let overflow = [0xFFu8; 32];
     /// assert!(PrivateKey::from_bytes(&overflow).is_err());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         // Validation 1: Length check
@@ -198,7 +198,7 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// // Valid key
     /// let bytes = [1u8; 32];
@@ -207,7 +207,7 @@ impl PrivateKey {
     /// // Invalid: zero key
     /// let zero = [0u8; 32];
     /// assert!(PrivateKey::from_array(zero).is_err());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_array(bytes: [u8; 32]) -> Result<Self> {
         Self::from_bytes(&bytes)
@@ -223,13 +223,13 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// let bytes = [1u8; 32];
     /// let private_key = PrivateKey::from_bytes(&bytes)?;
     /// let key_bytes = private_key.to_bytes();
     /// assert_eq!(key_bytes.len(), 32);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn to_bytes(&self) -> [u8; 32] {
         self.inner.secret_bytes()
@@ -242,12 +242,12 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// let bytes = [1u8; 32];
     /// let private_key = PrivateKey::from_bytes(&bytes)?;
     /// let secret_key = private_key.secret_key();
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn secret_key(&self) -> &SecretKey {
         &self.inner
@@ -258,12 +258,12 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// let bytes = [1u8; 32];
     /// let private_key = PrivateKey::from_bytes(&bytes)?;
     /// let public_key = private_key.public_key();
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn public_key(&self) -> Secp256k1PublicKey {
         Secp256k1PublicKey::from_secret_key(SECP256K1, &self.inner)
@@ -289,14 +289,14 @@ impl PrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::PrivateKey;
+    /// use khodpay_bip32::PrivateKey;
     ///
     /// let bytes = [1u8; 32];
     /// let private_key = PrivateKey::from_bytes(&bytes)?;
     ///
     /// let tweak = [2u8; 32];
     /// let derived_key = private_key.tweak_add(&tweak)?;
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn tweak_add(&self, tweak: &[u8]) -> Result<Self> {
         if tweak.len() != 32 {

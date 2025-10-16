@@ -8,10 +8,10 @@
 //!
 //! Run this example with:
 //! ```bash
-//! cargo run -p bip32 --example watch_only
+//! cargo run -p khodpay-bip32 --example watch_only
 //! ```
 
-use bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, Network};
+use khodpay_bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, ExtendedPublicKey, Network};
 use std::str::FromStr;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -76,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
 
     // Parse the xpub (simulating loading it in a watch-only wallet)
-    let watch_only_account = bip32::ExtendedPublicKey::from_str(&xpub_string)?;
+    let watch_only_account = ExtendedPublicKey::from_str(&xpub_string)?;
 
     println!("✅ Loaded xpub into watch-only wallet");
     println!("   Network: {:?}", watch_only_account.network());

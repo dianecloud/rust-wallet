@@ -12,7 +12,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip32::ChainCode;
+//! use khodpay_bip32::ChainCode;
 //!
 //! // Create from bytes
 //! let bytes = [42u8; 32];
@@ -20,7 +20,7 @@
 //!
 //! // Access the bytes
 //! assert_eq!(chain_code.as_bytes(), &bytes);
-//! # Ok::<(), bip32::Error>(())
+//! # Ok::<(), khodpay_bip32::Error>(())
 //! ```
 
 use crate::{Error, Result};
@@ -48,7 +48,7 @@ use zeroize::ZeroizeOnDrop;
 /// # Examples
 ///
 /// ```rust
-/// use bip32::ChainCode;
+/// use khodpay_bip32::ChainCode;
 ///
 /// // Create from a 32-byte array
 /// let bytes = [0u8; 32];
@@ -57,7 +57,7 @@ use zeroize::ZeroizeOnDrop;
 /// // Access the underlying bytes
 /// let bytes_ref: &[u8; 32] = chain_code.as_bytes();
 /// assert_eq!(bytes_ref.len(), 32);
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 #[derive(Clone, PartialEq, Eq, ZeroizeOnDrop)]
 pub struct ChainCode([u8; 32]);
@@ -75,7 +75,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// let bytes = [0u8; 32];
     /// let chain_code = ChainCode::new(bytes);
@@ -98,7 +98,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// // Valid 32-byte slice
     /// let bytes = vec![0u8; 32];
@@ -107,7 +107,7 @@ impl ChainCode {
     /// // Invalid length
     /// let invalid = vec![0u8; 16];
     /// assert!(ChainCode::from_bytes(&invalid).is_err());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         if bytes.len() != Self::LENGTH {
@@ -130,7 +130,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// let bytes = [42u8; 32];
     /// let chain_code = ChainCode::new(bytes);
@@ -147,7 +147,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// let bytes = [1u8; 32];
     /// let chain_code = ChainCode::new(bytes);
@@ -165,7 +165,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// let chain_code = ChainCode::new([0u8; 32]);
     /// assert_eq!(chain_code.len(), 32);
@@ -181,7 +181,7 @@ impl ChainCode {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ChainCode;
+    /// use khodpay_bip32::ChainCode;
     ///
     /// let chain_code = ChainCode::new([0u8; 32]);
     /// assert!(!chain_code.is_empty());

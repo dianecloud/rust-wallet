@@ -30,33 +30,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
 
 [[package]]
-name = "bip32"
-version = "0.1.0"
-dependencies = [
- "bip39 0.1.0",
- "bs58",
- "criterion",
- "hex",
- "hmac",
- "ripemd",
- "secp256k1",
- "sha2",
- "thiserror",
- "zeroize",
-]
-
-[[package]]
-name = "bip39"
-version = "0.1.0"
-dependencies = [
- "bip39 2.2.0",
- "criterion",
- "hex",
- "rand",
- "thiserror",
-]
-
-[[package]]
 name = "bip39"
 version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -383,6 +356,33 @@ checksum = "ec48937a97411dcb524a265206ccd4c90bb711fca92b2792c407f268825b9305"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "khodpay-bip32"
+version = "0.1.0"
+dependencies = [
+ "bs58",
+ "criterion",
+ "hex",
+ "hmac",
+ "khodpay-bip39",
+ "ripemd",
+ "secp256k1",
+ "sha2",
+ "thiserror",
+ "zeroize",
+]
+
+[[package]]
+name = "khodpay-bip39"
+version = "0.1.0"
+dependencies = [
+ "bip39",
+ "criterion",
+ "hex",
+ "rand",
+ "thiserror",
 ]
 
 [[package]]

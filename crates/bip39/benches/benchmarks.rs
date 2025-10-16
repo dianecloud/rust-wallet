@@ -3,7 +3,7 @@
 //! Run with: cargo bench
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
-use bip39::{Mnemonic, WordCount, Language, generate_mnemonic, validate_phrase, phrase_to_seed};
+use khodpay_bip39::{Mnemonic, WordCount, Language, generate_mnemonic, validate_phrase, phrase_to_seed};
 
 fn bench_mnemonic_generation(c: &mut Criterion) {
     let mut group = c.benchmark_group("mnemonic_generation");

@@ -7,7 +7,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip32::{Network, KeyType};
+//! use khodpay_bip32::{Network, KeyType};
 //!
 //! let mainnet = Network::BitcoinMainnet;
 //! assert_eq!(mainnet.version_bytes(KeyType::Private), 0x0488ADE4);
@@ -23,7 +23,7 @@
 /// # Examples
 ///
 /// ```rust
-/// use bip32::KeyType;
+/// use khodpay_bip32::KeyType;
 ///
 /// let private = KeyType::Private;
 /// let public = KeyType::Public;
@@ -60,7 +60,7 @@ impl KeyType {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::KeyType;
+    /// use khodpay_bip32::KeyType;
     ///
     /// assert!(KeyType::Private.is_private());
     /// assert!(!KeyType::Public.is_private());
@@ -74,7 +74,7 @@ impl KeyType {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::KeyType;
+    /// use khodpay_bip32::KeyType;
     ///
     /// assert!(KeyType::Public.is_public());
     /// assert!(!KeyType::Private.is_public());
@@ -88,7 +88,7 @@ impl KeyType {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::KeyType;
+    /// use khodpay_bip32::KeyType;
     ///
     /// assert_eq!(KeyType::Private.name(), "Private");
     /// assert_eq!(KeyType::Public.name(), "Public");
@@ -118,7 +118,7 @@ impl std::fmt::Display for KeyType {
 /// # Examples
 ///
 /// ```rust
-/// use bip32::Network;
+/// use khodpay_bip32::Network;
 ///
 /// // Create network instances
 /// let mainnet = Network::BitcoinMainnet;
@@ -160,7 +160,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{Network, KeyType};
+    /// use khodpay_bip32::{Network, KeyType};
     ///
     /// let mainnet = Network::BitcoinMainnet;
     /// assert_eq!(mainnet.version_bytes(KeyType::Private), 0x0488ADE4);
@@ -186,7 +186,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// assert_eq!(Network::BitcoinMainnet.xprv_version(), 0x0488ADE4);
     /// assert_eq!(Network::BitcoinTestnet.xprv_version(), 0x04358394);
@@ -211,7 +211,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// assert_eq!(Network::BitcoinMainnet.xpub_version(), 0x0488B21E);
     /// assert_eq!(Network::BitcoinTestnet.xpub_version(), 0x043587CF);
@@ -228,7 +228,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// assert_eq!(Network::BitcoinMainnet.name(), "Bitcoin Mainnet");
     /// assert_eq!(Network::BitcoinTestnet.name(), "Bitcoin Testnet");
@@ -258,7 +258,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// assert_eq!(Network::from_xprv_version(0x0488ADE4), Some(Network::BitcoinMainnet));
     /// assert_eq!(Network::from_xprv_version(0x04358394), Some(Network::BitcoinTestnet));
@@ -295,7 +295,7 @@ impl Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// assert_eq!(Network::from_xpub_version(0x0488B21E), Some(Network::BitcoinMainnet));
     /// assert_eq!(Network::from_xpub_version(0x043587CF), Some(Network::BitcoinTestnet));
@@ -321,7 +321,7 @@ impl Default for Network {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::Network;
+    /// use khodpay_bip32::Network;
     ///
     /// let network = Network::default();
     /// assert_eq!(network, Network::BitcoinMainnet);

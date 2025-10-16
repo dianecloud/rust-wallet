@@ -74,7 +74,7 @@
 /// ## Basic Usage
 ///
 /// ```
-/// use bip32::ChildNumber;
+/// use khodpay_bip32::ChildNumber;
 ///
 /// // Normal child numbers (for address generation)
 /// let normal_0 = ChildNumber::Normal(0);
@@ -88,7 +88,7 @@
 /// ## Hardened Derivation
 ///
 /// ```
-/// use bip32::ChildNumber;
+/// use khodpay_bip32::ChildNumber;
 ///
 /// // Hardened child numbers (for account/coin levels)
 /// let hardened_0 = ChildNumber::Hardened(0);   // Often written as 0'
@@ -101,7 +101,7 @@
 /// ## BIP-44 Path Components
 ///
 /// ```
-/// use bip32::ChildNumber;
+/// use khodpay_bip32::ChildNumber;
 ///
 /// // Building a BIP-44 path: m/44'/0'/0'/0/0
 /// let purpose = ChildNumber::Hardened(44);     // m/44'
@@ -221,7 +221,7 @@ impl ChildNumber {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::ChildNumber;
+    /// use khodpay_bip32::ChildNumber;
     ///
     /// // Normal indices
     /// let normal_0 = ChildNumber::from_index(0);
@@ -260,7 +260,7 @@ impl ChildNumber {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::ChildNumber;
+    /// use khodpay_bip32::ChildNumber;
     ///
     /// // Normal child numbers
     /// assert_eq!(ChildNumber::Normal(0).to_index(), 0);
@@ -285,7 +285,7 @@ impl ChildNumber {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::ChildNumber;
+    /// use khodpay_bip32::ChildNumber;
     ///
     /// assert!(ChildNumber::Normal(0).is_normal());
     /// assert!(ChildNumber::Normal(42).is_normal());
@@ -303,7 +303,7 @@ impl ChildNumber {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::ChildNumber;
+    /// use khodpay_bip32::ChildNumber;
     ///
     /// assert!(ChildNumber::Hardened(0).is_hardened());
     /// assert!(ChildNumber::Hardened(44).is_hardened());
@@ -326,7 +326,7 @@ impl ChildNumber {
     /// # Examples
     ///
     /// ```rust,ignore
-    /// use bip32::ChildNumber;
+    /// use khodpay_bip32::ChildNumber;
     ///
     /// // For normal, value() equals to_index()
     /// let normal = ChildNumber::Normal(42);

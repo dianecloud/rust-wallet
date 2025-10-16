@@ -25,8 +25,8 @@
 //! ### Basic Usage
 //!
 //! ```rust
-//! use bip32::{ExtendedPrivateKey, Network, DerivationPath};
-//! use bip39::{Mnemonic, WordCount, Language};
+//! use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath};
+//! use khodpay_bip39::{Mnemonic, WordCount, Language};
 //! use std::str::FromStr;
 //!
 //! // Generate a mnemonic (using BIP39)
@@ -50,7 +50,7 @@
 //! ### Derive from Seed
 //!
 //! ```rust
-//! use bip32::{ExtendedPrivateKey, Network};
+//! use khodpay_bip32::{ExtendedPrivateKey, Network};
 //!
 //! // Use a seed directly (typically from BIP39)
 //! let seed = b"your-secure-seed-bytes-here-at-least-16-bytes-long";
@@ -59,13 +59,13 @@
 //! // Get the extended public key
 //! let master_pub = master.to_extended_public_key();
 //! println!("Master xpub: {}", master_pub);
-//! # Ok::<(), bip32::Error>(())
+//! # Ok::<(), khodpay_bip32::Error>(())
 //! ```
 //!
 //! ### Watch-Only Wallets (Public Key Derivation)
 //!
 //! ```rust
-//! use bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
+//! use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
 //! use std::str::FromStr;
 //!
 //! # let seed = b"your-secure-seed-bytes-here-at-least-16-bytes-long";
@@ -80,7 +80,7 @@
 //! // Now derive receive addresses from public key only (no hardened)
 //! let first_address = account_pub.derive_child(ChildNumber::Normal(0))?;
 //! println!("First receive address xpub: {}", first_address);
-//! # Ok::<(), bip32::Error>(())
+//! # Ok::<(), khodpay_bip32::Error>(())
 //! ```
 //!
 //! ## Common Derivation Paths

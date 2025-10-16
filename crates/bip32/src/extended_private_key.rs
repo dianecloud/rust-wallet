@@ -49,7 +49,7 @@ use sha2::{Digest, Sha256, Sha512};
 /// # Examples
 ///
 /// ```rust
-/// use bip32::{ExtendedPrivateKey, Network, ChildNumber};
+/// use khodpay_bip32::{ExtendedPrivateKey, Network, ChildNumber};
 ///
 /// // Generate master key from seed
 /// let seed = [0u8; 64]; // In practice, use BIP-39 mnemonic
@@ -62,7 +62,7 @@ use sha2::{Digest, Sha256, Sha512};
 /// // Derive a child key
 /// let child = master.derive_child(ChildNumber::Normal(0))?;
 /// assert_eq!(child.depth(), 1);
-/// # Ok::<(), bip32::Error>(())
+/// # Ok::<(), khodpay_bip32::Error>(())
 /// ```
 #[derive(Clone, PartialEq, Eq)]
 pub struct ExtendedPrivateKey {
@@ -121,7 +121,7 @@ impl ExtendedPrivateKey {
     /// # Example
     ///
     /// ```rust
-    /// use bip32::ExtendedPrivateKey;
+    /// use khodpay_bip32::ExtendedPrivateKey;
     ///
     /// // Maximum depth is 255
     /// assert_eq!(ExtendedPrivateKey::MAX_DEPTH, 255);
@@ -167,7 +167,7 @@ impl ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network, ChildNumber};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network, ChildNumber};
     ///
     /// // Generate from a 64-byte seed (typically from BIP-39)
     /// let seed = [0x01; 64];
@@ -177,7 +177,7 @@ impl ExtendedPrivateKey {
     /// assert_eq!(master.depth(), 0);
     /// assert_eq!(master.child_number(), ChildNumber::Normal(0));
     /// assert_eq!(master.parent_fingerprint(), &[0, 0, 0, 0]);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn from_seed(seed: &[u8], network: Network) -> Result<Self> {
         // Validate seed length (BIP-32 recommends 128-512 bits = 16-64 bytes)
@@ -258,8 +258,8 @@ impl ExtendedPrivateKey {
     /// ## Basic Usage (No Passphrase)
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network};
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// // User's recovery phrase
     /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -275,8 +275,8 @@ impl ExtendedPrivateKey {
     /// ## With Passphrase (Enhanced Security)
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network};
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// let phrase = "legal winner thank year wave sausage worth useful legal winner thank yellow";
     /// let mnemonic = Mnemonic::from_phrase(phrase, Language::English)?;
@@ -292,8 +292,8 @@ impl ExtendedPrivateKey {
     /// ## Complete Wallet Creation Workflow
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network, DerivationPath};
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath};
+    /// use khodpay_bip39::{Mnemonic, Language};
     /// use std::str::FromStr;
     ///
     /// // 1. Parse user's recovery phrase
@@ -319,7 +319,7 @@ impl ExtendedPrivateKey {
     /// # Ok::<(), Box<dyn std::error::Error>>(())
     /// ```
     pub fn from_mnemonic(
-        mnemonic: &bip39::Mnemonic,
+        mnemonic: &khodpay_bip39::Mnemonic,
         passphrase: Option<&str>,
         network: Network,
     ) -> Result<Self> {
@@ -376,7 +376,7 @@ impl ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network};
     ///
     /// let seed = [0x01; 32];
     /// let ext_priv = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
@@ -386,7 +386,7 @@ impl ExtendedPrivateKey {
     /// assert_eq!(ext_pub.network(), ext_priv.network());
     /// assert_eq!(ext_pub.depth(), ext_priv.depth());
     /// assert_eq!(ext_pub.chain_code(), ext_priv.chain_code());
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn to_extended_public_key(&self) -> ExtendedPublicKey {
         // Derive public key from private key
@@ -425,7 +425,7 @@ impl ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, Network};
     ///
     /// let seed = [0x01; 32];
     /// let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
@@ -437,7 +437,7 @@ impl ExtendedPrivateKey {
     /// // Master key's parent_fingerprint is [0,0,0,0], but its own fingerprint is not
     /// assert_eq!(master.parent_fingerprint(), &[0, 0, 0, 0]);
     /// assert_ne!(fingerprint, [0, 0, 0, 0]);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn fingerprint(&self) -> [u8; 4] {
         // Get public key from private key
@@ -518,7 +518,7 @@ impl ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, ChildNumber, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, ChildNumber, Network};
     ///
     /// let seed = [0u8; 64];
     /// let master = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
@@ -531,7 +531,7 @@ impl ExtendedPrivateKey {
     /// // Derive hardened child at index 0
     /// let child_0h = master.derive_child(ChildNumber::Hardened(0))?;
     /// assert_eq!(child_0h.child_number(), ChildNumber::Hardened(0));
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn derive_child(&self, child_number: ChildNumber) -> Result<Self> {
         // Check if we can derive a child (depth limit)
@@ -612,7 +612,7 @@ impl ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::{ExtendedPrivateKey, DerivationPath, Network};
+    /// use khodpay_bip32::{ExtendedPrivateKey, DerivationPath, Network};
     /// use std::str::FromStr;
     ///
     /// let seed = [0u8; 64];
@@ -623,7 +623,7 @@ impl ExtendedPrivateKey {
     /// let address_key = master.derive_path(&path)?;
     ///
     /// assert_eq!(address_key.depth(), 5);
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     pub fn derive_path(&self, path: &crate::DerivationPath) -> Result<Self> {
         // Start with current key
@@ -729,12 +729,12 @@ impl std::str::FromStr for ExtendedPrivateKey {
     /// # Examples
     ///
     /// ```rust
-    /// use bip32::ExtendedPrivateKey;
+    /// use khodpay_bip32::ExtendedPrivateKey;
     /// use std::str::FromStr;
     ///
     /// let xprv = "xprv9s21ZrQH143K3QTDL4LXw2F7HEK3wJUD2nW2nRk4stbPy6cq3jPPqjiChkVvvNKmPGJxWUtg6LnF5kejMRNNU3TGtRBeJgk33yuGBxrMPHi";
     /// let key = ExtendedPrivateKey::from_str(xprv)?;
-    /// # Ok::<(), bip32::Error>(())
+    /// # Ok::<(), khodpay_bip32::Error>(())
     /// ```
     fn from_str(s: &str) -> Result<Self> {
         use sha2::{Digest, Sha256};
@@ -2264,9 +2264,9 @@ mod tests {
     #[test]
     fn test_from_mnemonic_basic() {
         // Standard BIP39 test vector
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master =
@@ -2280,9 +2280,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_with_passphrase() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2305,9 +2305,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_deterministic() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "letter advice cage absurd amount doctor acoustic avoid letter advice cage above",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2329,9 +2329,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_different_networks() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2352,9 +2352,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_12_words() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master =
@@ -2365,9 +2365,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_24_words() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master =
@@ -2379,9 +2379,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_derivation_works() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master =
@@ -2395,9 +2395,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_to_bip44_path() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "letter advice cage absurd amount doctor acoustic avoid letter advice cage above",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2414,9 +2414,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_passphrase_affects_derivation() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "void come effort suffer camp survey warrior heavy shoot primary clutch crush open amazing screen patrol group space point ten exist slush involve unfold",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master1 =
@@ -2441,9 +2441,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_empty_passphrase_vs_none() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master_none =
@@ -2465,9 +2465,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_serialization_roundtrip() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "legal winner thank year wave sausage worth useful legal winner thank yellow",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2483,9 +2483,9 @@ mod tests {
 
     #[test]
     fn test_from_mnemonic_watch_only_export() {
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo wrong",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 
@@ -2507,9 +2507,9 @@ mod tests {
     #[test]
     fn test_from_mnemonic_bip39_test_vector_1() {
         // BIP39 official test vector
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
-            bip39::Language::English
+            khodpay_bip39::Language::English
         ).unwrap();
 
         let master =
@@ -2530,9 +2530,9 @@ mod tests {
         // Simulate wallet creation workflow
 
         // 1. User creates/imports mnemonic
-        let mnemonic = bip39::Mnemonic::from_phrase(
+        let mnemonic = khodpay_bip39::Mnemonic::from_phrase(
             "letter advice cage absurd amount doctor acoustic avoid letter advice cage above",
-            bip39::Language::English,
+            khodpay_bip39::Language::English,
         )
         .unwrap();
 

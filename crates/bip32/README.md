@@ -1,8 +1,8 @@
 # BIP32 - Hierarchical Deterministic Wallets
 
-[![Crate](https://img.shields.io/crates/v/bip32.svg)](https://crates.io/crates/bip32)
-[![Documentation](https://docs.rs/bip32/badge.svg)](https://docs.rs/bip32)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Crates.io](https://img.shields.io/crates/v/khodpay-bip32.svg)](https://crates.io/crates/khodpay-bip32)
+[![Documentation](https://docs.rs/khodpay-bip32/badge.svg)](https://docs.rs/khodpay-bip32)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](../../LICENSE-MIT)
 
 A production-ready Rust implementation of the BIP32 standard for hierarchical deterministic wallets in cryptocurrency applications.
 
@@ -23,8 +23,8 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-bip32 = "0.1.0"
-bip39 = "0.1.0"  # For mnemonic support
+khodpay-bip32 = "0.1.0"
+khodpay-bip39 = "0.1.0"  # For mnemonic support
 ```
 
 ## Quick Start
@@ -32,8 +32,8 @@ bip39 = "0.1.0"  # For mnemonic support
 ### Basic Usage
 
 ```rust
-use bip32::{ExtendedPrivateKey, Network, DerivationPath};
-use bip39::{Mnemonic, WordCount, Language};
+use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath};
+use khodpay_bip39::{Mnemonic, WordCount, Language};
 use std::str::FromStr;
 
 // Generate a mnemonic (using BIP39)
@@ -57,7 +57,7 @@ println!("Account xpub: {}", account_key.to_extended_public_key());
 ### Derive from Seed
 
 ```rust
-use bip32::{ExtendedPrivateKey, Network};
+use khodpay_bip32::{ExtendedPrivateKey, Network};
 
 // Use a seed directly (typically from BIP39)
 let seed = b"your-secure-seed-bytes-here-at-least-16-bytes-long";
@@ -71,7 +71,7 @@ println!("Master xpub: {}", master_pub);
 ### Watch-Only Wallets (Public Key Derivation)
 
 ```rust
-use bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
+use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
 use std::str::FromStr;
 
 let seed = b"your-secure-seed-bytes-here-at-least-16-bytes-long";
@@ -92,7 +92,7 @@ println!("First receive address xpub: {}", first_address);
 ### Generate Multiple Addresses
 
 ```rust
-use bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
+use khodpay_bip32::{ExtendedPrivateKey, Network, DerivationPath, ChildNumber};
 use std::str::FromStr;
 
 let seed = b"your-secure-seed-bytes-here-at-least-16-bytes-long";
@@ -222,7 +222,7 @@ Full API documentation is available at [docs.rs/bip32](https://docs.rs/bip32).
 Build documentation locally:
 
 ```bash
-cargo doc --open --no-deps
+cargo doc --open --no-deps --package khodpay-bip32
 ```
 
 ## Examples
@@ -259,7 +259,12 @@ Contributions are welcome! Please ensure:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is dual-licensed under:
+
+- MIT License ([LICENSE-MIT](../../LICENSE-MIT) or http://opensource.org/licenses/MIT)
+- Apache License, Version 2.0 ([LICENSE-APACHE](../../LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+
+You may choose either license for your use.
 
 ## References
 
@@ -271,7 +276,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Support
 
-- 📖 [Documentation](https://docs.rs/bip32)
+- 📖 [Documentation](https://docs.rs/khodpay-bip32)
 - 🐛 [Issue Tracker](https://github.com/your-repo/issues)
 - 💬 [Discussions](https://github.com/your-repo/discussions)
 

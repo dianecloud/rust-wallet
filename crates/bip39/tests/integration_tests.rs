@@ -3,7 +3,7 @@
 //! These tests verify the complete workflow from mnemonic generation to seed derivation,
 //! ensuring all components work together correctly.
 
-use bip39::{Mnemonic, WordCount, Language, Error};
+use khodpay_bip39::{Mnemonic, WordCount, Language, Error};
 
 #[test]
 fn test_complete_workflow_new_wallet() {

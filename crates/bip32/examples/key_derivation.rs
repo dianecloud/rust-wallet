@@ -9,10 +9,10 @@
 //!
 //! Run this example with:
 //! ```bash
-//! cargo run -p bip32 --example key_derivation
+//! cargo run -p khodpay-bip32 --example key_derivation
 //! ```
 
-use bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, Network};
+use khodpay_bip32::{ChildNumber, DerivationPath, ExtendedPrivateKey, Network};
 use std::str::FromStr;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

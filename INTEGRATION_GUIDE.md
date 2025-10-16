@@ -4,14 +4,14 @@ This guide explains how to integrate the BIP39 and BIP32 libraries into your Rus
 
 ## 📦 Available Libraries
 
-### 1. **bip39** - Mnemonic Code Generation
+### 1. **khodpay-bip39** - Mnemonic Code Generation
 - ✅ BIP39-compliant mnemonic generation and validation
 - ✅ Support for 12, 15, 18, 21, and 24-word mnemonics
 - ✅ Secure seed derivation with PBKDF2-HMAC-SHA512
 - ✅ Multiple language support
 - ✅ Memory-safe (zeroization of sensitive data)
 
-### 2. **bip32** - Hierarchical Deterministic Wallets
+### 2. **khodpay-bip32** - Hierarchical Deterministic Wallets
 - ✅ BIP32-compliant hierarchical key derivation
 - ✅ Master key generation from seed
 - ✅ Extended private and public keys
@@ -27,16 +27,16 @@ Add to your project's `Cargo.toml`:
 
 ```toml
 [dependencies]
-bip39 = { path = "../khodpay-wallet/crates/bip39" }
-bip32 = { path = "../khodpay-wallet/crates/bip32" }
+khodpay-bip39 = { path = "../khodpay-wallet/crates/bip39" }
+khodpay-bip32 = { path = "../khodpay-wallet/crates/bip32" }
 ```
 
 ### Method 2: Git Dependency (Recommended for Projects)
 
 ```toml
 [dependencies]
-bip39 = { git = "https://github.com/your-org/khodpay-wallet", version = "0.1.0" }
-bip32 = { git = "https://github.com/your-org/khodpay-wallet", version = "0.1.0" }
+khodpay-bip39 = { git = "https://github.com/khodpay/khodpay-wallet" }
+khodpay-bip32 = { git = "https://github.com/khodpay/khodpay-wallet" }
 ```
 
 ### Method 3: Workspace Dependency (Monorepo)
@@ -45,8 +45,8 @@ If your project is in the same workspace:
 
 ```toml
 [dependencies]
-bip39 = { workspace = true }
-bip32 = { workspace = true }
+khodpay-bip39 = { workspace = true }
+khodpay-bip32 = { workspace = true }
 ```
 
 ## 📖 Usage Examples
@@ -54,8 +54,8 @@ bip32 = { workspace = true }
 ### Example 1: Generate Wallet from Mnemonic
 
 ```rust
-use bip39::{Mnemonic, Language};
-use bip32::{ExtendedPrivateKey, Network};
+use khodpay_bip39::{Mnemonic, Language};
+use khodpay_bip32::{ExtendedPrivateKey, Network};
 
 fn create_wallet() -> Result<(), Box<dyn std::error::Error>> {
     // Generate a 24-word mnemonic
@@ -81,8 +81,8 @@ fn create_wallet() -> Result<(), Box<dyn std::error::Error>> {
 ### Example 2: Recover Wallet from Mnemonic
 
 ```rust
-use bip39::{Mnemonic, Language};
-use bip32::{ExtendedPrivateKey, Network};
+use khodpay_bip39::{Mnemonic, Language};
+use khodpay_bip32::{ExtendedPrivateKey, Network};
 
 fn recover_wallet(mnemonic_phrase: &str) -> Result<(), Box<dyn std::error::Error>> {
     // Parse mnemonic from string
@@ -134,8 +134,8 @@ fn generate_mnemonic_in_language(lang: Language) -> Result<(), Box<dyn std::erro
 ### Example 4: Watch-Only Wallet
 
 ```rust
-use bip39::Mnemonic;
-use bip32::{ExtendedPrivateKey, ExtendedPublicKey, Network};
+use khodpay_bip39::Mnemonic;
+use khodpay_bip32::{ExtendedPrivateKey, ExtendedPublicKey, Network};
 
 fn create_watch_only_wallet() -> Result<ExtendedPublicKey, Box<dyn std::error::Error>> {
     let mnemonic = Mnemonic::generate(24)?;
@@ -162,8 +162,8 @@ Both libraries implement security best practices:
 
 ### Memory Zeroization
 ```rust
-use bip39::Mnemonic;
-use bip32::ExtendedPrivateKey;
+use khodpay_bip39::Mnemonic;
+use khodpay_bip32::ExtendedPrivateKey;
 
 {
     let mnemonic = Mnemonic::generate(24)?;
@@ -177,7 +177,7 @@ use bip32::ExtendedPrivateKey;
 
 ### Secure Debug Output
 ```rust
-use bip32::ExtendedPrivateKey;
+use khodpay_bip32::ExtendedPrivateKey;
 
 let key = ExtendedPrivateKey::from_seed(&seed, Network::BitcoinMainnet)?;
 
@@ -193,8 +193,8 @@ After running `cargo build --release --workspace`, you'll find:
 
 ```
 target/release/
-├── libbip39.rlib      (1.7 MB) - BIP39 library
-├── libbip32.rlib      (229 KB) - BIP32 library
+├── libkhodpay_bip39.rlib      (1.7 MB) - BIP39 library
+├── libkhodpay_bip32.rlib      (229 KB) - BIP32 library
 └── deps/              - All dependencies
 ```
 
@@ -230,19 +230,19 @@ Run tests for both libraries:
 cargo test --workspace
 
 # Test specific library
-cargo test -p bip39
-cargo test -p bip32
+cargo test -p khodpay-bip39
+cargo test -p khodpay-bip32
 
 # Run with output
 cargo test --workspace -- --nocapture
 
 # Run specific test
-cargo test -p bip32 fingerprint
+cargo test -p khodpay-bip32 fingerprint
 ```
 
 Current test status:
-- **bip39**: All tests passing ✅
-- **bip32**: 145 unit tests + 50 doc tests passing ✅
+- **khodpay-bip39**: All tests passing ✅
+- **khodpay-bip32**: 145 unit tests + 50 doc tests passing ✅
 
 ## 📚 Documentation
 
@@ -293,8 +293,8 @@ bip32 = "0.1.0"
 Both libraries use custom error types:
 
 ```rust
-use bip39::{Mnemonic, Error as Bip39Error};
-use bip32::{ExtendedPrivateKey, Error as Bip32Error};
+use khodpay_bip39::{Mnemonic, Error as Bip39Error};
+use khodpay_bip32::{ExtendedPrivateKey, Error as Bip32Error};
 
 fn wallet_operation() -> Result<(), Box<dyn std::error::Error>> {
     // BIP39 errors

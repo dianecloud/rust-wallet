@@ -14,7 +14,7 @@
 //! # Examples
 //!
 //! ```rust
-//! use bip39::{Mnemonic, WordCount, Language};
+//! use khodpay_bip39::{Mnemonic, WordCount, Language};
 //!
 //! // Generate a new mnemonic (will be implemented in later tasks)
 //! // let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English).unwrap();
@@ -58,7 +58,7 @@ use bip39_upstream;
 /// # Examples
 ///
 /// ```rust
-/// use bip39::{Mnemonic, WordCount, Language};
+/// use khodpay_bip39::{Mnemonic, WordCount, Language};
 ///
 /// // Example will work once constructors are implemented
 /// // let entropy = [0u8; 16]; // 128 bits for 12 words
@@ -114,7 +114,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// // Create a 12-word mnemonic from 16 bytes of entropy
     /// let entropy = [0u8; 16];
@@ -161,7 +161,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, Language, WordCount};
+    /// use khodpay_bip39::{Mnemonic, Language, WordCount};
     ///
     /// let entropy = [0u8; 16];
     /// let mnemonic = Mnemonic::new(&entropy, Language::English).unwrap();
@@ -176,7 +176,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// let entropy = [0u8; 16];
     /// let mnemonic = Mnemonic::new(&entropy, Language::English).unwrap();
@@ -192,7 +192,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// let entropy = [42u8; 16];
     /// let mnemonic = Mnemonic::new(&entropy, Language::English).unwrap();
@@ -226,7 +226,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, WordCount, Language};
+    /// use khodpay_bip39::{Mnemonic, WordCount, Language};
     ///
     /// let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English).unwrap();
     ///
@@ -287,7 +287,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, Language};
+    /// use khodpay_bip39::{Mnemonic, Language};
     ///
     /// // Parse a valid 12-word English mnemonic
     /// let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
@@ -358,7 +358,7 @@ impl Mnemonic {
     /// # Examples
     ///
     /// ```rust
-    /// use bip39::{Mnemonic, WordCount, Language};
+    /// use khodpay_bip39::{Mnemonic, WordCount, Language};
     ///
     /// // Generate a new 12-word English mnemonic
     /// let mnemonic = Mnemonic::generate(WordCount::Twelve, Language::English).unwrap();
