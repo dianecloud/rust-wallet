@@ -2,6 +2,7 @@
 name = "khodpay-bip32"
 version = "0.1.0"
 edition = "2021"
+rust-version = "1.80"
 authors = ["KhodPay Team"]
 license = "MIT OR Apache-2.0"
 description = "Production-ready Rust implementation of BIP32 hierarchical deterministic wallets"
@@ -11,7 +12,6 @@ homepage = "https://github.com/khodpay/khodpay-wallet"
 readme = "README.md"
 keywords = ["bitcoin", "cryptocurrency", "bip32", "hd-wallet", "wallet"]
 categories = ["cryptography", "no-std"]
-rust-version = "1.70"
 
 [dependencies]
 khodpay-bip39 = { version = "0.1.0", path = "../bip39" }
