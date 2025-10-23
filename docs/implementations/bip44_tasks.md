@@ -6,7 +6,7 @@ Here's your comprehensive task list organized by phases and priority. Each task 
 ### ✅ Task 01: Create `crates/bip44` directory structure and Cargo.toml with dependencies
 Create crate structure with `khodpay-bip32`, `thiserror` dependencies, and optional `serde` feature.
 
-### 🔲 Task 02: Define Error enum with proper error types using thiserror
+### ✅ Task 02: Define Error enum with proper error types using thiserror
 Create error types: `InvalidPurpose`, `InvalidCoinType`, `InvalidChain`, `InvalidPath`, `InvalidDepth`, `InvalidHardenedLevel`, `Bip32Error`, `ParseError`.
 
 ### 🔲 Task 03: Define and test Purpose enum (BIP44, BIP49, BIP84, BIP86) with conversions (TDD)
