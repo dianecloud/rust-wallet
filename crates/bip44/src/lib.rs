@@ -19,4 +19,9 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 #![deny(unsafe_code)]
 
-// Module structure - to be implemented in subsequent tasks
+mod error;
+
+pub use error::Error;
+
+/// Result type alias for BIP-44 operations.
+pub type Result<T> = std::result::Result<T, Error>;
