@@ -50,7 +50,7 @@ Add methods to increment address index, get next chain address, and navigate pat
 ### ✅ Task 13: Define Account struct and implement constructor from BIP32 keys (TDD)
 Wrap `ExtendedPrivateKey` with BIP44 metadata (purpose, coin, account). Create from BIP32 keys. Test construction.
 
-### 🔲 Task 14: Implement and test derive_external() and derive_internal() methods (TDD)
+### ✅ Task 14: Implement and test derive_external() and derive_internal() methods (TDD)
 Derive receiving (external) and change (internal) addresses from account key. Test both chain derivations.
 
 ### 🔲 Task 15: Implement and test derive_address() and derive_address_range() methods (TDD)
