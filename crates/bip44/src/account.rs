@@ -219,6 +219,88 @@ impl Account {
     pub fn network(&self) -> khodpay_bip32::Network {
         self.extended_key.network()
     }
+
+    /// Derives an extended key for the external (receiving) chain at the specified address index.
+    ///
+    /// The external chain (chain index 0) is used for receiving addresses that are
+    /// meant to be shared with others to receive funds.
+    ///
+    /// This derives to the full BIP-44 path:
+    /// `m/purpose'/coin_type'/account'/0/address_index`
+    ///
+    /// # Arguments
+    ///
+    /// * `address_index` - The address index to derive (0 to 2^32-1)
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the key derivation fails.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use khodpay_bip44::{Account, Purpose, CoinType};
+    /// use khodpay_bip32::ExtendedPrivateKey;
+    ///
+    /// # let seed_bytes = [0u8; 64];
+    /// # let master_key = ExtendedPrivateKey::from_seed(&seed_bytes, khodpay_bip32::Network::BitcoinMainnet).unwrap();
+    /// let account = Account::from_extended_key(master_key, Purpose::BIP44, CoinType::Bitcoin, 0);
+    ///
+    /// // Derive the first receiving address
+    /// let address_key = account.derive_external(0).unwrap();
+    /// ```
+    pub fn derive_external(&self, address_index: u32) -> Result<ExtendedPrivateKey> {
+        use khodpay_bip32::ChildNumber;
+
+        // Derive chain 0 (external)
+        let chain_key = self.extended_key.derive_child(ChildNumber::Normal(0))?;
+        
+        // Derive address index
+        let address_key = chain_key.derive_child(ChildNumber::Normal(address_index))?;
+        
+        Ok(address_key)
+    }
+
+    /// Derives an extended key for the internal (change) chain at the specified address index.
+    ///
+    /// The internal chain (chain index 1) is used for change addresses that are
+    /// generated automatically when sending funds.
+    ///
+    /// This derives to the full BIP-44 path:
+    /// `m/purpose'/coin_type'/account'/1/address_index`
+    ///
+    /// # Arguments
+    ///
+    /// * `address_index` - The address index to derive (0 to 2^32-1)
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the key derivation fails.
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use khodpay_bip44::{Account, Purpose, CoinType};
+    /// use khodpay_bip32::ExtendedPrivateKey;
+    ///
+    /// # let seed_bytes = [0u8; 64];
+    /// # let master_key = ExtendedPrivateKey::from_seed(&seed_bytes, khodpay_bip32::Network::BitcoinMainnet).unwrap();
+    /// let account = Account::from_extended_key(master_key, Purpose::BIP44, CoinType::Bitcoin, 0);
+    ///
+    /// // Derive the first change address
+    /// let change_key = account.derive_internal(0).unwrap();
+    /// ```
+    pub fn derive_internal(&self, address_index: u32) -> Result<ExtendedPrivateKey> {
+        use khodpay_bip32::ChildNumber;
+
+        // Derive chain 1 (internal)
+        let chain_key = self.extended_key.derive_child(ChildNumber::Normal(1))?;
+        
+        // Derive address index
+        let address_key = chain_key.derive_child(ChildNumber::Normal(address_index))?;
+        
+        Ok(address_key)
+    }
 }
 
 #[cfg(test)]
@@ -229,6 +311,20 @@ mod tests {
     fn create_test_master_key() -> ExtendedPrivateKey {
         let seed_bytes = [0u8; 64];
         ExtendedPrivateKey::from_seed(&seed_bytes, Network::BitcoinMainnet).unwrap()
+    }
+
+    fn create_test_account_key(purpose: Purpose, coin_type: CoinType, account_index: u32, network: Network) -> ExtendedPrivateKey {
+        use khodpay_bip32::ChildNumber;
+        
+        let seed_bytes = [0u8; 64];
+        let master = ExtendedPrivateKey::from_seed(&seed_bytes, network).unwrap();
+        
+        // Derive to account level: m/purpose'/coin_type'/account'
+        let purpose_key = master.derive_child(ChildNumber::Hardened(purpose.value())).unwrap();
+        let coin_key = purpose_key.derive_child(ChildNumber::Hardened(coin_type.index())).unwrap();
+        let account_key = coin_key.derive_child(ChildNumber::Hardened(account_index)).unwrap();
+        
+        account_key
     }
 
     #[test]
@@ -431,5 +527,296 @@ mod tests {
             );
             assert_eq!(account.network(), network);
         }
+    }
+
+    // Derivation tests
+    #[test]
+    fn test_derive_external() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let address_key = account.derive_external(0).unwrap();
+        
+        // Verify depth: account (3) + chain (4) + address (5)
+        assert_eq!(address_key.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_internal() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let change_key = account.derive_internal(0).unwrap();
+        
+        // Verify depth: account (3) + chain (4) + address (5)
+        assert_eq!(change_key.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_external_multiple_indices() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let key0 = account.derive_external(0).unwrap();
+        let key1 = account.derive_external(1).unwrap();
+        let key10 = account.derive_external(10).unwrap();
+        
+        // All should have depth 5
+        assert_eq!(key0.depth(), 5);
+        assert_eq!(key1.depth(), 5);
+        assert_eq!(key10.depth(), 5);
+        
+        // Keys should be different
+        assert_ne!(key0.private_key(), key1.private_key());
+        assert_ne!(key1.private_key(), key10.private_key());
+    }
+
+    #[test]
+    fn test_derive_internal_multiple_indices() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let key0 = account.derive_internal(0).unwrap();
+        let key1 = account.derive_internal(1).unwrap();
+        let key5 = account.derive_internal(5).unwrap();
+        
+        // All should have depth 5
+        assert_eq!(key0.depth(), 5);
+        assert_eq!(key1.depth(), 5);
+        assert_eq!(key5.depth(), 5);
+        
+        // Keys should be different
+        assert_ne!(key0.private_key(), key1.private_key());
+        assert_ne!(key1.private_key(), key5.private_key());
+    }
+
+    #[test]
+    fn test_external_and_internal_keys_differ() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let external = account.derive_external(0).unwrap();
+        let internal = account.derive_internal(0).unwrap();
+        
+        // Same index but different chains should produce different keys
+        assert_ne!(external.private_key(), internal.private_key());
+    }
+
+    #[test]
+    fn test_derive_sequential_external() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        // Derive first 5 receiving addresses
+        let keys: Vec<_> = (0..5)
+            .map(|i| account.derive_external(i).unwrap())
+            .collect();
+        
+        assert_eq!(keys.len(), 5);
+        
+        // All keys should be unique
+        for i in 0..keys.len() {
+            for j in i+1..keys.len() {
+                assert_ne!(keys[i].private_key(), keys[j].private_key());
+            }
+        }
+    }
+
+    #[test]
+    fn test_derive_sequential_internal() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        // Derive first 5 change addresses
+        let keys: Vec<_> = (0..5)
+            .map(|i| account.derive_internal(i).unwrap())
+            .collect();
+        
+        assert_eq!(keys.len(), 5);
+        
+        // All keys should be unique
+        for i in 0..keys.len() {
+            for j in i+1..keys.len() {
+                assert_ne!(keys[i].private_key(), keys[j].private_key());
+            }
+        }
+    }
+
+    #[test]
+    fn test_derive_with_different_purposes() {
+        let bip44_account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let bip84_account_key = create_test_account_key(Purpose::BIP84, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        
+        let bip44_account = Account::from_extended_key(
+            bip44_account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+        let bip84_account = Account::from_extended_key(
+            bip84_account_key,
+            Purpose::BIP84,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        let bip44_derived_key = bip44_account.derive_external(0).unwrap();
+        let bip84_derived_key = bip84_account.derive_external(0).unwrap();
+        
+        // Different purposes should produce different keys
+        assert_ne!(bip44_derived_key.private_key(), bip84_derived_key.private_key());
+    }
+
+    #[test]
+    fn test_derive_with_different_coins() {
+        let btc_account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let eth_account_key = create_test_account_key(Purpose::BIP44, CoinType::Ethereum, 0, Network::BitcoinMainnet);
+        
+        let btc_account = Account::from_extended_key(
+            btc_account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+        let eth_account = Account::from_extended_key(
+            eth_account_key,
+            Purpose::BIP44,
+            CoinType::Ethereum,
+            0,
+        );
+
+        let btc_derived_key = btc_account.derive_external(0).unwrap();
+        let eth_derived_key = eth_account.derive_external(0).unwrap();
+        
+        // Different coins should produce different keys
+        assert_ne!(btc_derived_key.private_key(), eth_derived_key.private_key());
+    }
+
+    #[test]
+    fn test_derive_with_different_accounts() {
+        let account0_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account1_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 1, Network::BitcoinMainnet);
+        
+        let account0 = Account::from_extended_key(
+            account0_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+        let account1 = Account::from_extended_key(
+            account1_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            1,
+        );
+
+        let key0 = account0.derive_external(0).unwrap();
+        let key1 = account1.derive_external(0).unwrap();
+        
+        // Different accounts should produce different keys
+        assert_ne!(key0.private_key(), key1.private_key());
+    }
+
+    #[test]
+    fn test_derive_large_index() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        // Test with large index
+        let key = account.derive_external(100000).unwrap();
+        assert_eq!(key.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_max_index() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        // Test with maximum index
+        let key = account.derive_external(u32::MAX).unwrap();
+        assert_eq!(key.depth(), 5);
+    }
+
+    #[test]
+    fn test_derive_network_preserved() {
+        for network in [Network::BitcoinMainnet, Network::BitcoinTestnet] {
+            let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, network);
+            let account = Account::from_extended_key(
+                account_key,
+                Purpose::BIP44,
+                CoinType::Bitcoin,
+                0,
+            );
+
+            let external = account.derive_external(0).unwrap();
+            let internal = account.derive_internal(0).unwrap();
+            
+            assert_eq!(external.network(), network);
+            assert_eq!(internal.network(), network);
+        }
+    }
+
+    #[test]
+    fn test_derive_deterministic() {
+        let account_key = create_test_account_key(Purpose::BIP44, CoinType::Bitcoin, 0, Network::BitcoinMainnet);
+        let account = Account::from_extended_key(
+            account_key,
+            Purpose::BIP44,
+            CoinType::Bitcoin,
+            0,
+        );
+
+        // Derive the same key twice
+        let key1 = account.derive_external(5).unwrap();
+        let key2 = account.derive_external(5).unwrap();
+        
+        // Should be identical
+        assert_eq!(key1.private_key(), key2.private_key());
+        assert_eq!(key1.chain_code(), key2.chain_code());
     }
 }
