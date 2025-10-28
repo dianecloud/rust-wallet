@@ -24,6 +24,7 @@ mod discovery;
 mod error;
 mod path;
 mod types;
+mod wallet;
 
 pub use account::Account;
 pub use discovery::{
@@ -33,6 +34,10 @@ pub use discovery::{
 pub use error::Error;
 pub use path::{Bip44Path, Bip44PathBuilder};
 pub use types::{Chain, CoinType, Purpose};
+pub use wallet::Wallet;
+
+// Re-export Language from BIP39 for convenience
+pub use khodpay_bip39::Language;
 
 /// Result type alias for BIP-44 operations.
 pub type Result<T> = std::result::Result<T, Error>;

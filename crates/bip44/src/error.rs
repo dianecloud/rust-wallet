@@ -203,6 +203,36 @@ pub enum Error {
         /// Detailed reason why parsing failed
         reason: String,
     },
+
+    /// Invalid seed provided for wallet creation.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use khodpay_bip44::Error;
+    /// let error = Error::InvalidSeed("Seed cannot be empty".to_string());
+    /// ```
+    #[error("Invalid seed: {0}")]
+    InvalidSeed(String),
+
+    /// Invalid mnemonic phrase provided.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use khodpay_bip44::Error;
+    /// let error = Error::InvalidMnemonic("Invalid word count".to_string());
+    /// ```
+    #[error("Invalid mnemonic: {0}")]
+    InvalidMnemonic(String),
+
+    /// Key derivation error.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use khodpay_bip44::Error;
+    /// let error = Error::KeyDerivation("Failed to derive key".to_string());
+    /// ```
+    #[error("Key derivation error: {0}")]
+    KeyDerivation(String),
 }
 
 /// Custom equality implementation for [`Error`].
@@ -232,6 +262,9 @@ impl PartialEq for Error {
             ) => r1 == r2,
             (Error::Bip32Error(e1), Error::Bip32Error(e2)) => e1 == e2,
             (Error::ParseError { reason: r1 }, Error::ParseError { reason: r2 }) => r1 == r2,
+            (Error::InvalidSeed(s1), Error::InvalidSeed(s2)) => s1 == s2,
+            (Error::InvalidMnemonic(m1), Error::InvalidMnemonic(m2)) => m1 == m2,
+            (Error::KeyDerivation(k1), Error::KeyDerivation(k2)) => k1 == k2,
             _ => false,
         }
     }

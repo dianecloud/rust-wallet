@@ -391,6 +391,7 @@ version = "0.1.0"
 dependencies = [
  "hex",
  "khodpay-bip32",
+ "khodpay-bip39",
  "serde",
  "thiserror",
 ]
