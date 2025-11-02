@@ -386,6 +386,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "khodpay-bip44"
+version = "0.1.0"
+dependencies = [
+ "criterion",
+ "hex",
+ "khodpay-bip32",
+ "khodpay-bip39",
+ "serde",
+ "serde_json",
+ "thiserror",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.176"
 source = "registry+https://github.com/rust-lang/crates.io-index"
