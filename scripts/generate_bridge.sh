@@ -29,6 +29,31 @@ echo -e "${YELLOW}📁 Creating build directories...${NC}"
 mkdir -p build/dart
 echo -e "   ✓ build/dart created"
 
+# Create/update minimal pubspec.yaml for code generation
+echo -e "${YELLOW}📝 Creating/updating pubspec.yaml for code generation...${NC}"
+cat > build/dart/pubspec.yaml << 'EOF'
+name: khodpay_bridge
+description: KhodPay Wallet Rust Bridge
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_rust_bridge: ^2.11.1
+  ffi: ^2.1.0
+  meta: ^1.10.0
+  freezed_annotation: ^2.4.1
+
+dev_dependencies:
+  freezed: ^2.4.5
+  build_runner: ^2.4.6
+EOF
+echo -e "   ✓ pubspec.yaml updated with required dependencies"
+
 # Run the code generator
 echo ""
 echo -e "${YELLOW}🚀 Generating bridge code...${NC}"
@@ -37,13 +62,26 @@ echo -e "${BLUE}   Output: build/dart/${NC}"
 echo -e "${BLUE}   Output: crates/flutter_bridge/src/bridge_generated.rs${NC}"
 echo ""
 
+# Get absolute paths
+PROJECT_ROOT=$(pwd)
+RUST_ROOT="$PROJECT_ROOT/crates/flutter_bridge"
+DART_OUTPUT="$PROJECT_ROOT/build/dart"
+RUST_OUTPUT="$PROJECT_ROOT/crates/flutter_bridge/src/bridge_generated.rs"
+
+# Change to dart output directory so flutter_rust_bridge_codegen can find pubspec.yaml
+cd "$DART_OUTPUT"
+
+# Run code generator with absolute paths
 flutter_rust_bridge_codegen generate \
   --rust-input "crate::bridge" \
-  --rust-root "crates/flutter_bridge" \
-  --dart-output "build/dart/" \
-  --rust-output "crates/flutter_bridge/src/bridge_generated.rs" \
+  --rust-root "$RUST_ROOT" \
+  --dart-output "$DART_OUTPUT" \
+  --rust-output "$RUST_OUTPUT" \
   --dart-entrypoint-class-name "RustLib" \
   --no-add-mod-to-lib
+
+# Return to original directory
+cd "$PROJECT_ROOT"
 
 echo ""
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"

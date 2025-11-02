@@ -129,6 +129,7 @@ if [ "$PLATFORM" = "all" ]; then
     build_target "" "macOS/Desktop" true
     build_target "aarch64-apple-ios" "iOS ARM64" true
     build_target "aarch64-apple-ios-sim" "iOS Simulator ARM64" true
+    build_target "x86_64-apple-ios" "iOS Simulator x86_64" true
     
     # Android (only if NDK is available)
     if [ -n "$ANDROID_NDK_HOME" ] || [ -n "$NDK_HOME" ] || [ -d "$HOME/Library/Android/sdk/ndk" ]; then
@@ -160,6 +161,7 @@ elif [ "$PLATFORM" = "ios" ]; then
     echo -e "${GREEN}Building iOS targets (parallel)...${NC}"
     build_target "aarch64-apple-ios" "iOS ARM64" true
     build_target "aarch64-apple-ios-sim" "iOS Simulator ARM64" true
+    build_target "x86_64-apple-ios" "iOS Simulator x86_64" true
     wait_for_builds || exit 1
     
 elif [ "$PLATFORM" = "macos" ] || [ "$PLATFORM" = "desktop" ]; then
@@ -206,8 +208,15 @@ fi
 
 if [ -f "build/rust/aarch64-apple-ios-sim/${BUILD_MODE}/libkhodpay_flutter_bridge.a" ]; then
     size=$(du -h "build/rust/aarch64-apple-ios-sim/${BUILD_MODE}/libkhodpay_flutter_bridge.a" | cut -f1)
-    echo -e "${GREEN}✓ iOS (Simulator):${NC}"
+    echo -e "${GREEN}✓ iOS (Simulator ARM64):${NC}"
     echo -e "  build/rust/aarch64-apple-ios-sim/${BUILD_MODE}/libkhodpay_flutter_bridge.a ($size)"
+    echo ""
+fi
+
+if [ -f "build/rust/x86_64-apple-ios/${BUILD_MODE}/libkhodpay_flutter_bridge.a" ]; then
+    size=$(du -h "build/rust/x86_64-apple-ios/${BUILD_MODE}/libkhodpay_flutter_bridge.a" | cut -f1)
+    echo -e "${GREEN}✓ iOS (Simulator x86_64):${NC}"
+    echo -e "  build/rust/x86_64-apple-ios/${BUILD_MODE}/libkhodpay_flutter_bridge.a ($size)"
     echo ""
 fi
 

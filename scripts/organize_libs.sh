@@ -43,13 +43,27 @@ fi
 
 # Copy iOS libraries
 if [ -f "$BUILD_DIR/aarch64-apple-ios/release/libkhodpay_flutter_bridge.a" ]; then
-    cp "$BUILD_DIR/aarch64-apple-ios/release/libkhodpay_flutter_bridge.a" "$LIBS_DIR/ios/libkhodpay_flutter_bridge_ios.a"
-    echo -e "${GREEN}   ✓ iOS Device: libkhodpay_flutter_bridge_ios.a${NC}"
+    cp "$BUILD_DIR/aarch64-apple-ios/release/libkhodpay_flutter_bridge.a" "$LIBS_DIR/ios/libkhodpay_flutter_bridge_device.a"
+    echo -e "${GREEN}   ✓ iOS Device: libkhodpay_flutter_bridge_device.a${NC}"
 fi
 
 if [ -f "$BUILD_DIR/aarch64-apple-ios-sim/release/libkhodpay_flutter_bridge.a" ]; then
-    cp "$BUILD_DIR/aarch64-apple-ios-sim/release/libkhodpay_flutter_bridge.a" "$LIBS_DIR/ios/libkhodpay_flutter_bridge_iossim.a"
-    echo -e "${GREEN}   ✓ iOS Simulator: libkhodpay_flutter_bridge_iossim.a${NC}"
+    cp "$BUILD_DIR/aarch64-apple-ios-sim/release/libkhodpay_flutter_bridge.a" "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_arm64.a"
+    echo -e "${GREEN}   ✓ iOS Simulator ARM64: libkhodpay_flutter_bridge_sim_arm64.a${NC}"
+fi
+
+if [ -f "$BUILD_DIR/x86_64-apple-ios/release/libkhodpay_flutter_bridge.a" ]; then
+    cp "$BUILD_DIR/x86_64-apple-ios/release/libkhodpay_flutter_bridge.a" "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_x86_64.a"
+    echo -e "${GREEN}   ✓ iOS Simulator x86_64: libkhodpay_flutter_bridge_sim_x86_64.a${NC}"
+fi
+
+# Create universal iOS simulator library
+if [ -f "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_arm64.a" ] && [ -f "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_x86_64.a" ]; then
+    lipo -create \
+        "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_arm64.a" \
+        "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_x86_64.a" \
+        -output "$LIBS_DIR/ios/libkhodpay_flutter_bridge_sim_universal.a"
+    echo -e "${GREEN}   ✓ iOS Universal Simulator: libkhodpay_flutter_bridge_sim_universal.a (x86_64 + ARM64)${NC}"
 fi
 
 # Copy Android libraries

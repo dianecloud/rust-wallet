@@ -24,5 +24,8 @@
 // Include the bridge module with our API definitions
 pub mod bridge;
 
+// Include the generated FFI code (must be public for FFI symbols to be exported)
+pub mod bridge_generated;
+
 // Re-export everything from bridge module for public API
 pub use bridge::*;
