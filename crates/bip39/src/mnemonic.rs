@@ -369,8 +369,8 @@ impl Mnemonic {
     /// assert_eq!(mnemonic_24.word_count(), WordCount::TwentyFour);
     /// ```
     pub fn generate(word_count: WordCount, language: Language) -> crate::Result<Self> {
-        use rand::RngCore;
         use rand::rngs::OsRng;
+        use rand::RngCore;
 
         // Step 1: Calculate the required entropy length
         let entropy_length = word_count.entropy_length();

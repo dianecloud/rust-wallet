@@ -351,8 +351,8 @@ pub fn generate_mnemonic(word_count: WordCount) -> Result<String> {
 /// assert_eq!(mnemonic_ja.split_whitespace().count(), 24);
 /// ```
 pub fn generate_mnemonic_in_language(word_count: WordCount, language: Language) -> Result<String> {
-    use rand::RngCore;
     use rand::rngs::OsRng;
+    use rand::RngCore;
 
     // Step 1: Calculate the required entropy length based on word count
     let entropy_length = word_count.entropy_length();
