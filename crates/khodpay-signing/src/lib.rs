@@ -51,6 +51,7 @@ mod access_list;
 mod address;
 mod chain_id;
 mod error;
+mod rlp_encode;
 mod transaction;
 mod wei;
 
