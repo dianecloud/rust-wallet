@@ -47,14 +47,18 @@
 #![warn(rustdoc::broken_intra_doc_links)]
 #![deny(unsafe_code)]
 
+mod access_list;
 mod address;
 mod chain_id;
 mod error;
+mod transaction;
 mod wei;
 
+pub use access_list::{AccessList, AccessListItem};
 pub use address::Address;
 pub use chain_id::ChainId;
 pub use error::Error;
+pub use transaction::{Eip1559Transaction, Eip1559TransactionBuilder, TOKEN_TRANSFER_GAS, TRANSFER_GAS};
 pub use wei::{Wei, ETHER, GWEI};
 
 /// Result type alias for signing operations.
