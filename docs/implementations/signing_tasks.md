@@ -29,7 +29,7 @@ This crate provides EVM transaction signing for BSC (BNB Smart Chain) using EIP-
 
 ## 📝 PHASE 2: Transaction Structure (HIGH Priority)
 
-- [ ] **Task 04**: Define Eip1559Transaction and builder (TDD)
+- [x] **Task 04**: Define Eip1559Transaction and builder (TDD)
   ```rust
   pub struct Eip1559Transaction {
       chain_id: ChainId,

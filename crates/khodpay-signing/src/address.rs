@@ -24,7 +24,7 @@ use std::str::FromStr;
 /// // Display with checksum
 /// println!("{}", addr);  // 0x742d35Cc6634C0532925a3b844Bc454e4438f44e
 /// ```
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Default)]
 pub struct Address([u8; 20]);
 
 impl Address {
