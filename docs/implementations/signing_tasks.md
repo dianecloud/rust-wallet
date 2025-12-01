@@ -44,7 +44,7 @@ This crate provides EVM transaction signing for BSC (BNB Smart Chain) using EIP-
   }
   ```
 
-- [ ] **Task 05**: Implement RLP encoding for unsigned transaction (TDD)
+- [x] **Task 05**: Implement RLP encoding for unsigned transaction (TDD)
   - Encode: `0x02 || rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, to, value, data, access_list])`
   - Implement `signing_hash()`: `keccak256(encoded)`
 
