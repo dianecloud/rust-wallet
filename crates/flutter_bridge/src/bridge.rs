@@ -210,6 +210,15 @@ impl Mnemonic {
     pub fn is_valid(&self) -> bool {
         true
     }
+
+    /// Convert mnemonic to BIP39 seed bytes (64 bytes)
+    #[frb]
+    pub fn to_seed(&self, passphrase: Option<String>) -> Result<Vec<u8>, String> {
+        self.inner
+            .to_seed(&passphrase.unwrap_or_default())
+            .map(|seed| seed.to_vec())
+            .map_err(|e| format!("Failed to generate seed: {}", e))
+    }
 }
 
 /// Flutter wrapper for ExtendedPrivateKey - provides OOP interface
@@ -583,6 +592,17 @@ pub fn generate_mnemonic_from_entropy(entropy: Vec<u8>) -> Result<String, String
 #[frb]
 pub fn validate_mnemonic(phrase: String) -> bool {
     RustMnemonic::from_phrase(&phrase, Language::English).is_ok()
+}
+
+/// Convert a mnemonic phrase to a BIP39 seed (64 bytes as hex string)
+#[frb(name = "mnemonicPhraseToSeedHex")]
+pub fn mnemonic_phrase_to_seed_hex(phrase: String, passphrase: Option<String>) -> Result<String, String> {
+    let mnemonic = RustMnemonic::from_phrase(&phrase, Language::English)
+        .map_err(|e| format!("Invalid mnemonic: {}", e))?;
+    let seed = mnemonic
+        .to_seed(&passphrase.unwrap_or_default())
+        .map_err(|e| format!("Failed to generate seed: {}", e))?;
+    Ok(hex::encode(seed))
 }
 
 /// Create a master extended private key from a mnemonic string

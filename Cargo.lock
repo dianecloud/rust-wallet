@@ -696,6 +696,7 @@ dependencies = [
  "anyhow",
  "flutter_rust_bridge",
  "getrandom",
+ "hex",
  "khodpay-bip32",
  "khodpay-bip39",
  "khodpay-bip44",

@@ -30,6 +30,9 @@ anyhow = "1.0"
 # Ensure proper entropy on mobile platforms
 getrandom = "0.2"
 
+# Hex encoding
+hex = "0.4"
+
 [profile.release]
 opt-level = 3          # Maximum optimizations
 lto = true             # Link-time optimization

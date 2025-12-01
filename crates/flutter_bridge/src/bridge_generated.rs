@@ -38,7 +38,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1938225249;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = 1018659790;
 
 // Section: executor
 
@@ -1525,6 +1525,57 @@ fn wire__crate__bridge__Mnemonic_to_phrase_impl(
         },
     )
 }
+fn wire__crate__bridge__Mnemonic_to_seed_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "Mnemonic_to_seed",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Mnemonic>,
+            >>::sse_decode(&mut deserializer);
+            let api_passphrase = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let mut api_that_guard = None;
+                    let decode_indices_ =
+                        flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
+                            flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                &api_that, 0, false,
+                            ),
+                        ]);
+                    for i in decode_indices_ {
+                        match i {
+                            0 => api_that_guard = Some(api_that.lockable_decode_sync_ref()),
+                            _ => unreachable!(),
+                        }
+                    }
+                    let api_that_guard = api_that_guard.unwrap();
+                    let output_ok =
+                        crate::bridge::Mnemonic::to_seed(&*api_that_guard, api_passphrase)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__bridge__Mnemonic_word_count_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2150,6 +2201,41 @@ fn wire__crate__bridge__health_check_impl(
         },
     )
 }
+fn wire__crate__bridge__mnemonic_phrase_to_seed_hex_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_normal::<flutter_rust_bridge::for_generated::SseCodec, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "mnemonic_phrase_to_seed_hex(dart_style=mnemonicPhraseToSeedHex)",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_phrase = <String>::sse_decode(&mut deserializer);
+            let api_passphrase = <Option<String>>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| {
+                transform_result_sse::<_, String>((move || {
+                    let output_ok =
+                        crate::bridge::mnemonic_phrase_to_seed_hex(api_phrase, api_passphrase)?;
+                    Ok(output_ok)
+                })())
+            }
+        },
+    )
+}
 fn wire__crate__bridge__parse_bip44_path_impl(
     port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
@@ -2638,45 +2724,49 @@ fn pde_ffi_dispatcher_primary_impl(
         29 => wire__crate__bridge__Mnemonic_generate_impl(port, ptr, rust_vec_len, data_len),
         30 => wire__crate__bridge__Mnemonic_is_valid_impl(port, ptr, rust_vec_len, data_len),
         31 => wire__crate__bridge__Mnemonic_to_phrase_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__bridge__Mnemonic_word_count_impl(port, ptr, rust_vec_len, data_len),
-        33 => wire__crate__bridge__add_impl(port, ptr, rust_vec_len, data_len),
-        34 => wire__crate__bridge__bip_44_account_derive_address_range_impl(
+        32 => wire__crate__bridge__Mnemonic_to_seed_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__bridge__Mnemonic_word_count_impl(port, ptr, rust_vec_len, data_len),
+        34 => wire__crate__bridge__add_impl(port, ptr, rust_vec_len, data_len),
+        35 => wire__crate__bridge__bip_44_account_derive_address_range_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        35 => wire__crate__bridge__bip_44_account_derive_external_impl(
+        36 => wire__crate__bridge__bip_44_account_derive_external_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        36 => wire__crate__bridge__bip_44_account_derive_internal_impl(
+        37 => wire__crate__bridge__bip_44_account_derive_internal_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        37 => wire__crate__bridge__create_bip44_account_impl(port, ptr, rust_vec_len, data_len),
-        38 => wire__crate__bridge__create_bip44_wallet_impl(port, ptr, rust_vec_len, data_len),
-        39 => wire__crate__bridge__create_master_key_impl(port, ptr, rust_vec_len, data_len),
-        40 => wire__crate__bridge__derive_bip44_address_impl(port, ptr, rust_vec_len, data_len),
-        41 => wire__crate__bridge__derive_key_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__bridge__generate_mnemonic_impl(port, ptr, rust_vec_len, data_len),
-        43 => wire__crate__bridge__generate_mnemonic_from_entropy_impl(
+        38 => wire__crate__bridge__create_bip44_account_impl(port, ptr, rust_vec_len, data_len),
+        39 => wire__crate__bridge__create_bip44_wallet_impl(port, ptr, rust_vec_len, data_len),
+        40 => wire__crate__bridge__create_master_key_impl(port, ptr, rust_vec_len, data_len),
+        41 => wire__crate__bridge__derive_bip44_address_impl(port, ptr, rust_vec_len, data_len),
+        42 => wire__crate__bridge__derive_key_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__bridge__generate_mnemonic_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__bridge__generate_mnemonic_from_entropy_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        44 => wire__crate__bridge__get_address_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__bridge__get_coin_info_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__bridge__get_public_key_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__bridge__get_purpose_info_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__bridge__health_check_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__bridge__parse_bip44_path_impl(port, ptr, rust_vec_len, data_len),
-        50 => wire__crate__bridge__validate_mnemonic_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__bridge__get_address_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__bridge__get_coin_info_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__bridge__get_public_key_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__bridge__get_purpose_info_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__bridge__health_check_impl(port, ptr, rust_vec_len, data_len),
+        50 => {
+            wire__crate__bridge__mnemonic_phrase_to_seed_hex_impl(port, ptr, rust_vec_len, data_len)
+        }
+        51 => wire__crate__bridge__parse_bip44_path_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__bridge__validate_mnemonic_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }

@@ -25,6 +25,12 @@ Future<String> generateMnemonicFromEntropy({required List<int> entropy}) =>
 Future<bool> validateMnemonic({required String phrase}) =>
     RustLib.instance.api.crateBridgeValidateMnemonic(phrase: phrase);
 
+/// Convert a mnemonic phrase to a BIP39 seed (64 bytes as hex string)
+Future<String> mnemonicPhraseToSeedHex(
+        {required String phrase, String? passphrase}) =>
+    RustLib.instance.api.crateBridgeMnemonicPhraseToSeedHex(
+        phrase: phrase, passphrase: passphrase);
+
 /// Create a master extended private key from a mnemonic string
 Future<String> createMasterKey(
         {required String mnemonic,
@@ -232,6 +238,9 @@ abstract class Mnemonic implements RustOpaqueInterface {
 
   /// Convert mnemonic to string phrase
   Future<String> toPhrase();
+
+  /// Convert mnemonic to BIP39 seed bytes (64 bytes)
+  Future<Uint8List> toSeed({String? passphrase});
 
   /// Get the word count
   Future<int> wordCount();
