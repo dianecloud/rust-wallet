@@ -5,8 +5,8 @@
 use khodpay_bip32::Network;
 use khodpay_bip44::{CoinType, Purpose, Wallet};
 use khodpay_signing::{
-    Address, Bip44Signer, ChainId, Eip1559Transaction, SignedTransaction, Wei,
-    recover_signer, TRANSFER_GAS,
+    recover_signer, Address, Bip44Signer, ChainId, Eip1559Transaction, SignedTransaction, Wei,
+    TRANSFER_GAS,
 };
 
 /// Standard test mnemonic (DO NOT USE IN PRODUCTION).
@@ -18,7 +18,8 @@ const TEST_MNEMONIC: &str =
 #[test]
 fn test_full_workflow_mnemonic_to_signed_transaction() {
     // Step 1: Create wallet from mnemonic
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
 
     // Step 2: Get Ethereum account (CoinType 60 for EVM chains)
     let account = wallet
@@ -67,7 +68,8 @@ fn test_full_workflow_mnemonic_to_signed_transaction() {
 
 #[test]
 fn test_workflow_bsc_testnet() {
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();
@@ -92,7 +94,8 @@ fn test_workflow_bsc_testnet() {
 
 #[test]
 fn test_workflow_multiple_addresses() {
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();
@@ -218,7 +221,8 @@ fn test_different_chain_ids_produce_different_hashes() {
 
 #[test]
 fn test_signature_not_valid_on_different_chain() {
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();
@@ -256,7 +260,8 @@ fn test_signature_not_valid_on_different_chain() {
 #[test]
 fn test_known_address_derivation() {
     // Known test vector: first address from standard test mnemonic
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();
@@ -336,7 +341,8 @@ fn test_contract_call_transaction() {
 
 #[test]
 fn test_signing_is_deterministic() {
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();
@@ -365,7 +371,8 @@ fn test_signing_is_deterministic() {
 
 #[test]
 fn test_raw_transaction_is_deterministic() {
-    let mut wallet = Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
+    let mut wallet =
+        Wallet::from_english_mnemonic(TEST_MNEMONIC, "", Network::BitcoinMainnet).unwrap();
     let account = wallet
         .get_account(Purpose::BIP44, CoinType::Ethereum, 0)
         .unwrap();

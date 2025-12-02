@@ -323,9 +323,7 @@ mod tests {
 
     #[test]
     fn test_parse_without_prefix() {
-        let addr: Address = "742d35Cc6634C0532925a3b844Bc454e4438f44e"
-            .parse()
-            .unwrap();
+        let addr: Address = "742d35Cc6634C0532925a3b844Bc454e4438f44e".parse().unwrap();
         assert_eq!(
             addr.to_checksum_string(),
             "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"

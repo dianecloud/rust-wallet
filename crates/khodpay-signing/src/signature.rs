@@ -250,10 +250,10 @@ mod tests {
     #[test]
     fn test_zeroize() {
         use zeroize::Zeroize;
-        
+
         let mut sig = Signature::new([0xab; 32], [0xcd; 32], 1);
         sig.zeroize();
-        
+
         assert_eq!(sig.r, [0u8; 32]);
         assert_eq!(sig.s, [0u8; 32]);
         assert_eq!(sig.v, 0);

@@ -86,7 +86,10 @@ impl SignedTransaction {
         // Transaction fields (9 items)
         stream.append(&u64::from(self.transaction.chain_id));
         stream.append(&self.transaction.nonce);
-        append_u256(&mut stream, self.transaction.max_priority_fee_per_gas.as_u256());
+        append_u256(
+            &mut stream,
+            self.transaction.max_priority_fee_per_gas.as_u256(),
+        );
         append_u256(&mut stream, self.transaction.max_fee_per_gas.as_u256());
         stream.append(&self.transaction.gas_limit);
 
@@ -105,7 +108,7 @@ impl SignedTransaction {
         // Signature fields (3 items)
         // v is the recovery ID (0 or 1) for EIP-1559
         stream.append(&self.signature.v);
-        
+
         // r and s as big-endian bytes with leading zeros stripped
         append_signature_component(&mut stream, &self.signature.r);
         append_signature_component(&mut stream, &self.signature.s);

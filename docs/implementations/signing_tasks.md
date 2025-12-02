@@ -84,7 +84,7 @@ This crate provides EVM transaction signing for BSC (BNB Smart Chain) using EIP-
 
 ## 🎯 PHASE 6: Documentation & Polish (LOW Priority)
 
-- [ ] **Task 11**: Documentation, examples, and final polish
+- [x] **Task 11**: Documentation, examples, and final polish
   - README.md, examples, serde feature, clippy/fmt
 
 ---

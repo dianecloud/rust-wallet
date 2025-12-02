@@ -50,26 +50,23 @@ impl Bip44Signer {
     /// # Errors
     ///
     /// Returns an error if key derivation fails.
-    pub fn new(
-        account: &khodpay_bip44::Account,
-        address_index: u32,
-    ) -> Result<Self> {
+    pub fn new(account: &khodpay_bip44::Account, address_index: u32) -> Result<Self> {
         // Derive the external address at the given index
         let extended_key = account.derive_external(address_index)?;
-        
+
         // Get the private key bytes from the extended key, wrapped in Zeroizing
         // to ensure the bytes are zeroed when dropped
-        let private_key_bytes: Zeroizing<[u8; 32]> = 
+        let private_key_bytes: Zeroizing<[u8; 32]> =
             Zeroizing::new(extended_key.private_key().to_bytes());
-        
+
         // Create the signing key (k256::SigningKey implements Zeroize internally)
         let signing_key = SigningKey::from_bytes(private_key_bytes.as_ref().into())
             .map_err(|e| Error::SigningError(format!("Invalid private key: {}", e)))?;
-        
+
         // Derive the address from the public key
         let verifying_key = signing_key.verifying_key();
         let address = Self::address_from_verifying_key(verifying_key)?;
-        
+
         Ok(Self {
             signing_key,
             address,
@@ -97,10 +94,10 @@ impl Bip44Signer {
     pub fn from_private_key(private_key: &[u8; 32]) -> Result<Self> {
         let signing_key = SigningKey::from_bytes(private_key.into())
             .map_err(|e| Error::SigningError(format!("Invalid private key: {}", e)))?;
-        
+
         let verifying_key = signing_key.verifying_key();
         let address = Self::address_from_verifying_key(verifying_key)?;
-        
+
         Ok(Self {
             signing_key,
             address,
@@ -137,17 +134,15 @@ impl Bip44Signer {
     ///
     /// Returns an error if signing fails.
     pub fn sign_hash(&self, hash: &[u8; 32]) -> Result<Signature> {
-        use k256::ecdsa::signature::hazmat::PrehashSigner as _;
-        
         let (signature, recovery_id) = self
             .signing_key
             .sign_prehash_recoverable(hash)
             .map_err(|e| Error::SigningError(format!("Signing failed: {}", e)))?;
-        
+
         let r_bytes: [u8; 32] = signature.r().to_bytes().into();
         let s_bytes: [u8; 32] = signature.s().to_bytes().into();
         let v = recovery_id.to_byte();
-        
+
         Ok(Signature::new(r_bytes, s_bytes, v))
     }
 
@@ -195,12 +190,12 @@ impl Bip44Signer {
         // Get uncompressed public key (65 bytes with 0x04 prefix)
         let pubkey_uncompressed = verifying_key.to_encoded_point(false);
         let pubkey_bytes = pubkey_uncompressed.as_bytes();
-        
+
         // Skip the 0x04 prefix, take the 64-byte public key
         if pubkey_bytes.len() != 65 || pubkey_bytes[0] != 0x04 {
             return Err(Error::SigningError("Invalid public key format".to_string()));
         }
-        
+
         Address::from_public_key_bytes(&pubkey_bytes[1..])
     }
 }
@@ -222,16 +217,16 @@ impl Bip44Signer {
 pub fn recover_signer(hash: &[u8; 32], signature: &Signature) -> Result<Address> {
     let recovery_id = RecoveryId::from_byte(signature.v)
         .ok_or_else(|| Error::SigningError("Invalid recovery ID".to_string()))?;
-    
+
     let r = k256::FieldBytes::from_slice(&signature.r);
     let s = k256::FieldBytes::from_slice(&signature.s);
-    
+
     let ecdsa_sig = k256::ecdsa::Signature::from_scalars(*r, *s)
         .map_err(|e| Error::SigningError(format!("Invalid signature: {}", e)))?;
-    
+
     let verifying_key = VerifyingKey::recover_from_prehash(hash, &ecdsa_sig, recovery_id)
         .map_err(|e| Error::SigningError(format!("Recovery failed: {}", e)))?;
-    
+
     Bip44Signer::address_from_verifying_key(&verifying_key)
 }
 
@@ -242,8 +237,8 @@ mod tests {
 
     // Known test vector: private key 1
     const TEST_PRIVATE_KEY: [u8; 32] = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1,
     ];
 
     // Expected address for private key 1
@@ -254,10 +249,7 @@ mod tests {
     #[test]
     fn test_from_private_key() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
-        assert_eq!(
-            signer.address().to_checksum_string(),
-            EXPECTED_ADDRESS
-        );
+        assert_eq!(signer.address().to_checksum_string(), EXPECTED_ADDRESS);
     }
 
     #[test]
@@ -273,7 +265,7 @@ mod tests {
     fn test_address() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
         let address = signer.address();
-        
+
         assert_eq!(address.to_checksum_string(), EXPECTED_ADDRESS);
     }
 
@@ -281,7 +273,7 @@ mod tests {
     fn test_address_deterministic() {
         let signer1 = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
         let signer2 = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
-        
+
         assert_eq!(signer1.address(), signer2.address());
     }
 
@@ -291,9 +283,9 @@ mod tests {
     fn test_sign_hash() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
         let hash = [0u8; 32];
-        
+
         let signature = signer.sign_hash(&hash).unwrap();
-        
+
         // Signature should have valid components
         assert!(signature.v <= 1);
         // r and s should not be all zeros (extremely unlikely for valid signature)
@@ -305,10 +297,10 @@ mod tests {
     fn test_sign_hash_deterministic() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
         let hash = [1u8; 32];
-        
+
         let sig1 = signer.sign_hash(&hash).unwrap();
         let sig2 = signer.sign_hash(&hash).unwrap();
-        
+
         // RFC 6979 deterministic signatures
         assert_eq!(sig1.r, sig2.r);
         assert_eq!(sig1.s, sig2.s);
@@ -317,7 +309,7 @@ mod tests {
     #[test]
     fn test_sign_transaction() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
-        
+
         let tx = Eip1559Transaction::builder()
             .chain_id(ChainId::BscMainnet)
             .nonce(0)
@@ -327,16 +319,16 @@ mod tests {
             .value(Wei::ZERO)
             .build()
             .unwrap();
-        
+
         let signature = signer.sign_transaction(&tx).unwrap();
-        
+
         assert!(signature.v <= 1);
     }
 
     #[test]
     fn test_sign_different_transactions() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
-        
+
         let tx1 = Eip1559Transaction::builder()
             .chain_id(ChainId::BscMainnet)
             .nonce(0)
@@ -345,7 +337,7 @@ mod tests {
             .gas_limit(21000)
             .build()
             .unwrap();
-        
+
         let tx2 = Eip1559Transaction::builder()
             .chain_id(ChainId::BscMainnet)
             .nonce(1) // Different nonce
@@ -354,10 +346,10 @@ mod tests {
             .gas_limit(21000)
             .build()
             .unwrap();
-        
+
         let sig1 = signer.sign_transaction(&tx1).unwrap();
         let sig2 = signer.sign_transaction(&tx2).unwrap();
-        
+
         // Different transactions should produce different signatures
         assert_ne!(sig1.r, sig2.r);
     }
@@ -368,17 +360,17 @@ mod tests {
     fn test_recover_signer() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
         let hash = [5u8; 32];
-        
+
         let signature = signer.sign_hash(&hash).unwrap();
         let recovered = recover_signer(&hash, &signature).unwrap();
-        
+
         assert_eq!(recovered, signer.address());
     }
 
     #[test]
     fn test_recover_from_transaction() {
         let signer = Bip44Signer::from_private_key(&TEST_PRIVATE_KEY).unwrap();
-        
+
         let tx = Eip1559Transaction::builder()
             .chain_id(ChainId::BscMainnet)
             .nonce(0)
@@ -388,11 +380,11 @@ mod tests {
             .value(Wei::from_ether(1))
             .build()
             .unwrap();
-        
+
         let signature = signer.sign_transaction(&tx).unwrap();
         let hash = tx.signing_hash();
         let recovered = recover_signer(&hash, &signature).unwrap();
-        
+
         assert_eq!(recovered, signer.address());
     }
 
@@ -400,7 +392,7 @@ mod tests {
     fn test_recover_invalid_recovery_id() {
         let signature = Signature::new([1u8; 32], [2u8; 32], 5); // Invalid v
         let hash = [0u8; 32];
-        
+
         assert!(recover_signer(&hash, &signature).is_err());
     }
 
@@ -411,10 +403,10 @@ mod tests {
         let key1 = [1u8; 32];
         let mut key2 = [1u8; 32];
         key2[31] = 2;
-        
+
         let signer1 = Bip44Signer::from_private_key(&key1).unwrap();
         let signer2 = Bip44Signer::from_private_key(&key2).unwrap();
-        
+
         assert_ne!(signer1.address(), signer2.address());
     }
 
@@ -423,14 +415,14 @@ mod tests {
         let key1 = [1u8; 32];
         let mut key2 = [1u8; 32];
         key2[31] = 2;
-        
+
         let signer1 = Bip44Signer::from_private_key(&key1).unwrap();
         let signer2 = Bip44Signer::from_private_key(&key2).unwrap();
-        
+
         let hash = [0u8; 32];
         let sig1 = signer1.sign_hash(&hash).unwrap();
         let sig2 = signer2.sign_hash(&hash).unwrap();
-        
+
         assert_ne!(sig1.r, sig2.r);
     }
 }
