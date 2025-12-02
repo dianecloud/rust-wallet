@@ -65,7 +65,9 @@ pub use error::Error;
 pub use signature::Signature;
 pub use signed_transaction::SignedTransaction;
 pub use signer::{recover_signer, Bip44Signer};
-pub use transaction::{Eip1559Transaction, Eip1559TransactionBuilder, TOKEN_TRANSFER_GAS, TRANSFER_GAS};
+pub use transaction::{
+    Eip1559Transaction, Eip1559TransactionBuilder, TOKEN_TRANSFER_GAS, TRANSFER_GAS,
+};
 pub use wei::{Wei, ETHER, GWEI};
 
 /// Result type alias for signing operations.
