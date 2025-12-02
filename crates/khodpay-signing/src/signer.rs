@@ -218,8 +218,8 @@ pub fn recover_signer(hash: &[u8; 32], signature: &Signature) -> Result<Address>
     let recovery_id = RecoveryId::from_byte(signature.v)
         .ok_or_else(|| Error::SigningError("Invalid recovery ID".to_string()))?;
 
-    let r = k256::FieldBytes::from_slice(&signature.r);
-    let s = k256::FieldBytes::from_slice(&signature.s);
+    let r: &k256::FieldBytes = (&signature.r).into();
+    let s: &k256::FieldBytes = (&signature.s).into();
 
     let ecdsa_sig = k256::ecdsa::Signature::from_scalars(*r, *s)
         .map_err(|e| Error::SigningError(format!("Invalid signature: {}", e)))?;

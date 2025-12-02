@@ -285,10 +285,8 @@ mod tests {
     #[test]
     fn test_clone_copy() {
         let original = ChainId::BscMainnet;
-        let cloned = original.clone();
-        let copied = original;
+        let copied = original; // Copy trait
 
-        assert_eq!(original, cloned);
         assert_eq!(original, copied);
     }
 
