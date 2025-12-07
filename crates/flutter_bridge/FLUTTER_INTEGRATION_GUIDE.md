@@ -87,9 +87,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
-  # Required for code generation
-  freezed: ^2.4.5
-  build_runner: ^2.4.6
+  # Optional: Only needed if using freezed types
+  # freezed: ^2.4.5
+  # build_runner: ^2.4.6
   
   flutter_lints: ^2.0.0
 ```
@@ -464,13 +464,13 @@ class _CreateWalletScreenState extends State<CreateWalletScreen> {
         passphrase: _passphraseController.text.isEmpty 
             ? null 
             : _passphraseController.text,
-        network: NetworkType.BitcoinMainnet,
+        network: Network.bitcoinMainnet,
       );
       
       // Get Bitcoin account
       final account = await wallet.getAccount(
-        purpose: PurposeType.BIP84,  // Native SegWit
-        coinType: CoinType.Bitcoin,
+        purpose: Purpose.bip84,  // Native SegWit
+        coinType: CoinType.bitcoin,
         accountIndex: 0,
       );
       
@@ -589,7 +589,7 @@ class _DeriveAddressesScreenState extends State<DeriveAddressesScreen> {
       
       // Derive first 10 receiving addresses
       final addresses = await widget.account.deriveAddressRange(
-        chain: ChainType.External,
+        chain: Chain.external_,
         start: 0,
         count: 10,
       );
@@ -674,25 +674,25 @@ class _MultiCoinWalletScreenState extends State<MultiCoinWalletScreen> {
       final wallet = await Bip44Wallet.fromMnemonic(
         mnemonic: widget.mnemonic,
         passphrase: null,
-        network: NetworkType.BitcoinMainnet,
+        network: Network.bitcoinMainnet,
       );
       
       // Get accounts for different coins
       final btcAccount = await wallet.getAccount(
-        purpose: PurposeType.BIP84,
-        coinType: CoinType.Bitcoin,
+        purpose: Purpose.bip84,
+        coinType: CoinType.bitcoin,
         accountIndex: 0,
       );
       
       final ethAccount = await wallet.getAccount(
-        purpose: PurposeType.BIP44,
-        coinType: CoinType.Ethereum,
+        purpose: Purpose.bip44,
+        coinType: CoinType.ethereum,
         accountIndex: 0,
       );
       
       final ltcAccount = await wallet.getAccount(
-        purpose: PurposeType.BIP84,
-        coinType: CoinType.Litecoin,
+        purpose: Purpose.bip84,
+        coinType: CoinType.litecoin,
         accountIndex: 0,
       );
       
@@ -1004,6 +1004,7 @@ class _ValidateMnemonicScreenState extends State<ValidateMnemonicScreen> {
 - [BIP32 Integration Guide](./BIP32_INTEGRATION.md)
 - [BIP39 Integration Guide](./BIP39_INTEGRATION.md)
 - [BIP44 Integration Guide](./BIP44_INTEGRATION.md)
+- [Signing Integration Guide](./SIGNING_INTEGRATION.md) - EVM transaction signing
 - [Flutter Rust Bridge Documentation](https://cjycode.com/flutter_rust_bridge/)
 - [Flutter Official Documentation](https://flutter.dev/docs)
 

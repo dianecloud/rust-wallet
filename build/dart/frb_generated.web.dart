@@ -24,7 +24,13 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated_web.dart';
                     required super.portManager,
                   });
 
-                  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Bip44WalletPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet;
+                  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Bip44AccountPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account;
+
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Bip44WalletPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet;
+
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmAddressPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress;
+
+CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmSignerPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner;
 
 CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ExtendedPrivateKeyPtr => wire.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey;
 
@@ -34,7 +40,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 
 
-                  @protected Bip44Wallet dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(dynamic raw);
+                  @protected Bip44Account dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(dynamic raw);
+
+@protected Bip44Wallet dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(dynamic raw);
+
+@protected EvmAddress dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(dynamic raw);
+
+@protected EvmSigner dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(dynamic raw);
 
 @protected ExtendedPrivateKey dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(dynamic raw);
 
@@ -44,7 +56,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Bip44Wallet dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(dynamic raw);
 
+@protected Bip44Account dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(dynamic raw);
+
 @protected Bip44Wallet dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(dynamic raw);
+
+@protected EvmAddress dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(dynamic raw);
+
+@protected EvmSigner dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(dynamic raw);
 
 @protected ExtendedPrivateKey dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(dynamic raw);
 
@@ -52,7 +70,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Mnemonic dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(dynamic raw);
 
+@protected Bip44Account dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(dynamic raw);
+
 @protected Bip44Wallet dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(dynamic raw);
+
+@protected EvmAddress dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(dynamic raw);
+
+@protected EvmSigner dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(dynamic raw);
 
 @protected ExtendedPrivateKey dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(dynamic raw);
 
@@ -62,17 +86,37 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected String dco_decode_String(dynamic raw);
 
-@protected Bip44Account dco_decode_bip_44_account(dynamic raw);
-
 @protected bool dco_decode_bool(dynamic raw);
 
-@protected Bip44Account dco_decode_box_autoadd_bip_44_account(dynamic raw);
+@protected ChainId dco_decode_box_autoadd_chain_id(dynamic raw);
 
-@protected CoinType dco_decode_box_autoadd_coin_type(dynamic raw);
+@protected Eip1559Transaction dco_decode_box_autoadd_eip_1559_transaction(dynamic raw);
 
-@protected ChainType dco_decode_chain_type(dynamic raw);
+@protected Eip1559TransactionBuilder dco_decode_box_autoadd_eip_1559_transaction_builder(dynamic raw);
+
+@protected EvmSignature dco_decode_box_autoadd_evm_signature(dynamic raw);
+
+@protected EvmWei dco_decode_box_autoadd_evm_wei(dynamic raw);
+
+@protected SignedEvmTransaction dco_decode_box_autoadd_signed_evm_transaction(dynamic raw);
+
+@protected BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+@protected Chain dco_decode_chain(dynamic raw);
+
+@protected ChainId dco_decode_chain_id(dynamic raw);
 
 @protected CoinType dco_decode_coin_type(dynamic raw);
+
+@protected Eip1559Transaction dco_decode_eip_1559_transaction(dynamic raw);
+
+@protected Eip1559TransactionBuilder dco_decode_eip_1559_transaction_builder(dynamic raw);
+
+@protected EvmAccessListItem dco_decode_evm_access_list_item(dynamic raw);
+
+@protected EvmSignature dco_decode_evm_signature(dynamic raw);
+
+@protected EvmWei dco_decode_evm_wei(dynamic raw);
 
 @protected int dco_decode_i_32(dynamic raw);
 
@@ -82,13 +126,21 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
-@protected NetworkType dco_decode_network_type(dynamic raw);
+@protected Network dco_decode_network(dynamic raw);
 
 @protected String? dco_decode_opt_String(dynamic raw);
 
-@protected PurposeType dco_decode_purpose_type(dynamic raw);
+@protected ChainId? dco_decode_opt_box_autoadd_chain_id(dynamic raw);
+
+@protected BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+
+@protected Purpose dco_decode_purpose(dynamic raw);
+
+@protected SignedEvmTransaction dco_decode_signed_evm_transaction(dynamic raw);
 
 @protected int dco_decode_u_32(dynamic raw);
+
+@protected BigInt dco_decode_u_64(dynamic raw);
 
 @protected int dco_decode_u_8(dynamic raw);
 
@@ -98,7 +150,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected WalletResult dco_decode_wallet_result(dynamic raw);
 
+@protected Bip44Account sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(SseDeserializer deserializer);
+
 @protected Bip44Wallet sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(SseDeserializer deserializer);
+
+@protected EvmAddress sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(SseDeserializer deserializer);
+
+@protected EvmSigner sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(SseDeserializer deserializer);
 
 @protected ExtendedPrivateKey sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(SseDeserializer deserializer);
 
@@ -108,7 +166,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Bip44Wallet sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(SseDeserializer deserializer);
 
+@protected Bip44Account sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(SseDeserializer deserializer);
+
 @protected Bip44Wallet sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(SseDeserializer deserializer);
+
+@protected EvmAddress sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(SseDeserializer deserializer);
+
+@protected EvmSigner sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(SseDeserializer deserializer);
 
 @protected ExtendedPrivateKey sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(SseDeserializer deserializer);
 
@@ -116,7 +180,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Mnemonic sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(SseDeserializer deserializer);
 
+@protected Bip44Account sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(SseDeserializer deserializer);
+
 @protected Bip44Wallet sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(SseDeserializer deserializer);
+
+@protected EvmAddress sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(SseDeserializer deserializer);
+
+@protected EvmSigner sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(SseDeserializer deserializer);
 
 @protected ExtendedPrivateKey sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(SseDeserializer deserializer);
 
@@ -126,17 +196,37 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected String sse_decode_String(SseDeserializer deserializer);
 
-@protected Bip44Account sse_decode_bip_44_account(SseDeserializer deserializer);
-
 @protected bool sse_decode_bool(SseDeserializer deserializer);
 
-@protected Bip44Account sse_decode_box_autoadd_bip_44_account(SseDeserializer deserializer);
+@protected ChainId sse_decode_box_autoadd_chain_id(SseDeserializer deserializer);
 
-@protected CoinType sse_decode_box_autoadd_coin_type(SseDeserializer deserializer);
+@protected Eip1559Transaction sse_decode_box_autoadd_eip_1559_transaction(SseDeserializer deserializer);
 
-@protected ChainType sse_decode_chain_type(SseDeserializer deserializer);
+@protected Eip1559TransactionBuilder sse_decode_box_autoadd_eip_1559_transaction_builder(SseDeserializer deserializer);
+
+@protected EvmSignature sse_decode_box_autoadd_evm_signature(SseDeserializer deserializer);
+
+@protected EvmWei sse_decode_box_autoadd_evm_wei(SseDeserializer deserializer);
+
+@protected SignedEvmTransaction sse_decode_box_autoadd_signed_evm_transaction(SseDeserializer deserializer);
+
+@protected BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+@protected Chain sse_decode_chain(SseDeserializer deserializer);
+
+@protected ChainId sse_decode_chain_id(SseDeserializer deserializer);
 
 @protected CoinType sse_decode_coin_type(SseDeserializer deserializer);
+
+@protected Eip1559Transaction sse_decode_eip_1559_transaction(SseDeserializer deserializer);
+
+@protected Eip1559TransactionBuilder sse_decode_eip_1559_transaction_builder(SseDeserializer deserializer);
+
+@protected EvmAccessListItem sse_decode_evm_access_list_item(SseDeserializer deserializer);
+
+@protected EvmSignature sse_decode_evm_signature(SseDeserializer deserializer);
+
+@protected EvmWei sse_decode_evm_wei(SseDeserializer deserializer);
 
 @protected int sse_decode_i_32(SseDeserializer deserializer);
 
@@ -146,13 +236,21 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
-@protected NetworkType sse_decode_network_type(SseDeserializer deserializer);
+@protected Network sse_decode_network(SseDeserializer deserializer);
 
 @protected String? sse_decode_opt_String(SseDeserializer deserializer);
 
-@protected PurposeType sse_decode_purpose_type(SseDeserializer deserializer);
+@protected ChainId? sse_decode_opt_box_autoadd_chain_id(SseDeserializer deserializer);
+
+@protected BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+
+@protected Purpose sse_decode_purpose(SseDeserializer deserializer);
+
+@protected SignedEvmTransaction sse_decode_signed_evm_transaction(SseDeserializer deserializer);
 
 @protected int sse_decode_u_32(SseDeserializer deserializer);
+
+@protected BigInt sse_decode_u_64(SseDeserializer deserializer);
 
 @protected int sse_decode_u_8(SseDeserializer deserializer);
 
@@ -162,7 +260,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected WalletResult sse_decode_wallet_result(SseDeserializer deserializer);
 
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(Bip44Account self, SseSerializer serializer);
+
 @protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(Bip44Wallet self, SseSerializer serializer);
+
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(EvmAddress self, SseSerializer serializer);
+
+@protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(EvmSigner self, SseSerializer serializer);
 
 @protected void sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(ExtendedPrivateKey self, SseSerializer serializer);
 
@@ -172,7 +276,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected void sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(Bip44Wallet self, SseSerializer serializer);
 
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(Bip44Account self, SseSerializer serializer);
+
 @protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(Bip44Wallet self, SseSerializer serializer);
+
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(EvmAddress self, SseSerializer serializer);
+
+@protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(EvmSigner self, SseSerializer serializer);
 
 @protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(ExtendedPrivateKey self, SseSerializer serializer);
 
@@ -180,7 +290,13 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected void sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(Mnemonic self, SseSerializer serializer);
 
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(Bip44Account self, SseSerializer serializer);
+
 @protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(Bip44Wallet self, SseSerializer serializer);
+
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(EvmAddress self, SseSerializer serializer);
+
+@protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(EvmSigner self, SseSerializer serializer);
 
 @protected void sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(ExtendedPrivateKey self, SseSerializer serializer);
 
@@ -190,17 +306,37 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected void sse_encode_String(String self, SseSerializer serializer);
 
-@protected void sse_encode_bip_44_account(Bip44Account self, SseSerializer serializer);
-
 @protected void sse_encode_bool(bool self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_bip_44_account(Bip44Account self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_chain_id(ChainId self, SseSerializer serializer);
 
-@protected void sse_encode_box_autoadd_coin_type(CoinType self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_eip_1559_transaction(Eip1559Transaction self, SseSerializer serializer);
 
-@protected void sse_encode_chain_type(ChainType self, SseSerializer serializer);
+@protected void sse_encode_box_autoadd_eip_1559_transaction_builder(Eip1559TransactionBuilder self, SseSerializer serializer);
+
+@protected void sse_encode_box_autoadd_evm_signature(EvmSignature self, SseSerializer serializer);
+
+@protected void sse_encode_box_autoadd_evm_wei(EvmWei self, SseSerializer serializer);
+
+@protected void sse_encode_box_autoadd_signed_evm_transaction(SignedEvmTransaction self, SseSerializer serializer);
+
+@protected void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+@protected void sse_encode_chain(Chain self, SseSerializer serializer);
+
+@protected void sse_encode_chain_id(ChainId self, SseSerializer serializer);
 
 @protected void sse_encode_coin_type(CoinType self, SseSerializer serializer);
+
+@protected void sse_encode_eip_1559_transaction(Eip1559Transaction self, SseSerializer serializer);
+
+@protected void sse_encode_eip_1559_transaction_builder(Eip1559TransactionBuilder self, SseSerializer serializer);
+
+@protected void sse_encode_evm_access_list_item(EvmAccessListItem self, SseSerializer serializer);
+
+@protected void sse_encode_evm_signature(EvmSignature self, SseSerializer serializer);
+
+@protected void sse_encode_evm_wei(EvmWei self, SseSerializer serializer);
 
 @protected void sse_encode_i_32(int self, SseSerializer serializer);
 
@@ -210,13 +346,21 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 
 @protected void sse_encode_list_prim_u_8_strict(Uint8List self, SseSerializer serializer);
 
-@protected void sse_encode_network_type(NetworkType self, SseSerializer serializer);
+@protected void sse_encode_network(Network self, SseSerializer serializer);
 
 @protected void sse_encode_opt_String(String? self, SseSerializer serializer);
 
-@protected void sse_encode_purpose_type(PurposeType self, SseSerializer serializer);
+@protected void sse_encode_opt_box_autoadd_chain_id(ChainId? self, SseSerializer serializer);
+
+@protected void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+
+@protected void sse_encode_purpose(Purpose self, SseSerializer serializer);
+
+@protected void sse_encode_signed_evm_transaction(SignedEvmTransaction self, SseSerializer serializer);
 
 @protected void sse_encode_u_32(int self, SseSerializer serializer);
+
+@protected void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
 @protected void sse_encode_u_8(int self, SseSerializer serializer);
 
@@ -234,9 +378,21 @@ CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MnemonicPtr => wir
 class RustLibWire implements BaseWire {
             RustLibWire.fromExternalLibrary(ExternalLibrary lib);
 
-            void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(ptr);
+            void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(ptr);
+
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(ptr);
+
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(ptr);
 
 void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(ptr);
+
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(ptr);
+
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(ptr);
+
+void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(ptr);
+
+void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(int ptr) => wasmModule.rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(ptr);
 
 void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(int ptr) => wasmModule.rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(ptr);
 
@@ -253,9 +409,21 @@ void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generated
         @JS('wasm_bindgen') external RustLibWasmModule get wasmModule;
 
         @JS() @anonymous extension type RustLibWasmModule._(JSObject _) implements JSObject {
-            external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr);
+            external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(int ptr);
+
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(int ptr);
+
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr);
 
 external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(int ptr);
+
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(int ptr);
+
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(int ptr);
+
+external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(int ptr);
+
+external void rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(int ptr);
 
 external void rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(int ptr);
 

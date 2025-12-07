@@ -13,12 +13,12 @@ BIP44 (Bitcoin Improvement Proposal 44) support has been integrated into the Flu
 
 ### 2. New Enums
 
-#### `PurposeType`
+#### `Purpose`
 Defines the BIP standard to use:
-- `BIP44` - Legacy P2PKH addresses
-- `BIP49` - SegWit wrapped in P2SH
-- `BIP84` - Native SegWit
-- `BIP86` - Taproot
+- `Bip44` - Legacy P2PKH addresses
+- `Bip49` - SegWit wrapped in P2SH
+- `Bip84` - Native SegWit
+- `Bip86` - Taproot
 
 #### `CoinType`
 Supported cryptocurrencies:
@@ -26,10 +26,20 @@ Supported cryptocurrencies:
 - `BitcoinTestnet`
 - `Litecoin`
 - `Dogecoin`
+- `Dash`
 - `Ethereum`
-- `Custom(u32)` - For any SLIP-44 registered coin
+- `EthereumClassic`
+- `BitcoinCash`
+- `BinanceCoin`
+- `Solana`
+- `Cardano`
+- `Polkadot`
+- `Cosmos`
+- `Tron`
 
-#### `ChainType`
+For custom coin types, use the `coinTypeToIndex()` utility function.
+
+#### `Chain`
 Address chain types:
 - `External` - Receiving addresses (chain 0)
 - `Internal` - Change addresses (chain 1)
@@ -43,18 +53,18 @@ High-level wallet management:
 let wallet = Bip44Wallet::from_mnemonic(
     mnemonic,
     Some("password"),
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Create from seed
-let wallet = Bip44Wallet::from_seed(seed_bytes, NetworkType::BitcoinMainnet)?;
+let wallet = Bip44Wallet::from_seed(seed_bytes, Network::BitcoinMainnet)?;
 
 // Get network
 let network = wallet.network();
 
 // Get an account
 let account = wallet.get_account(
-    PurposeType::BIP44,
+    Purpose::Bip44,
     CoinType::Bitcoin,
     0  // account index
 )?;
@@ -71,7 +81,7 @@ let change = account.derive_internal(0)?;
 
 // Derive multiple addresses
 let addresses = account.derive_address_range(
-    ChainType::External,
+    Chain::External,
     0,   // start index
     20   // count
 )?;
@@ -85,10 +95,10 @@ Create a wallet and derive an account in one call:
 let account_key = create_bip44_account(
     mnemonic,
     Some("password"),
-    PurposeType::BIP84,
+    Purpose::Bip84,
     CoinType::Bitcoin,
     0,
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 ```
 
@@ -97,7 +107,7 @@ Derive an address from an account key:
 ```rust
 let address = derive_bip44_address(
     account_key,
-    ChainType::External,
+    Chain::External,
     0  // address index
 )?;
 ```
@@ -130,19 +140,19 @@ let mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon 
 let mut wallet = Bip44Wallet::from_mnemonic(
     mnemonic.to_string(),
     None,
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Get Bitcoin account
 let btc_account = wallet.get_account(
-    PurposeType::BIP84,
+    Purpose::Bip84,
     CoinType::Bitcoin,
     0
 )?;
 
 // Get Ethereum account
 let eth_account = wallet.get_account(
-    PurposeType::BIP44,
+    Purpose::Bip44,
     CoinType::Ethereum,
     0
 )?;
@@ -152,14 +162,14 @@ let eth_account = wallet.get_account(
 ```rust
 // Derive first 20 receiving addresses
 let addresses = account.derive_address_range(
-    ChainType::External,
+    Chain::External,
     0,
     20
 )?;
 
 // Derive first 10 change addresses
 let change_addresses = account.derive_address_range(
-    ChainType::Internal,
+    Chain::Internal,
     0,
     10
 )?;
@@ -170,20 +180,20 @@ let change_addresses = account.derive_address_range(
 let mut wallet = Bip44Wallet::from_mnemonic(
     mnemonic,
     None,
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Legacy addresses (1...)
-let legacy = wallet.get_account(PurposeType::BIP44, CoinType::Bitcoin, 0)?;
+let legacy = wallet.get_account(Purpose::Bip44, CoinType::Bitcoin, 0)?;
 
 // SegWit addresses (3...)
-let segwit = wallet.get_account(PurposeType::BIP49, CoinType::Bitcoin, 0)?;
+let segwit = wallet.get_account(Purpose::Bip49, CoinType::Bitcoin, 0)?;
 
 // Native SegWit addresses (bc1q...)
-let native_segwit = wallet.get_account(PurposeType::BIP84, CoinType::Bitcoin, 0)?;
+let native_segwit = wallet.get_account(Purpose::Bip84, CoinType::Bitcoin, 0)?;
 
 // Taproot addresses (bc1p...)
-let taproot = wallet.get_account(PurposeType::BIP86, CoinType::Bitcoin, 0)?;
+let taproot = wallet.get_account(Purpose::Bip86, CoinType::Bitcoin, 0)?;
 ```
 
 ## Building
@@ -216,8 +226,15 @@ The existing build scripts work without modification:
 ## Integration with Flutter
 
 After building, the generated Dart bindings will include:
-- All enum types (`PurposeType`, `CoinType`, `ChainType`)
+- All enum types (`Purpose`, `CoinType`, `Chain`)
 - Class wrappers (`Bip44Wallet`, `Bip44Account`)
 - Utility functions (all `create_*`, `derive_*`, `get_*` functions)
 
 The Flutter/Dart code can then use these APIs naturally with full type safety.
+
+## Related Documentation
+
+- [BIP32_INTEGRATION.md](./BIP32_INTEGRATION.md) - HD key derivation
+- [BIP39_INTEGRATION.md](./BIP39_INTEGRATION.md) - Mnemonic generation
+- [SIGNING_INTEGRATION.md](./SIGNING_INTEGRATION.md) - EVM transaction signing
+- [Official BIP44 Specification](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)

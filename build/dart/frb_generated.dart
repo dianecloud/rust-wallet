@@ -68,7 +68,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 1018659790;
+  int get rustContentHash => -1869164546;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -79,22 +79,85 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
+  Future<int> crateBridgeBip44AccountAccountIndex({required Bip44Account that});
+
+  Future<CoinType> crateBridgeBip44AccountCoinType(
+      {required Bip44Account that});
+
+  Future<String> crateBridgeBip44AccountDeriveAddress(
+      {required Bip44Account that, required Chain chain, required int index});
+
+  Future<List<String>> crateBridgeBip44AccountDeriveAddressRange(
+      {required Bip44Account that,
+      required Chain chain,
+      required int start,
+      required int count});
+
+  Future<String> crateBridgeBip44AccountDeriveExternal(
+      {required Bip44Account that, required int index});
+
+  Future<String> crateBridgeBip44AccountDeriveInternal(
+      {required Bip44Account that, required int index});
+
+  Future<String> crateBridgeBip44AccountExtendedKeyString(
+      {required Bip44Account that});
+
+  Future<Network> crateBridgeBip44AccountNetwork({required Bip44Account that});
+
+  Future<Purpose> crateBridgeBip44AccountPurpose({required Bip44Account that});
+
   Future<Bip44Wallet> crateBridgeBip44WalletFromMnemonic(
-      {required String mnemonic,
-      String? passphrase,
-      required NetworkType network});
+      {required String mnemonic, String? passphrase, required Network network});
 
   Future<Bip44Wallet> crateBridgeBip44WalletFromSeed(
-      {required List<int> seed, required NetworkType network});
+      {required List<int> seed, required Network network});
 
   Future<Bip44Account> crateBridgeBip44WalletGetAccount(
       {required Bip44Wallet that,
-      required PurposeType purpose,
+      required Purpose purpose,
       required CoinType coinType,
       required int accountIndex});
 
-  Future<NetworkType> crateBridgeBip44WalletNetwork(
-      {required Bip44Wallet that});
+  Future<Network> crateBridgeBip44WalletNetwork({required Bip44Wallet that});
+
+  Future<EvmAddress> crateBridgeEvmAddressFromBytes({required List<int> bytes});
+
+  Future<EvmAddress> crateBridgeEvmAddressFromHex({required String hexString});
+
+  Future<EvmAddress> crateBridgeEvmAddressFromPublicKey(
+      {required List<int> pubkey});
+
+  Future<bool> crateBridgeEvmAddressIsZero({required EvmAddress that});
+
+  Future<Uint8List> crateBridgeEvmAddressToBytes({required EvmAddress that});
+
+  Future<String> crateBridgeEvmAddressToChecksumString(
+      {required EvmAddress that});
+
+  Future<String> crateBridgeEvmAddressToHexString({required EvmAddress that});
+
+  Future<bool> crateBridgeEvmAddressValidateChecksum({required String address});
+
+  Future<EvmAddress> crateBridgeEvmAddressZero();
+
+  Future<EvmAddress> crateBridgeEvmSignerAddress({required EvmSigner that});
+
+  Future<String> crateBridgeEvmSignerAddressString({required EvmSigner that});
+
+  Future<EvmSigner> crateBridgeEvmSignerFromAccount(
+      {required Bip44Account account, required int addressIndex});
+
+  Future<EvmSigner> crateBridgeEvmSignerFromPrivateKeyHex(
+      {required String privateKeyHex});
+
+  Future<SignedEvmTransaction> crateBridgeEvmSignerSignAndBuild(
+      {required EvmSigner that, required Eip1559Transaction tx});
+
+  Future<EvmSignature> crateBridgeEvmSignerSignHash(
+      {required EvmSigner that, required List<int> hash});
+
+  Future<EvmSignature> crateBridgeEvmSignerSignTransaction(
+      {required EvmSigner that, required Eip1559Transaction tx});
 
   Future<int> crateBridgeExtendedPrivateKeyChildNumberIndex(
       {required ExtendedPrivateKey that});
@@ -116,10 +179,10 @@ abstract class RustLibApi extends BaseApi {
   Future<ExtendedPrivateKey> crateBridgeExtendedPrivateKeyFromMnemonic(
       {required Mnemonic mnemonic,
       String? passphrase,
-      required NetworkType network});
+      required Network network});
 
   Future<ExtendedPrivateKey> crateBridgeExtendedPrivateKeyFromSeed(
-      {required List<int> seed, required NetworkType network});
+      {required List<int> seed, required Network network});
 
   Future<ExtendedPrivateKey> crateBridgeExtendedPrivateKeyFromString(
       {required String s});
@@ -127,7 +190,7 @@ abstract class RustLibApi extends BaseApi {
   Future<bool> crateBridgeExtendedPrivateKeyIsHardened(
       {required ExtendedPrivateKey that});
 
-  Future<NetworkType> crateBridgeExtendedPrivateKeyNetwork(
+  Future<Network> crateBridgeExtendedPrivateKeyNetwork(
       {required ExtendedPrivateKey that});
 
   Future<Uint8List> crateBridgeExtendedPrivateKeyParentFingerprint(
@@ -160,7 +223,7 @@ abstract class RustLibApi extends BaseApi {
   Future<bool> crateBridgeExtendedPublicKeyIsHardened(
       {required ExtendedPublicKey that});
 
-  Future<NetworkType> crateBridgeExtendedPublicKeyNetwork(
+  Future<Network> crateBridgeExtendedPublicKeyNetwork(
       {required ExtendedPublicKey that});
 
   Future<Uint8List> crateBridgeExtendedPublicKeyParentFingerprint(
@@ -184,44 +247,116 @@ abstract class RustLibApi extends BaseApi {
 
   Future<int> crateBridgeAdd({required int a, required int b});
 
-  Future<List<String>> crateBridgeBip44AccountDeriveAddressRange(
-      {required Bip44Account that,
-      required ChainType chain,
-      required int start,
-      required int count});
+  Future<BigInt> crateBridgeChainIdToU64({required ChainId chainId});
 
-  Future<String> crateBridgeBip44AccountDeriveExternal(
-      {required Bip44Account that, required int index});
-
-  Future<String> crateBridgeBip44AccountDeriveInternal(
-      {required Bip44Account that, required int index});
+  Future<int> crateBridgeCoinTypeToIndex({required CoinType coinType});
 
   Future<String> crateBridgeCreateBip44Account(
       {required String mnemonic,
       String? passphrase,
-      required PurposeType purpose,
+      required Purpose purpose,
       required CoinType coinType,
       required int accountIndex,
-      required NetworkType network});
+      required Network network});
 
   Future<WalletResult> crateBridgeCreateBip44Wallet(
       {required String mnemonic,
       String? passphrase,
       required int accountIndex,
-      required NetworkType network});
+      required Network network});
 
-  Future<String> crateBridgeCreateMasterKey(
+  Future<String> crateBridgeCreateEvmSignerFromMnemonic(
       {required String mnemonic,
       String? passphrase,
-      required NetworkType network});
+      required int accountIndex,
+      required int addressIndex});
+
+  Future<String> crateBridgeCreateMasterKey(
+      {required String mnemonic, String? passphrase, required Network network});
+
+  Future<BigInt> crateBridgeCustomChainIdValue({required BigInt chainId});
 
   Future<String> crateBridgeDeriveBip44Address(
       {required String accountKey,
-      required ChainType chain,
+      required Chain chain,
+      required int addressIndex});
+
+  Future<String> crateBridgeDeriveEvmAddress(
+      {required String extendedPrivateKey,
+      required int chainIndex,
       required int addressIndex});
 
   Future<String> crateBridgeDeriveKey(
       {required String extendedKey, required String derivationPath});
+
+  Future<Eip1559TransactionBuilder> crateBridgeEip1559TransactionBuilder();
+
+  Future<Eip1559Transaction> crateBridgeEip1559TransactionBuilderBuild(
+      {required Eip1559TransactionBuilder that});
+
+  Future<Eip1559TransactionBuilder>
+      crateBridgeEip1559TransactionBuilderDefault();
+
+  Future<Eip1559TransactionBuilder> crateBridgeEip1559TransactionBuilderNew();
+
+  Future<bool> crateBridgeEip1559TransactionIsContractCreation(
+      {required Eip1559Transaction that});
+
+  Future<bool> crateBridgeEip1559TransactionIsTransfer(
+      {required Eip1559Transaction that});
+
+  Future<BigInt> crateBridgeEip1559TransactionTokenTransferGas();
+
+  Future<BigInt> crateBridgeEip1559TransactionTransferGas();
+
+  Future<void> crateBridgeEip1559TransactionValidate(
+      {required Eip1559Transaction that});
+
+  Future<String> crateBridgeEtherToWei({required BigInt ether});
+
+  Future<EvmAccessListItem> crateBridgeEvmAccessListItemAddressOnly(
+      {required String address});
+
+  Future<EvmAccessListItem> crateBridgeEvmAccessListItemNew(
+      {required String address, required List<String> storageKeys});
+
+  Future<EvmSignature> crateBridgeEvmSignatureFromBytes(
+      {required List<int> bytes});
+
+  Future<EvmSignature> crateBridgeEvmSignatureNew(
+      {required String rHex, required String sHex, required int v});
+
+  Future<Uint8List> crateBridgeEvmSignatureToBytes(
+      {required EvmSignature that});
+
+  Future<String> crateBridgeEvmSignatureToHexString(
+      {required EvmSignature that});
+
+  Future<EvmWei> crateBridgeEvmWeiAdd(
+      {required EvmWei that, required EvmWei other});
+
+  Future<EvmWei> crateBridgeEvmWeiFromEther({required BigInt ether});
+
+  Future<EvmWei> crateBridgeEvmWeiFromGwei({required BigInt gwei});
+
+  Future<EvmWei> crateBridgeEvmWeiFromWeiString({required String weiString});
+
+  Future<EvmWei> crateBridgeEvmWeiFromWeiU64({required BigInt wei});
+
+  Future<bool> crateBridgeEvmWeiIsZero({required EvmWei that});
+
+  Future<EvmWei> crateBridgeEvmWeiMultiply(
+      {required EvmWei that, required BigInt scalar});
+
+  Future<String> crateBridgeEvmWeiToDecimalString({required EvmWei that});
+
+  Future<BigInt> crateBridgeEvmWeiToEther({required EvmWei that});
+
+  Future<BigInt> crateBridgeEvmWeiToGwei({required EvmWei that});
+
+  Future<BigInt?> crateBridgeEvmWeiToU64({required EvmWei that});
+
+  Future<EvmWei> crateBridgeEvmWeiZero();
 
   Future<String> crateBridgeGenerateMnemonic({required int wordCount});
 
@@ -231,21 +366,81 @@ abstract class RustLibApi extends BaseApi {
   Future<String> crateBridgeGetAddress(
       {required String extendedPrivateKey, required int addressIndex});
 
+  Future<BigInt> crateBridgeGetChainIdValue({required ChainId chainId});
+
+  Future<String> crateBridgeGetChainName({required ChainId chainId});
+
   Future<WalletResult> crateBridgeGetCoinInfo({required CoinType coinType});
+
+  Future<BigInt> crateBridgeGetEtherInWei();
+
+  Future<String> crateBridgeGetEvmAddressFromPrivateKey(
+      {required String privateKeyHex});
+
+  Future<BigInt> crateBridgeGetGweiInWei();
 
   Future<String> crateBridgeGetPublicKey({required String extendedPrivateKey});
 
-  Future<WalletResult> crateBridgeGetPurposeInfo(
-      {required PurposeType purpose});
+  Future<WalletResult> crateBridgeGetPurposeInfo({required Purpose purpose});
+
+  Future<BigInt> crateBridgeGetTokenTransferGas();
+
+  Future<BigInt> crateBridgeGetTransferGas();
+
+  Future<String> crateBridgeGweiToWei({required BigInt gwei});
 
   Future<String> crateBridgeHealthCheck();
+
+  Future<bool> crateBridgeIsTestnetChain({required ChainId chainId});
 
   Future<String> crateBridgeMnemonicPhraseToSeedHex(
       {required String phrase, String? passphrase});
 
   Future<WalletResult> crateBridgeParseBip44Path({required String path});
 
+  Future<String> crateBridgeParseEvmAddress({required String address});
+
+  Future<String> crateBridgeRecoverSignerAddress(
+      {required String hashHex, required String signatureHex});
+
+  Future<String> crateBridgeSignEip1559Transaction(
+      {required String privateKeyHex,
+      required ChainId chainId,
+      required BigInt nonce,
+      required String to,
+      required String valueWei,
+      required BigInt gasLimit,
+      required BigInt maxPriorityFeeGwei,
+      required BigInt maxFeeGwei,
+      String? dataHex});
+
+  Future<Uint8List> crateBridgeSignedEvmTransactionEncode(
+      {required SignedEvmTransaction that});
+
+  Future<SignedEvmTransaction> crateBridgeSignedEvmTransactionNew(
+      {required Eip1559Transaction transaction,
+      required EvmSignature signature});
+
+  Future<String> crateBridgeSignedEvmTransactionToRawTransaction(
+      {required SignedEvmTransaction that});
+
+  Future<Uint8List> crateBridgeSignedEvmTransactionTxHash(
+      {required SignedEvmTransaction that});
+
+  Future<String> crateBridgeSignedEvmTransactionTxHashHex(
+      {required SignedEvmTransaction that});
+
+  Future<bool> crateBridgeValidateEvmAddressChecksum({required String address});
+
   Future<bool> crateBridgeValidateMnemonic({required String phrase});
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Bip44Account;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Bip44Account;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Bip44AccountPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Bip44Wallet;
@@ -254,6 +449,22 @@ abstract class RustLibApi extends BaseApi {
       get rust_arc_decrement_strong_count_Bip44Wallet;
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_Bip44WalletPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EvmAddress;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EvmAddress;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmAddressPtr;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EvmSigner;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EvmSigner;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmSignerPtr;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ExtendedPrivateKey;
@@ -291,18 +502,269 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
+  Future<int> crateBridgeBip44AccountAccountIndex(
+      {required Bip44Account that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 1, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_32,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeBip44AccountAccountIndexConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountAccountIndexConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_account_index",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<CoinType> crateBridgeBip44AccountCoinType(
+      {required Bip44Account that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 2, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_coin_type,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeBip44AccountCoinTypeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountCoinTypeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_coin_type",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeBip44AccountDeriveAddress(
+      {required Bip44Account that, required Chain chain, required int index}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        sse_encode_chain(chain, serializer);
+        sse_encode_u_32(index, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 3, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeBip44AccountDeriveAddressConstMeta,
+      argValues: [that, chain, index],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountDeriveAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_derive_address",
+        argNames: ["that", "chain", "index"],
+      );
+
+  @override
+  Future<List<String>> crateBridgeBip44AccountDeriveAddressRange(
+      {required Bip44Account that,
+      required Chain chain,
+      required int start,
+      required int count}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        sse_encode_chain(chain, serializer);
+        sse_encode_u_32(start, serializer);
+        sse_encode_u_32(count, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 4, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeBip44AccountDeriveAddressRangeConstMeta,
+      argValues: [that, chain, start, count],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountDeriveAddressRangeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_derive_address_range",
+        argNames: ["that", "chain", "start", "count"],
+      );
+
+  @override
+  Future<String> crateBridgeBip44AccountDeriveExternal(
+      {required Bip44Account that, required int index}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        sse_encode_u_32(index, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 5, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeBip44AccountDeriveExternalConstMeta,
+      argValues: [that, index],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountDeriveExternalConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_derive_external",
+        argNames: ["that", "index"],
+      );
+
+  @override
+  Future<String> crateBridgeBip44AccountDeriveInternal(
+      {required Bip44Account that, required int index}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        sse_encode_u_32(index, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 6, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeBip44AccountDeriveInternalConstMeta,
+      argValues: [that, index],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountDeriveInternalConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_derive_internal",
+        argNames: ["that", "index"],
+      );
+
+  @override
+  Future<String> crateBridgeBip44AccountExtendedKeyString(
+      {required Bip44Account that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 7, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeBip44AccountExtendedKeyStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountExtendedKeyStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_extended_key_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Network> crateBridgeBip44AccountNetwork({required Bip44Account that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 8, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_network,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeBip44AccountNetworkConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountNetworkConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_network",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Purpose> crateBridgeBip44AccountPurpose({required Bip44Account that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 9, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_purpose,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeBip44AccountPurposeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeBip44AccountPurposeConstMeta =>
+      const TaskConstMeta(
+        debugName: "Bip44Account_purpose",
+        argNames: ["that"],
+      );
+
+  @override
   Future<Bip44Wallet> crateBridgeBip44WalletFromMnemonic(
       {required String mnemonic,
       String? passphrase,
-      required NetworkType network}) {
+      required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(mnemonic, serializer);
         sse_encode_opt_String(passphrase, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 1, port: port_);
+            funcId: 10, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -323,14 +785,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<Bip44Wallet> crateBridgeBip44WalletFromSeed(
-      {required List<int> seed, required NetworkType network}) {
+      {required List<int> seed, required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(seed, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 2, port: port_);
+            funcId: 11, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -352,7 +814,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<Bip44Account> crateBridgeBip44WalletGetAccount(
       {required Bip44Wallet that,
-      required PurposeType purpose,
+      required Purpose purpose,
       required CoinType coinType,
       required int accountIndex}) {
     return handler.executeNormal(NormalTask(
@@ -360,14 +822,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
             that, serializer);
-        sse_encode_purpose_type(purpose, serializer);
-        sse_encode_box_autoadd_coin_type(coinType, serializer);
+        sse_encode_purpose(purpose, serializer);
+        sse_encode_coin_type(coinType, serializer);
         sse_encode_u_32(accountIndex, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 3, port: port_);
+            funcId: 12, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_bip_44_account,
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account,
         decodeErrorData: sse_decode_String,
       ),
       constMeta: kCrateBridgeBip44WalletGetAccountConstMeta,
@@ -383,18 +846,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<NetworkType> crateBridgeBip44WalletNetwork(
-      {required Bip44Wallet that}) {
+  Future<Network> crateBridgeBip44WalletNetwork({required Bip44Wallet that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 4, port: port_);
+            funcId: 13, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_network_type,
+        decodeSuccessData: sse_decode_network,
         decodeErrorData: null,
       ),
       constMeta: kCrateBridgeBip44WalletNetworkConstMeta,
@@ -410,6 +872,434 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<EvmAddress> crateBridgeEvmAddressFromBytes(
+      {required List<int> bytes}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(bytes, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 14, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmAddressFromBytesConstMeta,
+      argValues: [bytes],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressFromBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_from_bytes",
+        argNames: ["bytes"],
+      );
+
+  @override
+  Future<EvmAddress> crateBridgeEvmAddressFromHex({required String hexString}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(hexString, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 15, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmAddressFromHexConstMeta,
+      argValues: [hexString],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressFromHexConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_from_hex",
+        argNames: ["hexString"],
+      );
+
+  @override
+  Future<EvmAddress> crateBridgeEvmAddressFromPublicKey(
+      {required List<int> pubkey}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(pubkey, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 16, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmAddressFromPublicKeyConstMeta,
+      argValues: [pubkey],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressFromPublicKeyConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_from_public_key",
+        argNames: ["pubkey"],
+      );
+
+  @override
+  Future<bool> crateBridgeEvmAddressIsZero({required EvmAddress that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 17, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressIsZeroConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressIsZeroConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_is_zero",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Uint8List> crateBridgeEvmAddressToBytes({required EvmAddress that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 18, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressToBytesConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressToBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_to_bytes",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeEvmAddressToChecksumString(
+      {required EvmAddress that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 19, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressToChecksumStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressToChecksumStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_to_checksum_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeEvmAddressToHexString({required EvmAddress that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 20, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressToHexStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressToHexStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_to_hex_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<bool> crateBridgeEvmAddressValidateChecksum(
+      {required String address}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 21, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressValidateChecksumConstMeta,
+      argValues: [address],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressValidateChecksumConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmAddress_validate_checksum",
+        argNames: ["address"],
+      );
+
+  @override
+  Future<EvmAddress> crateBridgeEvmAddressZero() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 22, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAddressZeroConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAddressZeroConstMeta => const TaskConstMeta(
+        debugName: "EvmAddress_zero",
+        argNames: [],
+      );
+
+  @override
+  Future<EvmAddress> crateBridgeEvmSignerAddress({required EvmSigner that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 23, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmSignerAddressConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_address",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeEvmSignerAddressString({required EvmSigner that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+            that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 24, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmSignerAddressStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerAddressStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_address_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<EvmSigner> crateBridgeEvmSignerFromAccount(
+      {required Bip44Account account, required int addressIndex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+            account, serializer);
+        sse_encode_u_32(addressIndex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 25, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignerFromAccountConstMeta,
+      argValues: [account, addressIndex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerFromAccountConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_from_account",
+        argNames: ["account", "addressIndex"],
+      );
+
+  @override
+  Future<EvmSigner> crateBridgeEvmSignerFromPrivateKeyHex(
+      {required String privateKeyHex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(privateKeyHex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 26, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData:
+            sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignerFromPrivateKeyHexConstMeta,
+      argValues: [privateKeyHex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerFromPrivateKeyHexConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_from_private_key_hex",
+        argNames: ["privateKeyHex"],
+      );
+
+  @override
+  Future<SignedEvmTransaction> crateBridgeEvmSignerSignAndBuild(
+      {required EvmSigner that, required Eip1559Transaction tx}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+            that, serializer);
+        sse_encode_box_autoadd_eip_1559_transaction(tx, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 27, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_signed_evm_transaction,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignerSignAndBuildConstMeta,
+      argValues: [that, tx],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerSignAndBuildConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_sign_and_build",
+        argNames: ["that", "tx"],
+      );
+
+  @override
+  Future<EvmSignature> crateBridgeEvmSignerSignHash(
+      {required EvmSigner that, required List<int> hash}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+            that, serializer);
+        sse_encode_list_prim_u_8_loose(hash, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 28, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_signature,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignerSignHashConstMeta,
+      argValues: [that, hash],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerSignHashConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_sign_hash",
+        argNames: ["that", "hash"],
+      );
+
+  @override
+  Future<EvmSignature> crateBridgeEvmSignerSignTransaction(
+      {required EvmSigner that, required Eip1559Transaction tx}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+            that, serializer);
+        sse_encode_box_autoadd_eip_1559_transaction(tx, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 29, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_signature,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignerSignTransactionConstMeta,
+      argValues: [that, tx],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignerSignTransactionConstMeta =>
+      const TaskConstMeta(
+        debugName: "EvmSigner_sign_transaction",
+        argNames: ["that", "tx"],
+      );
+
+  @override
   Future<int> crateBridgeExtendedPrivateKeyChildNumberIndex(
       {required ExtendedPrivateKey that}) {
     return handler.executeNormal(NormalTask(
@@ -418,7 +1308,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 5, port: port_);
+            funcId: 30, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_32,
@@ -445,7 +1335,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 6, port: port_);
+            funcId: 31, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_8,
@@ -476,7 +1366,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_u_32(index, serializer);
         sse_encode_bool(hardened, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 7, port: port_);
+            funcId: 32, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -505,7 +1395,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 8, port: port_);
+            funcId: 33, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -533,7 +1423,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 9, port: port_);
+            funcId: 34, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -555,16 +1445,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Future<ExtendedPrivateKey> crateBridgeExtendedPrivateKeyFromMnemonic(
       {required Mnemonic mnemonic,
       String? passphrase,
-      required NetworkType network}) {
+      required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(
             mnemonic, serializer);
         sse_encode_opt_String(passphrase, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 10, port: port_);
+            funcId: 35, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -585,14 +1475,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @override
   Future<ExtendedPrivateKey> crateBridgeExtendedPrivateKeyFromSeed(
-      {required List<int> seed, required NetworkType network}) {
+      {required List<int> seed, required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(seed, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 11, port: port_);
+            funcId: 36, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -619,7 +1509,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(s, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 12, port: port_);
+            funcId: 37, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -647,7 +1537,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 13, port: port_);
+            funcId: 38, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -666,7 +1556,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<NetworkType> crateBridgeExtendedPrivateKeyNetwork(
+  Future<Network> crateBridgeExtendedPrivateKeyNetwork(
       {required ExtendedPrivateKey that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -674,10 +1564,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 14, port: port_);
+            funcId: 39, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_network_type,
+        decodeSuccessData: sse_decode_network,
         decodeErrorData: null,
       ),
       constMeta: kCrateBridgeExtendedPrivateKeyNetworkConstMeta,
@@ -701,7 +1591,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 15, port: port_);
+            funcId: 40, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -728,7 +1618,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 16, port: port_);
+            funcId: 41, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -757,7 +1647,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPrivateKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 17, port: port_);
+            funcId: 42, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -784,7 +1674,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 18, port: port_);
+            funcId: 43, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_32,
@@ -811,7 +1701,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 19, port: port_);
+            funcId: 44, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_8,
@@ -839,7 +1729,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_u_32(index, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 20, port: port_);
+            funcId: 45, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -868,7 +1758,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 21, port: port_);
+            funcId: 46, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -896,7 +1786,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 22, port: port_);
+            funcId: 47, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -922,7 +1812,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(s, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 23, port: port_);
+            funcId: 48, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -950,7 +1840,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 24, port: port_);
+            funcId: 49, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -969,7 +1859,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<NetworkType> crateBridgeExtendedPublicKeyNetwork(
+  Future<Network> crateBridgeExtendedPublicKeyNetwork(
       {required ExtendedPublicKey that}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
@@ -977,10 +1867,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 25, port: port_);
+            funcId: 50, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_network_type,
+        decodeSuccessData: sse_decode_network,
         decodeErrorData: null,
       ),
       constMeta: kCrateBridgeExtendedPublicKeyNetworkConstMeta,
@@ -1004,7 +1894,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 26, port: port_);
+            funcId: 51, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1031,7 +1921,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerExtendedPublicKey(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 27, port: port_);
+            funcId: 52, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1056,7 +1946,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(phrase, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 28, port: port_);
+            funcId: 53, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1082,7 +1972,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_32(wordCount, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 29, port: port_);
+            funcId: 54, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData:
@@ -1109,7 +1999,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 30, port: port_);
+            funcId: 55, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1134,7 +2024,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 31, port: port_);
+            funcId: 56, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1162,7 +2052,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             that, serializer);
         sse_encode_opt_String(passphrase, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 32, port: port_);
+            funcId: 57, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_list_prim_u_8_strict,
@@ -1187,7 +2077,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic(
             that, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 33, port: port_);
+            funcId: 58, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_u_32,
@@ -1213,7 +2103,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_i_32(a, serializer);
         sse_encode_i_32(b, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 34, port: port_);
+            funcId: 59, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_i_32,
@@ -1231,110 +2121,72 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<List<String>> crateBridgeBip44AccountDeriveAddressRange(
-      {required Bip44Account that,
-      required ChainType chain,
-      required int start,
-      required int count}) {
+  Future<BigInt> crateBridgeChainIdToU64({required ChainId chainId}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_bip_44_account(that, serializer);
-        sse_encode_chain_type(chain, serializer);
-        sse_encode_u_32(start, serializer);
-        sse_encode_u_32(count, serializer);
+        sse_encode_chain_id(chainId, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 35, port: port_);
+            funcId: 60, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_list_String,
-        decodeErrorData: sse_decode_String,
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
       ),
-      constMeta: kCrateBridgeBip44AccountDeriveAddressRangeConstMeta,
-      argValues: [that, chain, start, count],
+      constMeta: kCrateBridgeChainIdToU64ConstMeta,
+      argValues: [chainId],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateBridgeBip44AccountDeriveAddressRangeConstMeta =>
-      const TaskConstMeta(
-        debugName: "bip_44_account_derive_address_range",
-        argNames: ["that", "chain", "start", "count"],
+  TaskConstMeta get kCrateBridgeChainIdToU64ConstMeta => const TaskConstMeta(
+        debugName: "chain_id_to_u64",
+        argNames: ["chainId"],
       );
 
   @override
-  Future<String> crateBridgeBip44AccountDeriveExternal(
-      {required Bip44Account that, required int index}) {
+  Future<int> crateBridgeCoinTypeToIndex({required CoinType coinType}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_bip_44_account(that, serializer);
-        sse_encode_u_32(index, serializer);
+        sse_encode_coin_type(coinType, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 36, port: port_);
+            funcId: 61, port: port_);
       },
       codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: sse_decode_String,
+        decodeSuccessData: sse_decode_u_32,
+        decodeErrorData: null,
       ),
-      constMeta: kCrateBridgeBip44AccountDeriveExternalConstMeta,
-      argValues: [that, index],
+      constMeta: kCrateBridgeCoinTypeToIndexConstMeta,
+      argValues: [coinType],
       apiImpl: this,
     ));
   }
 
-  TaskConstMeta get kCrateBridgeBip44AccountDeriveExternalConstMeta =>
-      const TaskConstMeta(
-        debugName: "bip_44_account_derive_external",
-        argNames: ["that", "index"],
-      );
-
-  @override
-  Future<String> crateBridgeBip44AccountDeriveInternal(
-      {required Bip44Account that, required int index}) {
-    return handler.executeNormal(NormalTask(
-      callFfi: (port_) {
-        final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_bip_44_account(that, serializer);
-        sse_encode_u_32(index, serializer);
-        pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 37, port: port_);
-      },
-      codec: SseCodec(
-        decodeSuccessData: sse_decode_String,
-        decodeErrorData: sse_decode_String,
-      ),
-      constMeta: kCrateBridgeBip44AccountDeriveInternalConstMeta,
-      argValues: [that, index],
-      apiImpl: this,
-    ));
-  }
-
-  TaskConstMeta get kCrateBridgeBip44AccountDeriveInternalConstMeta =>
-      const TaskConstMeta(
-        debugName: "bip_44_account_derive_internal",
-        argNames: ["that", "index"],
+  TaskConstMeta get kCrateBridgeCoinTypeToIndexConstMeta => const TaskConstMeta(
+        debugName: "coin_type_to_index",
+        argNames: ["coinType"],
       );
 
   @override
   Future<String> crateBridgeCreateBip44Account(
       {required String mnemonic,
       String? passphrase,
-      required PurposeType purpose,
+      required Purpose purpose,
       required CoinType coinType,
       required int accountIndex,
-      required NetworkType network}) {
+      required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(mnemonic, serializer);
         sse_encode_opt_String(passphrase, serializer);
-        sse_encode_purpose_type(purpose, serializer);
-        sse_encode_box_autoadd_coin_type(coinType, serializer);
+        sse_encode_purpose(purpose, serializer);
+        sse_encode_coin_type(coinType, serializer);
         sse_encode_u_32(accountIndex, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 38, port: port_);
+            funcId: 62, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1371,16 +2223,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       {required String mnemonic,
       String? passphrase,
       required int accountIndex,
-      required NetworkType network}) {
+      required Network network}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(mnemonic, serializer);
         sse_encode_opt_String(passphrase, serializer);
         sse_encode_u_32(accountIndex, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_network(network, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 39, port: port_);
+            funcId: 63, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_wallet_result,
@@ -1399,18 +2251,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateBridgeCreateMasterKey(
+  Future<String> crateBridgeCreateEvmSignerFromMnemonic(
       {required String mnemonic,
       String? passphrase,
-      required NetworkType network}) {
+      required int accountIndex,
+      required int addressIndex}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(mnemonic, serializer);
         sse_encode_opt_String(passphrase, serializer);
-        sse_encode_network_type(network, serializer);
+        sse_encode_u_32(accountIndex, serializer);
+        sse_encode_u_32(addressIndex, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 40, port: port_);
+            funcId: 64, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeCreateEvmSignerFromMnemonicConstMeta,
+      argValues: [mnemonic, passphrase, accountIndex, addressIndex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeCreateEvmSignerFromMnemonicConstMeta =>
+      const TaskConstMeta(
+        debugName: "create_evm_signer_from_mnemonic",
+        argNames: ["mnemonic", "passphrase", "accountIndex", "addressIndex"],
+      );
+
+  @override
+  Future<String> crateBridgeCreateMasterKey(
+      {required String mnemonic,
+      String? passphrase,
+      required Network network}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(mnemonic, serializer);
+        sse_encode_opt_String(passphrase, serializer);
+        sse_encode_network(network, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 65, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1428,18 +2312,43 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateBridgeCustomChainIdValue({required BigInt chainId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(chainId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 66, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeCustomChainIdValueConstMeta,
+      argValues: [chainId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeCustomChainIdValueConstMeta =>
+      const TaskConstMeta(
+        debugName: "custom_chain_id_value",
+        argNames: ["chainId"],
+      );
+
+  @override
   Future<String> crateBridgeDeriveBip44Address(
       {required String accountKey,
-      required ChainType chain,
+      required Chain chain,
       required int addressIndex}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(accountKey, serializer);
-        sse_encode_chain_type(chain, serializer);
+        sse_encode_chain(chain, serializer);
         sse_encode_u_32(addressIndex, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 41, port: port_);
+            funcId: 67, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1458,6 +2367,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<String> crateBridgeDeriveEvmAddress(
+      {required String extendedPrivateKey,
+      required int chainIndex,
+      required int addressIndex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(extendedPrivateKey, serializer);
+        sse_encode_u_32(chainIndex, serializer);
+        sse_encode_u_32(addressIndex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 68, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeDeriveEvmAddressConstMeta,
+      argValues: [extendedPrivateKey, chainIndex, addressIndex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeDeriveEvmAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "derive_evm_address",
+        argNames: ["extendedPrivateKey", "chainIndex", "addressIndex"],
+      );
+
+  @override
   Future<String> crateBridgeDeriveKey(
       {required String extendedKey, required String derivationPath}) {
     return handler.executeNormal(NormalTask(
@@ -1466,7 +2405,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(extendedKey, serializer);
         sse_encode_String(derivationPath, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 42, port: port_);
+            funcId: 69, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1484,13 +2423,714 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<Eip1559TransactionBuilder> crateBridgeEip1559TransactionBuilder() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 70, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_eip_1559_transaction_builder,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionBuilderConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionBuilderConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_builder",
+        argNames: [],
+      );
+
+  @override
+  Future<Eip1559Transaction> crateBridgeEip1559TransactionBuilderBuild(
+      {required Eip1559TransactionBuilder that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_eip_1559_transaction_builder(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 71, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_eip_1559_transaction,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionBuilderBuildConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionBuilderBuildConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_builder_build",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Eip1559TransactionBuilder>
+      crateBridgeEip1559TransactionBuilderDefault() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 72, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_eip_1559_transaction_builder,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionBuilderDefaultConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionBuilderDefaultConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_builder_default",
+        argNames: [],
+      );
+
+  @override
+  Future<Eip1559TransactionBuilder> crateBridgeEip1559TransactionBuilderNew() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 73, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_eip_1559_transaction_builder,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionBuilderNewConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionBuilderNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_builder_new",
+        argNames: [],
+      );
+
+  @override
+  Future<bool> crateBridgeEip1559TransactionIsContractCreation(
+      {required Eip1559Transaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_eip_1559_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 74, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionIsContractCreationConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionIsContractCreationConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_is_contract_creation",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<bool> crateBridgeEip1559TransactionIsTransfer(
+      {required Eip1559Transaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_eip_1559_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 75, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionIsTransferConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionIsTransferConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_is_transfer",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<BigInt> crateBridgeEip1559TransactionTokenTransferGas() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 76, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionTokenTransferGasConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionTokenTransferGasConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_token_transfer_gas",
+        argNames: [],
+      );
+
+  @override
+  Future<BigInt> crateBridgeEip1559TransactionTransferGas() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 77, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionTransferGasConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionTransferGasConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_transfer_gas",
+        argNames: [],
+      );
+
+  @override
+  Future<void> crateBridgeEip1559TransactionValidate(
+      {required Eip1559Transaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_eip_1559_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 78, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_unit,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEip1559TransactionValidateConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEip1559TransactionValidateConstMeta =>
+      const TaskConstMeta(
+        debugName: "eip_1559_transaction_validate",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeEtherToWei({required BigInt ether}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(ether, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 79, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEtherToWeiConstMeta,
+      argValues: [ether],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEtherToWeiConstMeta => const TaskConstMeta(
+        debugName: "ether_to_wei",
+        argNames: ["ether"],
+      );
+
+  @override
+  Future<EvmAccessListItem> crateBridgeEvmAccessListItemAddressOnly(
+      {required String address}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 80, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_access_list_item,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAccessListItemAddressOnlyConstMeta,
+      argValues: [address],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAccessListItemAddressOnlyConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_access_list_item_address_only",
+        argNames: ["address"],
+      );
+
+  @override
+  Future<EvmAccessListItem> crateBridgeEvmAccessListItemNew(
+      {required String address, required List<String> storageKeys}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
+        sse_encode_list_String(storageKeys, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 81, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_access_list_item,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmAccessListItemNewConstMeta,
+      argValues: [address, storageKeys],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmAccessListItemNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_access_list_item_new",
+        argNames: ["address", "storageKeys"],
+      );
+
+  @override
+  Future<EvmSignature> crateBridgeEvmSignatureFromBytes(
+      {required List<int> bytes}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_list_prim_u_8_loose(bytes, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 82, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_signature,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignatureFromBytesConstMeta,
+      argValues: [bytes],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignatureFromBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_signature_from_bytes",
+        argNames: ["bytes"],
+      );
+
+  @override
+  Future<EvmSignature> crateBridgeEvmSignatureNew(
+      {required String rHex, required String sHex, required int v}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(rHex, serializer);
+        sse_encode_String(sHex, serializer);
+        sse_encode_u_8(v, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 83, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_signature,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmSignatureNewConstMeta,
+      argValues: [rHex, sHex, v],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignatureNewConstMeta => const TaskConstMeta(
+        debugName: "evm_signature_new",
+        argNames: ["rHex", "sHex", "v"],
+      );
+
+  @override
+  Future<Uint8List> crateBridgeEvmSignatureToBytes(
+      {required EvmSignature that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_signature(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 84, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmSignatureToBytesConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignatureToBytesConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_signature_to_bytes",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeEvmSignatureToHexString(
+      {required EvmSignature that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_signature(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 85, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmSignatureToHexStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmSignatureToHexStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_signature_to_hex_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiAdd(
+      {required EvmWei that, required EvmWei other}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        sse_encode_box_autoadd_evm_wei(other, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 86, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmWeiAddConstMeta,
+      argValues: [that, other],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiAddConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_add",
+        argNames: ["that", "other"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiFromEther({required BigInt ether}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(ether, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 87, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiFromEtherConstMeta,
+      argValues: [ether],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiFromEtherConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_from_ether",
+        argNames: ["ether"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiFromGwei({required BigInt gwei}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(gwei, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 88, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiFromGweiConstMeta,
+      argValues: [gwei],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiFromGweiConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_from_gwei",
+        argNames: ["gwei"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiFromWeiString({required String weiString}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(weiString, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 89, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmWeiFromWeiStringConstMeta,
+      argValues: [weiString],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiFromWeiStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_wei_from_wei_string",
+        argNames: ["weiString"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiFromWeiU64({required BigInt wei}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(wei, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 90, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiFromWeiU64ConstMeta,
+      argValues: [wei],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiFromWeiU64ConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_wei_from_wei_u64",
+        argNames: ["wei"],
+      );
+
+  @override
+  Future<bool> crateBridgeEvmWeiIsZero({required EvmWei that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 91, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiIsZeroConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiIsZeroConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_is_zero",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiMultiply(
+      {required EvmWei that, required BigInt scalar}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        sse_encode_u_64(scalar, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 92, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeEvmWeiMultiplyConstMeta,
+      argValues: [that, scalar],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiMultiplyConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_multiply",
+        argNames: ["that", "scalar"],
+      );
+
+  @override
+  Future<String> crateBridgeEvmWeiToDecimalString({required EvmWei that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 93, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiToDecimalStringConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiToDecimalStringConstMeta =>
+      const TaskConstMeta(
+        debugName: "evm_wei_to_decimal_string",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<BigInt> crateBridgeEvmWeiToEther({required EvmWei that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 94, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiToEtherConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiToEtherConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_to_ether",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<BigInt> crateBridgeEvmWeiToGwei({required EvmWei that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 95, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiToGweiConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiToGweiConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_to_gwei",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<BigInt?> crateBridgeEvmWeiToU64({required EvmWei that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_evm_wei(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 96, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_opt_box_autoadd_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiToU64ConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiToU64ConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_to_u64",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<EvmWei> crateBridgeEvmWeiZero() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 97, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_evm_wei,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeEvmWeiZeroConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeEvmWeiZeroConstMeta => const TaskConstMeta(
+        debugName: "evm_wei_zero",
+        argNames: [],
+      );
+
+  @override
   Future<String> crateBridgeGenerateMnemonic({required int wordCount}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_u_32(wordCount, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 43, port: port_);
+            funcId: 98, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1516,7 +3156,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_list_prim_u_8_loose(entropy, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 44, port: port_);
+            funcId: 99, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1543,7 +3183,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(extendedPrivateKey, serializer);
         sse_encode_u_32(addressIndex, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 45, port: port_);
+            funcId: 100, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1561,13 +3201,61 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateBridgeGetChainIdValue({required ChainId chainId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_chain_id(chainId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 101, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetChainIdValueConstMeta,
+      argValues: [chainId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetChainIdValueConstMeta => const TaskConstMeta(
+        debugName: "get_chain_id_value",
+        argNames: ["chainId"],
+      );
+
+  @override
+  Future<String> crateBridgeGetChainName({required ChainId chainId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_chain_id(chainId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 102, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetChainNameConstMeta,
+      argValues: [chainId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetChainNameConstMeta => const TaskConstMeta(
+        debugName: "get_chain_name",
+        argNames: ["chainId"],
+      );
+
+  @override
   Future<WalletResult> crateBridgeGetCoinInfo({required CoinType coinType}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_box_autoadd_coin_type(coinType, serializer);
+        sse_encode_coin_type(coinType, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 46, port: port_);
+            funcId: 103, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_wallet_result,
@@ -1585,13 +3273,85 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateBridgeGetEtherInWei() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 104, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetEtherInWeiConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetEtherInWeiConstMeta => const TaskConstMeta(
+        debugName: "get_ether_in_wei",
+        argNames: [],
+      );
+
+  @override
+  Future<String> crateBridgeGetEvmAddressFromPrivateKey(
+      {required String privateKeyHex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(privateKeyHex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 105, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeGetEvmAddressFromPrivateKeyConstMeta,
+      argValues: [privateKeyHex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetEvmAddressFromPrivateKeyConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_evm_address_from_private_key",
+        argNames: ["privateKeyHex"],
+      );
+
+  @override
+  Future<BigInt> crateBridgeGetGweiInWei() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 106, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetGweiInWeiConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetGweiInWeiConstMeta => const TaskConstMeta(
+        debugName: "get_gwei_in_wei",
+        argNames: [],
+      );
+
+  @override
   Future<String> crateBridgeGetPublicKey({required String extendedPrivateKey}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(extendedPrivateKey, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 47, port: port_);
+            funcId: 107, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1609,14 +3369,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<WalletResult> crateBridgeGetPurposeInfo(
-      {required PurposeType purpose}) {
+  Future<WalletResult> crateBridgeGetPurposeInfo({required Purpose purpose}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
-        sse_encode_purpose_type(purpose, serializer);
+        sse_encode_purpose(purpose, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 48, port: port_);
+            funcId: 108, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_wallet_result,
@@ -1634,12 +3393,83 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<BigInt> crateBridgeGetTokenTransferGas() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 109, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetTokenTransferGasConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetTokenTransferGasConstMeta =>
+      const TaskConstMeta(
+        debugName: "get_token_transfer_gas",
+        argNames: [],
+      );
+
+  @override
+  Future<BigInt> crateBridgeGetTransferGas() {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 110, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_u_64,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGetTransferGasConstMeta,
+      argValues: [],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGetTransferGasConstMeta => const TaskConstMeta(
+        debugName: "get_transfer_gas",
+        argNames: [],
+      );
+
+  @override
+  Future<String> crateBridgeGweiToWei({required BigInt gwei}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_u_64(gwei, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 111, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeGweiToWeiConstMeta,
+      argValues: [gwei],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeGweiToWeiConstMeta => const TaskConstMeta(
+        debugName: "gwei_to_wei",
+        argNames: ["gwei"],
+      );
+
+  @override
   Future<String> crateBridgeHealthCheck() {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 49, port: port_);
+            funcId: 112, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1657,6 +3487,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<bool> crateBridgeIsTestnetChain({required ChainId chainId}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_chain_id(chainId, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 113, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeIsTestnetChainConstMeta,
+      argValues: [chainId],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeIsTestnetChainConstMeta => const TaskConstMeta(
+        debugName: "is_testnet_chain",
+        argNames: ["chainId"],
+      );
+
+  @override
   Future<String> crateBridgeMnemonicPhraseToSeedHex(
       {required String phrase, String? passphrase}) {
     return handler.executeNormal(NormalTask(
@@ -1665,7 +3519,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         sse_encode_String(phrase, serializer);
         sse_encode_opt_String(passphrase, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 50, port: port_);
+            funcId: 114, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_String,
@@ -1691,7 +3545,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(path, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 51, port: port_);
+            funcId: 115, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_wallet_result,
@@ -1709,13 +3563,284 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
+  Future<String> crateBridgeParseEvmAddress({required String address}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 116, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeParseEvmAddressConstMeta,
+      argValues: [address],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeParseEvmAddressConstMeta => const TaskConstMeta(
+        debugName: "parse_evm_address",
+        argNames: ["address"],
+      );
+
+  @override
+  Future<String> crateBridgeRecoverSignerAddress(
+      {required String hashHex, required String signatureHex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(hashHex, serializer);
+        sse_encode_String(signatureHex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 117, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeRecoverSignerAddressConstMeta,
+      argValues: [hashHex, signatureHex],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeRecoverSignerAddressConstMeta =>
+      const TaskConstMeta(
+        debugName: "recover_signer_address",
+        argNames: ["hashHex", "signatureHex"],
+      );
+
+  @override
+  Future<String> crateBridgeSignEip1559Transaction(
+      {required String privateKeyHex,
+      required ChainId chainId,
+      required BigInt nonce,
+      required String to,
+      required String valueWei,
+      required BigInt gasLimit,
+      required BigInt maxPriorityFeeGwei,
+      required BigInt maxFeeGwei,
+      String? dataHex}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(privateKeyHex, serializer);
+        sse_encode_chain_id(chainId, serializer);
+        sse_encode_u_64(nonce, serializer);
+        sse_encode_String(to, serializer);
+        sse_encode_String(valueWei, serializer);
+        sse_encode_u_64(gasLimit, serializer);
+        sse_encode_u_64(maxPriorityFeeGwei, serializer);
+        sse_encode_u_64(maxFeeGwei, serializer);
+        sse_encode_opt_String(dataHex, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 118, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeSignEip1559TransactionConstMeta,
+      argValues: [
+        privateKeyHex,
+        chainId,
+        nonce,
+        to,
+        valueWei,
+        gasLimit,
+        maxPriorityFeeGwei,
+        maxFeeGwei,
+        dataHex
+      ],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignEip1559TransactionConstMeta =>
+      const TaskConstMeta(
+        debugName: "sign_eip1559_transaction",
+        argNames: [
+          "privateKeyHex",
+          "chainId",
+          "nonce",
+          "to",
+          "valueWei",
+          "gasLimit",
+          "maxPriorityFeeGwei",
+          "maxFeeGwei",
+          "dataHex"
+        ],
+      );
+
+  @override
+  Future<Uint8List> crateBridgeSignedEvmTransactionEncode(
+      {required SignedEvmTransaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_evm_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 119, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeSignedEvmTransactionEncodeConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignedEvmTransactionEncodeConstMeta =>
+      const TaskConstMeta(
+        debugName: "signed_evm_transaction_encode",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<SignedEvmTransaction> crateBridgeSignedEvmTransactionNew(
+      {required Eip1559Transaction transaction,
+      required EvmSignature signature}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_eip_1559_transaction(transaction, serializer);
+        sse_encode_box_autoadd_evm_signature(signature, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 120, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_signed_evm_transaction,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeSignedEvmTransactionNewConstMeta,
+      argValues: [transaction, signature],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignedEvmTransactionNewConstMeta =>
+      const TaskConstMeta(
+        debugName: "signed_evm_transaction_new",
+        argNames: ["transaction", "signature"],
+      );
+
+  @override
+  Future<String> crateBridgeSignedEvmTransactionToRawTransaction(
+      {required SignedEvmTransaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_evm_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 121, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeSignedEvmTransactionToRawTransactionConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignedEvmTransactionToRawTransactionConstMeta =>
+      const TaskConstMeta(
+        debugName: "signed_evm_transaction_to_raw_transaction",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<Uint8List> crateBridgeSignedEvmTransactionTxHash(
+      {required SignedEvmTransaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_evm_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 122, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_list_prim_u_8_strict,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeSignedEvmTransactionTxHashConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignedEvmTransactionTxHashConstMeta =>
+      const TaskConstMeta(
+        debugName: "signed_evm_transaction_tx_hash",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<String> crateBridgeSignedEvmTransactionTxHashHex(
+      {required SignedEvmTransaction that}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_box_autoadd_signed_evm_transaction(that, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 123, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_String,
+        decodeErrorData: sse_decode_String,
+      ),
+      constMeta: kCrateBridgeSignedEvmTransactionTxHashHexConstMeta,
+      argValues: [that],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeSignedEvmTransactionTxHashHexConstMeta =>
+      const TaskConstMeta(
+        debugName: "signed_evm_transaction_tx_hash_hex",
+        argNames: ["that"],
+      );
+
+  @override
+  Future<bool> crateBridgeValidateEvmAddressChecksum(
+      {required String address}) {
+    return handler.executeNormal(NormalTask(
+      callFfi: (port_) {
+        final serializer = SseSerializer(generalizedFrbRustBinding);
+        sse_encode_String(address, serializer);
+        pdeCallFfi(generalizedFrbRustBinding, serializer,
+            funcId: 124, port: port_);
+      },
+      codec: SseCodec(
+        decodeSuccessData: sse_decode_bool,
+        decodeErrorData: null,
+      ),
+      constMeta: kCrateBridgeValidateEvmAddressChecksumConstMeta,
+      argValues: [address],
+      apiImpl: this,
+    ));
+  }
+
+  TaskConstMeta get kCrateBridgeValidateEvmAddressChecksumConstMeta =>
+      const TaskConstMeta(
+        debugName: "validate_evm_address_checksum",
+        argNames: ["address"],
+      );
+
+  @override
   Future<bool> crateBridgeValidateMnemonic({required String phrase}) {
     return handler.executeNormal(NormalTask(
       callFfi: (port_) {
         final serializer = SseSerializer(generalizedFrbRustBinding);
         sse_encode_String(phrase, serializer);
         pdeCallFfi(generalizedFrbRustBinding, serializer,
-            funcId: 52, port: port_);
+            funcId: 125, port: port_);
       },
       codec: SseCodec(
         decodeSuccessData: sse_decode_bool,
@@ -1734,12 +3859,36 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_Bip44Account => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_Bip44Account => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account;
+
+  RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_Bip44Wallet => wire
           .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet;
 
   RustArcDecrementStrongCountFnType
       get rust_arc_decrement_strong_count_Bip44Wallet => wire
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EvmAddress => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EvmAddress => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress;
+
+  RustArcIncrementStrongCountFnType
+      get rust_arc_increment_strong_count_EvmSigner => wire
+          .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner;
+
+  RustArcDecrementStrongCountFnType
+      get rust_arc_decrement_strong_count_EvmSigner => wire
+          .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner;
 
   RustArcIncrementStrongCountFnType
       get rust_arc_increment_strong_count_ExtendedPrivateKey => wire
@@ -1766,11 +3915,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonic;
 
   @protected
+  Bip44Account
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Bip44Wallet
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmAddress
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmSigner
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1806,11 +3979,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Bip44Account
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Bip44Wallet
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmAddress
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmSigner
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1838,11 +4035,35 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Bip44Account
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Bip44Wallet
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmAddress
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  EvmSigner
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -1876,65 +4097,144 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Bip44Account dco_decode_bip_44_account(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
-    return Bip44Account(
-      purpose: dco_decode_purpose_type(arr[0]),
-      coinType: dco_decode_coin_type(arr[1]),
-      accountIndex: dco_decode_u_32(arr[2]),
-      network: dco_decode_network_type(arr[3]),
-      accountKey: dco_decode_String(arr[4]),
-    );
-  }
-
-  @protected
   bool dco_decode_bool(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as bool;
   }
 
   @protected
-  Bip44Account dco_decode_box_autoadd_bip_44_account(dynamic raw) {
+  ChainId dco_decode_box_autoadd_chain_id(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_bip_44_account(raw);
+    return dco_decode_chain_id(raw);
   }
 
   @protected
-  CoinType dco_decode_box_autoadd_coin_type(dynamic raw) {
+  Eip1559Transaction dco_decode_box_autoadd_eip_1559_transaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_coin_type(raw);
+    return dco_decode_eip_1559_transaction(raw);
   }
 
   @protected
-  ChainType dco_decode_chain_type(dynamic raw) {
+  Eip1559TransactionBuilder dco_decode_box_autoadd_eip_1559_transaction_builder(
+      dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ChainType.values[raw as int];
+    return dco_decode_eip_1559_transaction_builder(raw);
+  }
+
+  @protected
+  EvmSignature dco_decode_box_autoadd_evm_signature(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_evm_signature(raw);
+  }
+
+  @protected
+  EvmWei dco_decode_box_autoadd_evm_wei(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_evm_wei(raw);
+  }
+
+  @protected
+  SignedEvmTransaction dco_decode_box_autoadd_signed_evm_transaction(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_signed_evm_transaction(raw);
+  }
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_u_64(raw);
+  }
+
+  @protected
+  Chain dco_decode_chain(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Chain.values[raw as int];
+  }
+
+  @protected
+  ChainId dco_decode_chain_id(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChainId.values[raw as int];
   }
 
   @protected
   CoinType dco_decode_coin_type(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    switch (raw[0]) {
-      case 0:
-        return CoinType_Bitcoin();
-      case 1:
-        return CoinType_BitcoinTestnet();
-      case 2:
-        return CoinType_Litecoin();
-      case 3:
-        return CoinType_Dogecoin();
-      case 4:
-        return CoinType_Ethereum();
-      case 5:
-        return CoinType_Custom(
-          dco_decode_u_32(raw[1]),
-        );
-      default:
-        throw Exception("unreachable");
-    }
+    return CoinType.values[raw as int];
+  }
+
+  @protected
+  Eip1559Transaction dco_decode_eip_1559_transaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return Eip1559Transaction(
+      chainId: dco_decode_chain_id(arr[0]),
+      nonce: dco_decode_u_64(arr[1]),
+      maxPriorityFeePerGas: dco_decode_String(arr[2]),
+      maxFeePerGas: dco_decode_String(arr[3]),
+      gasLimit: dco_decode_u_64(arr[4]),
+      to: dco_decode_opt_String(arr[5]),
+      value: dco_decode_String(arr[6]),
+      dataHex: dco_decode_String(arr[7]),
+    );
+  }
+
+  @protected
+  Eip1559TransactionBuilder dco_decode_eip_1559_transaction_builder(
+      dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 8)
+      throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
+    return Eip1559TransactionBuilder(
+      chainId: dco_decode_opt_box_autoadd_chain_id(arr[0]),
+      nonce: dco_decode_opt_box_autoadd_u_64(arr[1]),
+      maxPriorityFeePerGas: dco_decode_opt_String(arr[2]),
+      maxFeePerGas: dco_decode_opt_String(arr[3]),
+      gasLimit: dco_decode_opt_box_autoadd_u_64(arr[4]),
+      to: dco_decode_opt_String(arr[5]),
+      value: dco_decode_opt_String(arr[6]),
+      dataHex: dco_decode_opt_String(arr[7]),
+    );
+  }
+
+  @protected
+  EvmAccessListItem dco_decode_evm_access_list_item(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return EvmAccessListItem(
+      address: dco_decode_String(arr[0]),
+      storageKeys: dco_decode_list_String(arr[1]),
+    );
+  }
+
+  @protected
+  EvmSignature dco_decode_evm_signature(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3)
+      throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return EvmSignature(
+      rHex: dco_decode_String(arr[0]),
+      sHex: dco_decode_String(arr[1]),
+      v: dco_decode_u_8(arr[2]),
+    );
+  }
+
+  @protected
+  EvmWei dco_decode_evm_wei(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 1)
+      throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    return EvmWei(
+      valueHex: dco_decode_String(arr[0]),
+    );
   }
 
   @protected
@@ -1962,9 +4262,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NetworkType dco_decode_network_type(dynamic raw) {
+  Network dco_decode_network(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return NetworkType.values[raw as int];
+    return Network.values[raw as int];
   }
 
   @protected
@@ -1974,15 +4274,45 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PurposeType dco_decode_purpose_type(dynamic raw) {
+  ChainId? dco_decode_opt_box_autoadd_chain_id(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return PurposeType.values[raw as int];
+    return raw == null ? null : dco_decode_box_autoadd_chain_id(raw);
+  }
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_u_64(raw);
+  }
+
+  @protected
+  Purpose dco_decode_purpose(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return Purpose.values[raw as int];
+  }
+
+  @protected
+  SignedEvmTransaction dco_decode_signed_evm_transaction(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2)
+      throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return SignedEvmTransaction(
+      transaction: dco_decode_eip_1559_transaction(arr[0]),
+      signature: dco_decode_evm_signature(arr[1]),
+    );
   }
 
   @protected
   int dco_decode_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dcoDecodeU64(raw);
   }
 
   @protected
@@ -2017,11 +4347,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Bip44Account
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Bip44Wallet
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmAddress
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmSigner
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -2062,11 +4419,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Bip44Account
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Bip44Wallet
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmAddress
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmSigner
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -2098,11 +4482,38 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Bip44Account
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return Bip44AccountImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
   Bip44Wallet
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return Bip44WalletImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmAddress
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmAddressImpl.frbInternalSseDecode(
+        sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
+  }
+
+  @protected
+  EvmSigner
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return EvmSignerImpl.frbInternalSseDecode(
         sse_decode_usize(deserializer), sse_decode_i_32(deserializer));
   }
 
@@ -2141,69 +4552,148 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Bip44Account sse_decode_bip_44_account(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_purpose = sse_decode_purpose_type(deserializer);
-    var var_coinType = sse_decode_coin_type(deserializer);
-    var var_accountIndex = sse_decode_u_32(deserializer);
-    var var_network = sse_decode_network_type(deserializer);
-    var var_accountKey = sse_decode_String(deserializer);
-    return Bip44Account(
-        purpose: var_purpose,
-        coinType: var_coinType,
-        accountIndex: var_accountIndex,
-        network: var_network,
-        accountKey: var_accountKey);
-  }
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8() != 0;
   }
 
   @protected
-  Bip44Account sse_decode_box_autoadd_bip_44_account(
+  ChainId sse_decode_box_autoadd_chain_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_chain_id(deserializer));
+  }
+
+  @protected
+  Eip1559Transaction sse_decode_box_autoadd_eip_1559_transaction(
       SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_bip_44_account(deserializer));
+    return (sse_decode_eip_1559_transaction(deserializer));
   }
 
   @protected
-  CoinType sse_decode_box_autoadd_coin_type(SseDeserializer deserializer) {
+  Eip1559TransactionBuilder sse_decode_box_autoadd_eip_1559_transaction_builder(
+      SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_coin_type(deserializer));
+    return (sse_decode_eip_1559_transaction_builder(deserializer));
   }
 
   @protected
-  ChainType sse_decode_chain_type(SseDeserializer deserializer) {
+  EvmSignature sse_decode_box_autoadd_evm_signature(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_evm_signature(deserializer));
+  }
+
+  @protected
+  EvmWei sse_decode_box_autoadd_evm_wei(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_evm_wei(deserializer));
+  }
+
+  @protected
+  SignedEvmTransaction sse_decode_box_autoadd_signed_evm_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_signed_evm_transaction(deserializer));
+  }
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_u_64(deserializer));
+  }
+
+  @protected
+  Chain sse_decode_chain(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
-    return ChainType.values[inner];
+    return Chain.values[inner];
+  }
+
+  @protected
+  ChainId sse_decode_chain_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return ChainId.values[inner];
   }
 
   @protected
   CoinType sse_decode_coin_type(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
+    var inner = sse_decode_i_32(deserializer);
+    return CoinType.values[inner];
+  }
 
-    var tag_ = sse_decode_i_32(deserializer);
-    switch (tag_) {
-      case 0:
-        return CoinType_Bitcoin();
-      case 1:
-        return CoinType_BitcoinTestnet();
-      case 2:
-        return CoinType_Litecoin();
-      case 3:
-        return CoinType_Dogecoin();
-      case 4:
-        return CoinType_Ethereum();
-      case 5:
-        var var_field0 = sse_decode_u_32(deserializer);
-        return CoinType_Custom(var_field0);
-      default:
-        throw UnimplementedError('');
-    }
+  @protected
+  Eip1559Transaction sse_decode_eip_1559_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_chainId = sse_decode_chain_id(deserializer);
+    var var_nonce = sse_decode_u_64(deserializer);
+    var var_maxPriorityFeePerGas = sse_decode_String(deserializer);
+    var var_maxFeePerGas = sse_decode_String(deserializer);
+    var var_gasLimit = sse_decode_u_64(deserializer);
+    var var_to = sse_decode_opt_String(deserializer);
+    var var_value = sse_decode_String(deserializer);
+    var var_dataHex = sse_decode_String(deserializer);
+    return Eip1559Transaction(
+        chainId: var_chainId,
+        nonce: var_nonce,
+        maxPriorityFeePerGas: var_maxPriorityFeePerGas,
+        maxFeePerGas: var_maxFeePerGas,
+        gasLimit: var_gasLimit,
+        to: var_to,
+        value: var_value,
+        dataHex: var_dataHex);
+  }
+
+  @protected
+  Eip1559TransactionBuilder sse_decode_eip_1559_transaction_builder(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_chainId = sse_decode_opt_box_autoadd_chain_id(deserializer);
+    var var_nonce = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_maxPriorityFeePerGas = sse_decode_opt_String(deserializer);
+    var var_maxFeePerGas = sse_decode_opt_String(deserializer);
+    var var_gasLimit = sse_decode_opt_box_autoadd_u_64(deserializer);
+    var var_to = sse_decode_opt_String(deserializer);
+    var var_value = sse_decode_opt_String(deserializer);
+    var var_dataHex = sse_decode_opt_String(deserializer);
+    return Eip1559TransactionBuilder(
+        chainId: var_chainId,
+        nonce: var_nonce,
+        maxPriorityFeePerGas: var_maxPriorityFeePerGas,
+        maxFeePerGas: var_maxFeePerGas,
+        gasLimit: var_gasLimit,
+        to: var_to,
+        value: var_value,
+        dataHex: var_dataHex);
+  }
+
+  @protected
+  EvmAccessListItem sse_decode_evm_access_list_item(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_address = sse_decode_String(deserializer);
+    var var_storageKeys = sse_decode_list_String(deserializer);
+    return EvmAccessListItem(
+        address: var_address, storageKeys: var_storageKeys);
+  }
+
+  @protected
+  EvmSignature sse_decode_evm_signature(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_rHex = sse_decode_String(deserializer);
+    var var_sHex = sse_decode_String(deserializer);
+    var var_v = sse_decode_u_8(deserializer);
+    return EvmSignature(rHex: var_rHex, sHex: var_sHex, v: var_v);
+  }
+
+  @protected
+  EvmWei sse_decode_evm_wei(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_valueHex = sse_decode_String(deserializer);
+    return EvmWei(valueHex: var_valueHex);
   }
 
   @protected
@@ -2239,10 +4729,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  NetworkType sse_decode_network_type(SseDeserializer deserializer) {
+  Network sse_decode_network(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
-    return NetworkType.values[inner];
+    return Network.values[inner];
   }
 
   @protected
@@ -2257,16 +4747,54 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PurposeType sse_decode_purpose_type(SseDeserializer deserializer) {
+  ChainId? sse_decode_opt_box_autoadd_chain_id(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_chain_id(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_u_64(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Purpose sse_decode_purpose(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
-    return PurposeType.values[inner];
+    return Purpose.values[inner];
+  }
+
+  @protected
+  SignedEvmTransaction sse_decode_signed_evm_transaction(
+      SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_transaction = sse_decode_eip_1559_transaction(deserializer);
+    var var_signature = sse_decode_evm_signature(deserializer);
+    return SignedEvmTransaction(
+        transaction: var_transaction, signature: var_signature);
   }
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint32();
+  }
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return deserializer.buffer.getBigUint64();
   }
 
   @protected
@@ -2298,11 +4826,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as Bip44AccountImpl).frbInternalSseEncode(move: true),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as Bip44WalletImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmAddressImpl).frbInternalSseEncode(move: true), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmSignerImpl).frbInternalSseEncode(move: true), serializer);
   }
 
   @protected
@@ -2346,12 +4902,40 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as Bip44AccountImpl).frbInternalSseEncode(move: false),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as Bip44WalletImpl).frbInternalSseEncode(move: false),
         serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmAddressImpl).frbInternalSseEncode(move: false), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmSignerImpl).frbInternalSseEncode(move: false), serializer);
   }
 
   @protected
@@ -2385,11 +4969,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as Bip44AccountImpl).frbInternalSseEncode(move: null),
+        serializer);
+  }
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
         (self as Bip44WalletImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmAddressImpl).frbInternalSseEncode(move: null), serializer);
+  }
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+        (self as EvmSignerImpl).frbInternalSseEncode(move: null), serializer);
   }
 
   @protected
@@ -2428,37 +5040,65 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_bip_44_account(Bip44Account self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_purpose_type(self.purpose, serializer);
-    sse_encode_coin_type(self.coinType, serializer);
-    sse_encode_u_32(self.accountIndex, serializer);
-    sse_encode_network_type(self.network, serializer);
-    sse_encode_String(self.accountKey, serializer);
-  }
-
-  @protected
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
   }
 
   @protected
-  void sse_encode_box_autoadd_bip_44_account(
-      Bip44Account self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_chain_id(ChainId self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_bip_44_account(self, serializer);
+    sse_encode_chain_id(self, serializer);
   }
 
   @protected
-  void sse_encode_box_autoadd_coin_type(
-      CoinType self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_eip_1559_transaction(
+      Eip1559Transaction self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_coin_type(self, serializer);
+    sse_encode_eip_1559_transaction(self, serializer);
   }
 
   @protected
-  void sse_encode_chain_type(ChainType self, SseSerializer serializer) {
+  void sse_encode_box_autoadd_eip_1559_transaction_builder(
+      Eip1559TransactionBuilder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_eip_1559_transaction_builder(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_evm_signature(
+      EvmSignature self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_evm_signature(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_evm_wei(EvmWei self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_evm_wei(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_signed_evm_transaction(
+      SignedEvmTransaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_signed_evm_transaction(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_u_64(self, serializer);
+  }
+
+  @protected
+  void sse_encode_chain(Chain self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_chain_id(ChainId self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
@@ -2466,21 +5106,57 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @protected
   void sse_encode_coin_type(CoinType self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    switch (self) {
-      case CoinType_Bitcoin():
-        sse_encode_i_32(0, serializer);
-      case CoinType_BitcoinTestnet():
-        sse_encode_i_32(1, serializer);
-      case CoinType_Litecoin():
-        sse_encode_i_32(2, serializer);
-      case CoinType_Dogecoin():
-        sse_encode_i_32(3, serializer);
-      case CoinType_Ethereum():
-        sse_encode_i_32(4, serializer);
-      case CoinType_Custom(field0: final field0):
-        sse_encode_i_32(5, serializer);
-        sse_encode_u_32(field0, serializer);
-    }
+    sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_eip_1559_transaction(
+      Eip1559Transaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_chain_id(self.chainId, serializer);
+    sse_encode_u_64(self.nonce, serializer);
+    sse_encode_String(self.maxPriorityFeePerGas, serializer);
+    sse_encode_String(self.maxFeePerGas, serializer);
+    sse_encode_u_64(self.gasLimit, serializer);
+    sse_encode_opt_String(self.to, serializer);
+    sse_encode_String(self.value, serializer);
+    sse_encode_String(self.dataHex, serializer);
+  }
+
+  @protected
+  void sse_encode_eip_1559_transaction_builder(
+      Eip1559TransactionBuilder self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_chain_id(self.chainId, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.nonce, serializer);
+    sse_encode_opt_String(self.maxPriorityFeePerGas, serializer);
+    sse_encode_opt_String(self.maxFeePerGas, serializer);
+    sse_encode_opt_box_autoadd_u_64(self.gasLimit, serializer);
+    sse_encode_opt_String(self.to, serializer);
+    sse_encode_opt_String(self.value, serializer);
+    sse_encode_opt_String(self.dataHex, serializer);
+  }
+
+  @protected
+  void sse_encode_evm_access_list_item(
+      EvmAccessListItem self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.address, serializer);
+    sse_encode_list_String(self.storageKeys, serializer);
+  }
+
+  @protected
+  void sse_encode_evm_signature(EvmSignature self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.rHex, serializer);
+    sse_encode_String(self.sHex, serializer);
+    sse_encode_u_8(self.v, serializer);
+  }
+
+  @protected
+  void sse_encode_evm_wei(EvmWei self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.valueHex, serializer);
   }
 
   @protected
@@ -2516,7 +5192,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_network_type(NetworkType self, SseSerializer serializer) {
+  void sse_encode_network(Network self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
   }
@@ -2532,15 +5208,50 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_purpose_type(PurposeType self, SseSerializer serializer) {
+  void sse_encode_opt_box_autoadd_chain_id(
+      ChainId? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_chain_id(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_u_64(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_purpose(Purpose self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
+  }
+
+  @protected
+  void sse_encode_signed_evm_transaction(
+      SignedEvmTransaction self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_eip_1559_transaction(self.transaction, serializer);
+    sse_encode_evm_signature(self.signature, serializer);
   }
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint32(self);
+  }
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    serializer.buffer.putBigUint64(self);
   }
 
   @protected
@@ -2570,6 +5281,75 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
+class Bip44AccountImpl extends RustOpaque implements Bip44Account {
+  // Not to be used by end users
+  Bip44AccountImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  Bip44AccountImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Bip44Account,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Bip44Account,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Bip44AccountPtr,
+  );
+
+  /// Get the account index
+  Future<int> accountIndex() =>
+      RustLib.instance.api.crateBridgeBip44AccountAccountIndex(
+        that: this,
+      );
+
+  /// Get the coin type for this account
+  Future<CoinType> coinType() =>
+      RustLib.instance.api.crateBridgeBip44AccountCoinType(
+        that: this,
+      );
+
+  /// Derive an address for the specified chain and index
+  Future<String> deriveAddress({required Chain chain, required int index}) =>
+      RustLib.instance.api.crateBridgeBip44AccountDeriveAddress(
+          that: this, chain: chain, index: index);
+
+  /// Derive a range of addresses
+  Future<List<String>> deriveAddressRange(
+          {required Chain chain, required int start, required int count}) =>
+      RustLib.instance.api.crateBridgeBip44AccountDeriveAddressRange(
+          that: this, chain: chain, start: start, count: count);
+
+  /// Derive an external (receiving) address at the given index
+  Future<String> deriveExternal({required int index}) => RustLib.instance.api
+      .crateBridgeBip44AccountDeriveExternal(that: this, index: index);
+
+  /// Derive an internal (change) address at the given index
+  Future<String> deriveInternal({required int index}) => RustLib.instance.api
+      .crateBridgeBip44AccountDeriveInternal(that: this, index: index);
+
+  /// Get the extended key as a string (xprv format)
+  Future<String> extendedKeyString() =>
+      RustLib.instance.api.crateBridgeBip44AccountExtendedKeyString(
+        that: this,
+      );
+
+  /// Get the network for this account
+  Future<Network> network() =>
+      RustLib.instance.api.crateBridgeBip44AccountNetwork(
+        that: this,
+      );
+
+  /// Get the purpose (BIP standard) for this account
+  Future<Purpose> purpose() =>
+      RustLib.instance.api.crateBridgeBip44AccountPurpose(
+        that: this,
+      );
+}
+
+@sealed
 class Bip44WalletImpl extends RustOpaque implements Bip44Wallet {
   // Not to be used by end users
   Bip44WalletImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -2590,7 +5370,7 @@ class Bip44WalletImpl extends RustOpaque implements Bip44Wallet {
 
   /// Get an account for a specific coin type
   Future<Bip44Account> getAccount(
-          {required PurposeType purpose,
+          {required Purpose purpose,
           required CoinType coinType,
           required int accountIndex}) =>
       RustLib.instance.api.crateBridgeBip44WalletGetAccount(
@@ -2600,10 +5380,98 @@ class Bip44WalletImpl extends RustOpaque implements Bip44Wallet {
           accountIndex: accountIndex);
 
   /// Get the network this wallet operates on
-  Future<NetworkType> network() =>
+  Future<Network> network() =>
       RustLib.instance.api.crateBridgeBip44WalletNetwork(
         that: this,
       );
+}
+
+@sealed
+class EvmAddressImpl extends RustOpaque implements EvmAddress {
+  // Not to be used by end users
+  EvmAddressImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  EvmAddressImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_EvmAddress,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EvmAddress,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EvmAddressPtr,
+  );
+
+  /// Check if this is the zero address
+  Future<bool> isZero() => RustLib.instance.api.crateBridgeEvmAddressIsZero(
+        that: this,
+      );
+
+  /// Returns the address as a byte array (20 bytes)
+  Future<Uint8List> toBytes() =>
+      RustLib.instance.api.crateBridgeEvmAddressToBytes(
+        that: this,
+      );
+
+  /// Returns the EIP-55 checksummed hex string (with 0x prefix)
+  Future<String> toChecksumString() =>
+      RustLib.instance.api.crateBridgeEvmAddressToChecksumString(
+        that: this,
+      );
+
+  /// Returns the lowercase hex string (with 0x prefix)
+  Future<String> toHexString() =>
+      RustLib.instance.api.crateBridgeEvmAddressToHexString(
+        that: this,
+      );
+}
+
+@sealed
+class EvmSignerImpl extends RustOpaque implements EvmSigner {
+  // Not to be used by end users
+  EvmSignerImpl.frbInternalDcoDecode(List<dynamic> wire)
+      : super.frbInternalDcoDecode(wire, _kStaticData);
+
+  // Not to be used by end users
+  EvmSignerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+      : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
+
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_EvmSigner,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EvmSigner,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_EvmSignerPtr,
+  );
+
+  /// Returns the EVM address associated with this signer
+  Future<EvmAddress> address() =>
+      RustLib.instance.api.crateBridgeEvmSignerAddress(
+        that: this,
+      );
+
+  /// Returns the EVM address as a checksummed hex string
+  Future<String> addressString() =>
+      RustLib.instance.api.crateBridgeEvmSignerAddressString(
+        that: this,
+      );
+
+  /// Sign a transaction and return the signed transaction
+  Future<SignedEvmTransaction> signAndBuild({required Eip1559Transaction tx}) =>
+      RustLib.instance.api.crateBridgeEvmSignerSignAndBuild(that: this, tx: tx);
+
+  /// Sign a message hash (32 bytes)
+  Future<EvmSignature> signHash({required List<int> hash}) =>
+      RustLib.instance.api.crateBridgeEvmSignerSignHash(that: this, hash: hash);
+
+  /// Sign an EIP-1559 transaction
+  Future<EvmSignature> signTransaction({required Eip1559Transaction tx}) =>
+      RustLib.instance.api
+          .crateBridgeEvmSignerSignTransaction(that: this, tx: tx);
 }
 
 @sealed
@@ -2662,7 +5530,7 @@ class ExtendedPrivateKeyImpl extends RustOpaque implements ExtendedPrivateKey {
       );
 
   /// Get the network this key belongs to
-  Future<NetworkType> network() =>
+  Future<Network> network() =>
       RustLib.instance.api.crateBridgeExtendedPrivateKeyNetwork(
         that: this,
       );
@@ -2740,7 +5608,7 @@ class ExtendedPublicKeyImpl extends RustOpaque implements ExtendedPublicKey {
       );
 
   /// Get the network this key belongs to
-  Future<NetworkType> network() =>
+  Future<Network> network() =>
       RustLib.instance.api.crateBridgeExtendedPublicKeyNetwork(
         that: this,
       );

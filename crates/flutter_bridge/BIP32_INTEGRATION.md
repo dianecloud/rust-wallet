@@ -10,11 +10,11 @@ BIP32 (Bitcoin Improvement Proposal 32) defines Hierarchical Deterministic (HD) 
 
 ### Enums
 
-#### `NetworkType`
+#### `Network`
 Defines the blockchain network for key generation.
 
 ```rust
-pub enum NetworkType {
+pub enum Network {
     BitcoinMainnet,
     BitcoinTestnet,
 }
@@ -27,18 +27,18 @@ Wrapper for BIP32 extended private keys with full derivation capabilities.
 
 **Creation Methods:**
 
-##### `from_seed(seed: Vec<u8>, network: NetworkType) -> Result<ExtendedPrivateKey, String>`
+##### `from_seed(seed: Vec<u8>, network: Network) -> Result<ExtendedPrivateKey, String>`
 Create a master key from a raw seed (typically from BIP39).
 
 ```rust
 let seed = vec![0u8; 64]; // 512-bit seed from BIP39
 let master_key = ExtendedPrivateKey::from_seed(
     seed,
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 ```
 
-##### `from_mnemonic(mnemonic: &Mnemonic, passphrase: Option<String>, network: NetworkType) -> Result<ExtendedPrivateKey, String>`
+##### `from_mnemonic(mnemonic: &Mnemonic, passphrase: Option<String>, network: Network) -> Result<ExtendedPrivateKey, String>`
 Create a master key directly from a BIP39 mnemonic.
 
 ```rust
@@ -46,7 +46,7 @@ let mnemonic = Mnemonic::generate(12)?;
 let master_key = ExtendedPrivateKey::from_mnemonic(
     &mnemonic,
     Some("my_passphrase".to_string()),
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 ```
 
@@ -70,12 +70,12 @@ let xprv = master_key.to_extended_string();
 
 **Key Information:**
 
-##### `network() -> NetworkType`
+##### `network() -> Network`
 Get the network this key belongs to.
 
 ```rust
 let network = key.network();
-assert_eq!(network, NetworkType::BitcoinMainnet);
+assert_eq!(network, Network::BitcoinMainnet);
 ```
 
 ##### `depth() -> u8`
@@ -194,7 +194,7 @@ let address_key = xpub.derive_path("m/0/0".to_string())?;
 
 ### Utility Functions
 
-#### `create_master_key(mnemonic: String, passphrase: Option<String>, network: NetworkType) -> Result<String, String>`
+#### `create_master_key(mnemonic: String, passphrase: Option<String>, network: Network) -> Result<String, String>`
 Create a master key and return it as a string.
 
 ```rust
@@ -202,7 +202,7 @@ let mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon 
 let xprv = create_master_key(
     mnemonic.to_string(),
     None,
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 ```
 
@@ -241,7 +241,7 @@ let mnemonic = Mnemonic::generate(12)?;
 let master_key = ExtendedPrivateKey::from_mnemonic(
     &mnemonic,
     None,  // No passphrase
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Get serialized form
@@ -252,7 +252,7 @@ println!("Master key: {}", xprv);
 ### Example 2: Derive Child Keys
 ```rust
 // Create master key
-let master = ExtendedPrivateKey::from_seed(seed, NetworkType::BitcoinMainnet)?;
+let master = ExtendedPrivateKey::from_seed(seed, Network::BitcoinMainnet)?;
 
 // Derive purpose level (BIP44 = 44')
 let purpose = master.derive_child(44, true)?;
@@ -295,7 +295,7 @@ let addr1 = account_xpub.derive_child(0)?.derive_child(1)?;
 
 ### Example 5: Key Metadata
 ```rust
-let master = ExtendedPrivateKey::from_seed(seed, NetworkType::BitcoinMainnet)?;
+let master = ExtendedPrivateKey::from_seed(seed, Network::BitcoinMainnet)?;
 let child = master.derive_child(0, true)?;
 
 // Check key properties
@@ -312,7 +312,7 @@ println!("Network: {:?}", child.network());
 let xprv = create_master_key(
     mnemonic_phrase,
     Some("passphrase".to_string()),
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Quick derivation
@@ -420,7 +420,7 @@ final mnemonic = await Mnemonic.generate(wordCount: 12);
 final masterKey = await ExtendedPrivateKey.fromMnemonic(
   mnemonic: mnemonic,
   passphrase: null,
-  network: NetworkType.BitcoinMainnet,
+  network: Network.bitcoinMainnet,
 );
 
 // Derive child
@@ -446,4 +446,5 @@ This implementation follows:
 
 - [BIP39_INTEGRATION.md](./BIP39_INTEGRATION.md) - Mnemonic generation
 - [BIP44_INTEGRATION.md](./BIP44_INTEGRATION.md) - Multi-account hierarchy
+- [SIGNING_INTEGRATION.md](./SIGNING_INTEGRATION.md) - EVM transaction signing
 - [Official BIP32 Specification](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)

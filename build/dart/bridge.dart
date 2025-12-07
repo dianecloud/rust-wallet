@@ -5,10 +5,21 @@
 
 import 'frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
-part 'bridge.freezed.dart';
 
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`
+// These functions are ignored because they are not marked as `pub`: `to_rust_transaction`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `assert_receiver_is_total_eq`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `clone`, `eq`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `from`, `try_from`
+
+/// Get the numeric chain ID value
+Future<BigInt> chainIdToU64({required ChainId chainId}) =>
+    RustLib.instance.api.crateBridgeChainIdToU64(chainId: chainId);
+
+/// Create a custom chain ID from a numeric value (for chains not in the enum)
+Future<BigInt> customChainIdValue({required BigInt chainId}) =>
+    RustLib.instance.api.crateBridgeCustomChainIdValue(chainId: chainId);
+
+/// Get the SLIP-44 coin type index
+Future<int> coinTypeToIndex({required CoinType coinType}) =>
+    RustLib.instance.api.crateBridgeCoinTypeToIndex(coinType: coinType);
 
 /// Generate a new BIP39 mnemonic phrase (returns string)
 Future<String> generateMnemonic({required int wordCount}) =>
@@ -35,7 +46,7 @@ Future<String> mnemonicPhraseToSeedHex(
 Future<String> createMasterKey(
         {required String mnemonic,
         String? passphrase,
-        required NetworkType network}) =>
+        required Network network}) =>
     RustLib.instance.api.crateBridgeCreateMasterKey(
         mnemonic: mnemonic, passphrase: passphrase, network: network);
 
@@ -61,7 +72,7 @@ Future<WalletResult> createBip44Wallet(
         {required String mnemonic,
         String? passphrase,
         required int accountIndex,
-        required NetworkType network}) =>
+        required Network network}) =>
     RustLib.instance.api.crateBridgeCreateBip44Wallet(
         mnemonic: mnemonic,
         passphrase: passphrase,
@@ -72,10 +83,10 @@ Future<WalletResult> createBip44Wallet(
 Future<String> createBip44Account(
         {required String mnemonic,
         String? passphrase,
-        required PurposeType purpose,
+        required Purpose purpose,
         required CoinType coinType,
         required int accountIndex,
-        required NetworkType network}) =>
+        required Network network}) =>
     RustLib.instance.api.crateBridgeCreateBip44Account(
         mnemonic: mnemonic,
         passphrase: passphrase,
@@ -87,7 +98,7 @@ Future<String> createBip44Account(
 /// Derive a BIP44 address from account key
 Future<String> deriveBip44Address(
         {required String accountKey,
-        required ChainType chain,
+        required Chain chain,
         required int addressIndex}) =>
     RustLib.instance.api.crateBridgeDeriveBip44Address(
         accountKey: accountKey, chain: chain, addressIndex: addressIndex);
@@ -101,8 +112,107 @@ Future<WalletResult> getCoinInfo({required CoinType coinType}) =>
     RustLib.instance.api.crateBridgeGetCoinInfo(coinType: coinType);
 
 /// Get purpose information
-Future<WalletResult> getPurposeInfo({required PurposeType purpose}) =>
+Future<WalletResult> getPurposeInfo({required Purpose purpose}) =>
     RustLib.instance.api.crateBridgeGetPurposeInfo(purpose: purpose);
+
+/// Get the standard gas limit for ETH/BNB transfer
+Future<BigInt> getTransferGas() =>
+    RustLib.instance.api.crateBridgeGetTransferGas();
+
+/// Get the typical gas limit for BEP-20/ERC-20 token transfer
+Future<BigInt> getTokenTransferGas() =>
+    RustLib.instance.api.crateBridgeGetTokenTransferGas();
+
+/// Get the number of wei in one gwei (10^9)
+Future<BigInt> getGweiInWei() => RustLib.instance.api.crateBridgeGetGweiInWei();
+
+/// Get the number of wei in one ether/BNB (10^18)
+Future<BigInt> getEtherInWei() =>
+    RustLib.instance.api.crateBridgeGetEtherInWei();
+
+/// Convert gwei to wei string
+Future<String> gweiToWei({required BigInt gwei}) =>
+    RustLib.instance.api.crateBridgeGweiToWei(gwei: gwei);
+
+/// Convert ether to wei string
+Future<String> etherToWei({required BigInt ether}) =>
+    RustLib.instance.api.crateBridgeEtherToWei(ether: ether);
+
+/// Parse an EVM address from hex string
+Future<String> parseEvmAddress({required String address}) =>
+    RustLib.instance.api.crateBridgeParseEvmAddress(address: address);
+
+/// Validate an EVM address checksum
+Future<bool> validateEvmAddressChecksum({required String address}) =>
+    RustLib.instance.api
+        .crateBridgeValidateEvmAddressChecksum(address: address);
+
+/// Get chain ID value for a known chain
+Future<BigInt> getChainIdValue({required ChainId chainId}) =>
+    RustLib.instance.api.crateBridgeGetChainIdValue(chainId: chainId);
+
+/// Get chain name for a chain ID
+Future<String> getChainName({required ChainId chainId}) =>
+    RustLib.instance.api.crateBridgeGetChainName(chainId: chainId);
+
+/// Check if a chain ID is a testnet
+Future<bool> isTestnetChain({required ChainId chainId}) =>
+    RustLib.instance.api.crateBridgeIsTestnetChain(chainId: chainId);
+
+/// Create an EVM signer from mnemonic and derive address
+Future<String> createEvmSignerFromMnemonic(
+        {required String mnemonic,
+        String? passphrase,
+        required int accountIndex,
+        required int addressIndex}) =>
+    RustLib.instance.api.crateBridgeCreateEvmSignerFromMnemonic(
+        mnemonic: mnemonic,
+        passphrase: passphrase,
+        accountIndex: accountIndex,
+        addressIndex: addressIndex);
+
+/// Sign an EIP-1559 transaction and return the raw transaction hex
+Future<String> signEip1559Transaction(
+        {required String privateKeyHex,
+        required ChainId chainId,
+        required BigInt nonce,
+        required String to,
+        required String valueWei,
+        required BigInt gasLimit,
+        required BigInt maxPriorityFeeGwei,
+        required BigInt maxFeeGwei,
+        String? dataHex}) =>
+    RustLib.instance.api.crateBridgeSignEip1559Transaction(
+        privateKeyHex: privateKeyHex,
+        chainId: chainId,
+        nonce: nonce,
+        to: to,
+        valueWei: valueWei,
+        gasLimit: gasLimit,
+        maxPriorityFeeGwei: maxPriorityFeeGwei,
+        maxFeeGwei: maxFeeGwei,
+        dataHex: dataHex);
+
+/// Recover signer address from a signature and message hash
+Future<String> recoverSignerAddress(
+        {required String hashHex, required String signatureHex}) =>
+    RustLib.instance.api.crateBridgeRecoverSignerAddress(
+        hashHex: hashHex, signatureHex: signatureHex);
+
+/// Derive EVM address from extended private key at specific path
+Future<String> deriveEvmAddress(
+        {required String extendedPrivateKey,
+        required int chainIndex,
+        required int addressIndex}) =>
+    RustLib.instance.api.crateBridgeDeriveEvmAddress(
+        extendedPrivateKey: extendedPrivateKey,
+        chainIndex: chainIndex,
+        addressIndex: addressIndex);
+
+/// Get EVM address from private key hex
+Future<String> getEvmAddressFromPrivateKey({required String privateKeyHex}) =>
+    RustLib.instance.api
+        .crateBridgeGetEvmAddressFromPrivateKey(privateKeyHex: privateKeyHex);
 
 /// Simple health check function
 Future<String> healthCheck() => RustLib.instance.api.crateBridgeHealthCheck();
@@ -111,30 +221,126 @@ Future<String> healthCheck() => RustLib.instance.api.crateBridgeHealthCheck();
 Future<int> add({required int a, required int b}) =>
     RustLib.instance.api.crateBridgeAdd(a: a, b: b);
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Bip44Account>>
+abstract class Bip44Account implements RustOpaqueInterface {
+  /// Get the account index
+  Future<int> accountIndex();
+
+  /// Get the coin type for this account
+  Future<CoinType> coinType();
+
+  /// Derive an address for the specified chain and index
+  Future<String> deriveAddress({required Chain chain, required int index});
+
+  /// Derive a range of addresses
+  Future<List<String>> deriveAddressRange(
+      {required Chain chain, required int start, required int count});
+
+  /// Derive an external (receiving) address at the given index
+  Future<String> deriveExternal({required int index});
+
+  /// Derive an internal (change) address at the given index
+  Future<String> deriveInternal({required int index});
+
+  /// Get the extended key as a string (xprv format)
+  Future<String> extendedKeyString();
+
+  /// Get the network for this account
+  Future<Network> network();
+
+  /// Get the purpose (BIP standard) for this account
+  Future<Purpose> purpose();
+}
+
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Bip44Wallet>>
 abstract class Bip44Wallet implements RustOpaqueInterface {
   /// Create a new BIP44 wallet from mnemonic
   static Future<Bip44Wallet> fromMnemonic(
           {required String mnemonic,
           String? passphrase,
-          required NetworkType network}) =>
+          required Network network}) =>
       RustLib.instance.api.crateBridgeBip44WalletFromMnemonic(
           mnemonic: mnemonic, passphrase: passphrase, network: network);
 
   /// Create a new BIP44 wallet from seed
   static Future<Bip44Wallet> fromSeed(
-          {required List<int> seed, required NetworkType network}) =>
+          {required List<int> seed, required Network network}) =>
       RustLib.instance.api
           .crateBridgeBip44WalletFromSeed(seed: seed, network: network);
 
   /// Get an account for a specific coin type
   Future<Bip44Account> getAccount(
-      {required PurposeType purpose,
+      {required Purpose purpose,
       required CoinType coinType,
       required int accountIndex});
 
   /// Get the network this wallet operates on
-  Future<NetworkType> network();
+  Future<Network> network();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EvmAddress>>
+abstract class EvmAddress implements RustOpaqueInterface {
+  /// Create an address from 20 bytes
+  static Future<EvmAddress> fromBytes({required List<int> bytes}) =>
+      RustLib.instance.api.crateBridgeEvmAddressFromBytes(bytes: bytes);
+
+  /// Parse an address from a hex string (with or without 0x prefix)
+  static Future<EvmAddress> fromHex({required String hexString}) =>
+      RustLib.instance.api.crateBridgeEvmAddressFromHex(hexString: hexString);
+
+  /// Derive an address from an uncompressed public key (64 bytes, without 0x04 prefix)
+  static Future<EvmAddress> fromPublicKey({required List<int> pubkey}) =>
+      RustLib.instance.api.crateBridgeEvmAddressFromPublicKey(pubkey: pubkey);
+
+  /// Check if this is the zero address
+  Future<bool> isZero();
+
+  /// Returns the address as a byte array (20 bytes)
+  Future<Uint8List> toBytes();
+
+  /// Returns the EIP-55 checksummed hex string (with 0x prefix)
+  Future<String> toChecksumString();
+
+  /// Returns the lowercase hex string (with 0x prefix)
+  Future<String> toHexString();
+
+  /// Validate an EIP-55 checksummed address string
+  static Future<bool> validateChecksum({required String address}) =>
+      RustLib.instance.api
+          .crateBridgeEvmAddressValidateChecksum(address: address);
+
+  /// Create the zero address (0x0000...0000)
+  static Future<EvmAddress> zero() =>
+      RustLib.instance.api.crateBridgeEvmAddressZero();
+}
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<EvmSigner>>
+abstract class EvmSigner implements RustOpaqueInterface {
+  /// Returns the EVM address associated with this signer
+  Future<EvmAddress> address();
+
+  /// Returns the EVM address as a checksummed hex string
+  Future<String> addressString();
+
+  /// Create a signer from a BIP-44 account and address index
+  static Future<EvmSigner> fromAccount(
+          {required Bip44Account account, required int addressIndex}) =>
+      RustLib.instance.api.crateBridgeEvmSignerFromAccount(
+          account: account, addressIndex: addressIndex);
+
+  /// Create a signer directly from a 32-byte private key (hex string)
+  static Future<EvmSigner> fromPrivateKeyHex({required String privateKeyHex}) =>
+      RustLib.instance.api
+          .crateBridgeEvmSignerFromPrivateKeyHex(privateKeyHex: privateKeyHex);
+
+  /// Sign a transaction and return the signed transaction
+  Future<SignedEvmTransaction> signAndBuild({required Eip1559Transaction tx});
+
+  /// Sign a message hash (32 bytes)
+  Future<EvmSignature> signHash({required List<int> hash});
+
+  /// Sign an EIP-1559 transaction
+  Future<EvmSignature> signTransaction({required Eip1559Transaction tx});
 }
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ExtendedPrivateKey>>
@@ -159,13 +365,13 @@ abstract class ExtendedPrivateKey implements RustOpaqueInterface {
   static Future<ExtendedPrivateKey> fromMnemonic(
           {required Mnemonic mnemonic,
           String? passphrase,
-          required NetworkType network}) =>
+          required Network network}) =>
       RustLib.instance.api.crateBridgeExtendedPrivateKeyFromMnemonic(
           mnemonic: mnemonic, passphrase: passphrase, network: network);
 
   /// Create master key from seed bytes
   static Future<ExtendedPrivateKey> fromSeed(
-          {required List<int> seed, required NetworkType network}) =>
+          {required List<int> seed, required Network network}) =>
       RustLib.instance.api
           .crateBridgeExtendedPrivateKeyFromSeed(seed: seed, network: network);
 
@@ -177,7 +383,7 @@ abstract class ExtendedPrivateKey implements RustOpaqueInterface {
   Future<bool> isHardened();
 
   /// Get the network this key belongs to
-  Future<NetworkType> network();
+  Future<Network> network();
 
   /// Get the parent fingerprint (4 bytes)
   Future<Uint8List> parentFingerprint();
@@ -214,7 +420,7 @@ abstract class ExtendedPublicKey implements RustOpaqueInterface {
   Future<bool> isHardened();
 
   /// Get the network this key belongs to
-  Future<NetworkType> network();
+  Future<Network> network();
 
   /// Get the parent fingerprint (4 bytes)
   Future<Uint8List> parentFingerprint();
@@ -246,91 +452,463 @@ abstract class Mnemonic implements RustOpaqueInterface {
   Future<int> wordCount();
 }
 
-/// Flutter wrapper for BIP44 Account
-class Bip44Account {
-  final PurposeType purpose;
-  final CoinType coinType;
-  final int accountIndex;
-  final NetworkType network;
-  final String accountKey;
-
-  const Bip44Account({
-    required this.purpose,
-    required this.coinType,
-    required this.accountIndex,
-    required this.network,
-    required this.accountKey,
-  });
-
-  /// Derive a range of addresses
-  Future<List<String>> deriveAddressRange(
-          {required ChainType chain, required int start, required int count}) =>
-      RustLib.instance.api.crateBridgeBip44AccountDeriveAddressRange(
-          that: this, chain: chain, start: start, count: count);
-
-  /// Derive an external (receiving) address at the given index
-  Future<String> deriveExternal({required int index}) => RustLib.instance.api
-      .crateBridgeBip44AccountDeriveExternal(that: this, index: index);
-
-  /// Derive an internal (change) address at the given index
-  Future<String> deriveInternal({required int index}) => RustLib.instance.api
-      .crateBridgeBip44AccountDeriveInternal(that: this, index: index);
-
-  @override
-  int get hashCode =>
-      purpose.hashCode ^
-      coinType.hashCode ^
-      accountIndex.hashCode ^
-      network.hashCode ^
-      accountKey.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Bip44Account &&
-          runtimeType == other.runtimeType &&
-          purpose == other.purpose &&
-          coinType == other.coinType &&
-          accountIndex == other.accountIndex &&
-          network == other.network &&
-          accountKey == other.accountKey;
-}
-
 /// BIP44 Chain type (external/internal)
-enum ChainType {
+enum Chain {
   external_,
   internal,
   ;
 }
 
-@freezed
-sealed class CoinType with _$CoinType {
-  const CoinType._();
+/// EVM Chain ID for transaction signing
+/// For custom chain IDs, use the `custom_chain_id` parameter in functions
+enum ChainId {
+  /// BSC Mainnet (chain ID 56)
+  bscMainnet,
 
-  const factory CoinType.bitcoin() = CoinType_Bitcoin;
-  const factory CoinType.bitcoinTestnet() = CoinType_BitcoinTestnet;
-  const factory CoinType.litecoin() = CoinType_Litecoin;
-  const factory CoinType.dogecoin() = CoinType_Dogecoin;
-  const factory CoinType.ethereum() = CoinType_Ethereum;
-  const factory CoinType.custom(
-    int field0,
-  ) = CoinType_Custom;
+  /// BSC Testnet (chain ID 97)
+  bscTestnet,
+
+  /// Ethereum Mainnet (chain ID 1)
+  ethereumMainnet,
+
+  /// Polygon Mainnet (chain ID 137)
+  polygon,
+
+  /// Arbitrum One (chain ID 42161)
+  arbitrum,
+
+  /// Optimism (chain ID 10)
+  optimism,
+
+  /// Avalanche C-Chain (chain ID 43114)
+  avalanche,
+  ;
+}
+
+/// BIP44 Coin types (common cryptocurrencies)
+/// For custom coin types, use the `custom_coin_type_index` parameter in functions
+enum CoinType {
+  bitcoin,
+  bitcoinTestnet,
+  litecoin,
+  dogecoin,
+  dash,
+  ethereum,
+  ethereumClassic,
+  bitcoinCash,
+  binanceCoin,
+  solana,
+  cardano,
+  polkadot,
+  cosmos,
+  tron,
+  ;
+}
+
+/// Flutter wrapper for EIP-1559 Transaction
+class Eip1559Transaction {
+  /// Chain ID for replay protection
+  final ChainId chainId;
+
+  /// Transaction nonce (sender's transaction count)
+  final BigInt nonce;
+
+  /// Maximum priority fee per gas (tip to validator) in wei
+  final String maxPriorityFeePerGas;
+
+  /// Maximum total fee per gas in wei
+  final String maxFeePerGas;
+
+  /// Gas limit for the transaction
+  final BigInt gasLimit;
+
+  /// Recipient address (None for contract creation)
+  final String? to;
+
+  /// Value to transfer in wei
+  final String value;
+
+  /// Transaction data (contract call data) as hex
+  final String dataHex;
+
+  const Eip1559Transaction({
+    required this.chainId,
+    required this.nonce,
+    required this.maxPriorityFeePerGas,
+    required this.maxFeePerGas,
+    required this.gasLimit,
+    this.to,
+    required this.value,
+    required this.dataHex,
+  });
+
+  /// Create a new transaction builder
+  static Future<Eip1559TransactionBuilder> builder() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionBuilder();
+
+  /// Check if this is a contract creation transaction
+  Future<bool> isContractCreation() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionIsContractCreation(
+        that: this,
+      );
+
+  /// Check if this is a simple value transfer (no data)
+  Future<bool> isTransfer() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionIsTransfer(
+        that: this,
+      );
+
+  /// Typical gas limit for BEP-20/ERC-20 token transfer
+  static Future<BigInt> tokenTransferGas() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionTokenTransferGas();
+
+  /// Standard gas limit for ETH/BNB transfer
+  static Future<BigInt> transferGas() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionTransferGas();
+
+  /// Validate the transaction
+  Future<void> validate() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionValidate(
+        that: this,
+      );
+
+  @override
+  int get hashCode =>
+      chainId.hashCode ^
+      nonce.hashCode ^
+      maxPriorityFeePerGas.hashCode ^
+      maxFeePerGas.hashCode ^
+      gasLimit.hashCode ^
+      to.hashCode ^
+      value.hashCode ^
+      dataHex.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Eip1559Transaction &&
+          runtimeType == other.runtimeType &&
+          chainId == other.chainId &&
+          nonce == other.nonce &&
+          maxPriorityFeePerGas == other.maxPriorityFeePerGas &&
+          maxFeePerGas == other.maxFeePerGas &&
+          gasLimit == other.gasLimit &&
+          to == other.to &&
+          value == other.value &&
+          dataHex == other.dataHex;
+}
+
+/// Builder for EIP-1559 transactions
+class Eip1559TransactionBuilder {
+  final ChainId? chainId;
+  final BigInt? nonce;
+  final String? maxPriorityFeePerGas;
+  final String? maxFeePerGas;
+  final BigInt? gasLimit;
+  final String? to;
+  final String? value;
+  final String? dataHex;
+
+  const Eip1559TransactionBuilder({
+    this.chainId,
+    this.nonce,
+    this.maxPriorityFeePerGas,
+    this.maxFeePerGas,
+    this.gasLimit,
+    this.to,
+    this.value,
+    this.dataHex,
+  });
+
+  /// Build the transaction from the current builder state
+  ///
+  /// In Dart, construct the builder with fields directly:
+  /// ```dart
+  /// var builder = Eip1559TransactionBuilder(
+  ///   chainId: ChainId.bscMainnet(),
+  ///   nonce: 0,
+  ///   maxPriorityFeePerGas: "1000000000",
+  ///   maxFeePerGas: "2000000000",
+  ///   gasLimit: 21000,
+  ///   to: "0x...",
+  ///   value: "1000000000000000000",
+  /// );
+  /// var tx = await builder.build();
+  /// ```
+  Future<Eip1559Transaction> build() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionBuilderBuild(
+        that: this,
+      );
+
+  static Future<Eip1559TransactionBuilder> default_() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionBuilderDefault();
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  /// Create a new transaction builder
+  static Future<Eip1559TransactionBuilder> newInstance() =>
+      RustLib.instance.api.crateBridgeEip1559TransactionBuilderNew();
+
+  @override
+  int get hashCode =>
+      chainId.hashCode ^
+      nonce.hashCode ^
+      maxPriorityFeePerGas.hashCode ^
+      maxFeePerGas.hashCode ^
+      gasLimit.hashCode ^
+      to.hashCode ^
+      value.hashCode ^
+      dataHex.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Eip1559TransactionBuilder &&
+          runtimeType == other.runtimeType &&
+          chainId == other.chainId &&
+          nonce == other.nonce &&
+          maxPriorityFeePerGas == other.maxPriorityFeePerGas &&
+          maxFeePerGas == other.maxFeePerGas &&
+          gasLimit == other.gasLimit &&
+          to == other.to &&
+          value == other.value &&
+          dataHex == other.dataHex;
+}
+
+/// Access list item for EIP-2930/EIP-1559 transactions
+class EvmAccessListItem {
+  /// The address being accessed
+  final String address;
+
+  /// The storage keys being accessed (as hex strings)
+  final List<String> storageKeys;
+
+  const EvmAccessListItem({
+    required this.address,
+    required this.storageKeys,
+  });
+
+  /// Create an access list item with only an address (no storage keys)
+  static Future<EvmAccessListItem> addressOnly({required String address}) =>
+      RustLib.instance.api
+          .crateBridgeEvmAccessListItemAddressOnly(address: address);
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  /// Create a new access list item
+  static Future<EvmAccessListItem> newInstance(
+          {required String address, required List<String> storageKeys}) =>
+      RustLib.instance.api.crateBridgeEvmAccessListItemNew(
+          address: address, storageKeys: storageKeys);
+
+  @override
+  int get hashCode => address.hashCode ^ storageKeys.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EvmAccessListItem &&
+          runtimeType == other.runtimeType &&
+          address == other.address &&
+          storageKeys == other.storageKeys;
+}
+
+/// Flutter wrapper for ECDSA Signature with recovery ID
+class EvmSignature {
+  /// R component (32 bytes as hex)
+  final String rHex;
+
+  /// S component (32 bytes as hex)
+  final String sHex;
+
+  /// Recovery ID (0 or 1)
+  final int v;
+
+  const EvmSignature({
+    required this.rHex,
+    required this.sHex,
+    required this.v,
+  });
+
+  /// Create a signature from 65 raw bytes (r || s || v)
+  static Future<EvmSignature> fromBytes({required List<int> bytes}) =>
+      RustLib.instance.api.crateBridgeEvmSignatureFromBytes(bytes: bytes);
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  /// Create a new signature from components
+  static Future<EvmSignature> newInstance(
+          {required String rHex, required String sHex, required int v}) =>
+      RustLib.instance.api
+          .crateBridgeEvmSignatureNew(rHex: rHex, sHex: sHex, v: v);
+
+  /// Returns the signature as 65 raw bytes (r || s || v)
+  Future<Uint8List> toBytes() =>
+      RustLib.instance.api.crateBridgeEvmSignatureToBytes(
+        that: this,
+      );
+
+  /// Returns the signature as a hex string (0x prefix + r + s + v)
+  Future<String> toHexString() =>
+      RustLib.instance.api.crateBridgeEvmSignatureToHexString(
+        that: this,
+      );
+
+  @override
+  int get hashCode => rHex.hashCode ^ sHex.hashCode ^ v.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EvmSignature &&
+          runtimeType == other.runtimeType &&
+          rHex == other.rHex &&
+          sHex == other.sHex &&
+          v == other.v;
+}
+
+/// Flutter wrapper for Wei - EVM currency value (smallest unit)
+class EvmWei {
+  /// Internal representation as hex string for large number support
+  final String valueHex;
+
+  const EvmWei({
+    required this.valueHex,
+  });
+
+  /// Add two Wei values
+  Future<EvmWei> add({required EvmWei other}) =>
+      RustLib.instance.api.crateBridgeEvmWeiAdd(that: this, other: other);
+
+  /// Create Wei from ether/BNB (1 ether = 10^18 wei)
+  static Future<EvmWei> fromEther({required BigInt ether}) =>
+      RustLib.instance.api.crateBridgeEvmWeiFromEther(ether: ether);
+
+  /// Create Wei from gwei (1 gwei = 10^9 wei)
+  static Future<EvmWei> fromGwei({required BigInt gwei}) =>
+      RustLib.instance.api.crateBridgeEvmWeiFromGwei(gwei: gwei);
+
+  /// Create Wei from a decimal string (in wei)
+  static Future<EvmWei> fromWeiString({required String weiString}) =>
+      RustLib.instance.api.crateBridgeEvmWeiFromWeiString(weiString: weiString);
+
+  /// Create Wei from a u64 value (in wei)
+  static Future<EvmWei> fromWeiU64({required BigInt wei}) =>
+      RustLib.instance.api.crateBridgeEvmWeiFromWeiU64(wei: wei);
+
+  /// Check if the value is zero
+  Future<bool> isZero() => RustLib.instance.api.crateBridgeEvmWeiIsZero(
+        that: this,
+      );
+
+  /// Multiply Wei by a u64 scalar
+  Future<EvmWei> multiply({required BigInt scalar}) => RustLib.instance.api
+      .crateBridgeEvmWeiMultiply(that: this, scalar: scalar);
+
+  /// Returns the value as a decimal string
+  Future<String> toDecimalString() =>
+      RustLib.instance.api.crateBridgeEvmWeiToDecimalString(
+        that: this,
+      );
+
+  /// Convert to ether (truncates)
+  Future<BigInt> toEther() => RustLib.instance.api.crateBridgeEvmWeiToEther(
+        that: this,
+      );
+
+  /// Convert to gwei (truncates)
+  Future<BigInt> toGwei() => RustLib.instance.api.crateBridgeEvmWeiToGwei(
+        that: this,
+      );
+
+  /// Returns the value as u64 if it fits, None otherwise
+  Future<BigInt?> toU64() => RustLib.instance.api.crateBridgeEvmWeiToU64(
+        that: this,
+      );
+
+  /// Create zero wei
+  static Future<EvmWei> zero() => RustLib.instance.api.crateBridgeEvmWeiZero();
+
+  @override
+  int get hashCode => valueHex.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EvmWei &&
+          runtimeType == other.runtimeType &&
+          valueHex == other.valueHex;
 }
 
 /// Network type for the wallet
-enum NetworkType {
+enum Network {
   bitcoinMainnet,
   bitcoinTestnet,
   ;
 }
 
 /// BIP44 Purpose types (derivation standards)
-enum PurposeType {
+enum Purpose {
   bip44,
   bip49,
   bip84,
   bip86,
   ;
+}
+
+/// Flutter wrapper for a signed EIP-1559 transaction
+class SignedEvmTransaction {
+  /// The unsigned transaction
+  final Eip1559Transaction transaction;
+
+  /// The ECDSA signature
+  final EvmSignature signature;
+
+  const SignedEvmTransaction({
+    required this.transaction,
+    required this.signature,
+  });
+
+  /// Encode the signed transaction as raw bytes
+  Future<Uint8List> encode() =>
+      RustLib.instance.api.crateBridgeSignedEvmTransactionEncode(
+        that: this,
+      );
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  /// Create a new signed transaction
+  static Future<SignedEvmTransaction> newInstance(
+          {required Eip1559Transaction transaction,
+          required EvmSignature signature}) =>
+      RustLib.instance.api.crateBridgeSignedEvmTransactionNew(
+          transaction: transaction, signature: signature);
+
+  /// Returns the raw transaction as a hex string with 0x prefix
+  /// This is the format expected by eth_sendRawTransaction
+  Future<String> toRawTransaction() =>
+      RustLib.instance.api.crateBridgeSignedEvmTransactionToRawTransaction(
+        that: this,
+      );
+
+  /// Compute the transaction hash
+  Future<Uint8List> txHash() =>
+      RustLib.instance.api.crateBridgeSignedEvmTransactionTxHash(
+        that: this,
+      );
+
+  /// Returns the transaction hash as a hex string with 0x prefix
+  Future<String> txHashHex() =>
+      RustLib.instance.api.crateBridgeSignedEvmTransactionTxHashHex(
+        that: this,
+      );
+
+  @override
+  int get hashCode => transaction.hashCode ^ signature.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is SignedEvmTransaction &&
+          runtimeType == other.runtimeType &&
+          transaction == other.transaction &&
+          signature == other.signature;
 }
 
 /// Result type for wallet operations (used by utility functions)

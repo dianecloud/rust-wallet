@@ -19,8 +19,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   });
 
   CrossPlatformFinalizerArg
+      get rust_arc_decrement_strong_count_Bip44AccountPtr => wire
+          ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44AccountPtr;
+
+  CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_Bip44WalletPtr => wire
           ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44WalletPtr;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmAddressPtr =>
+      wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddressPtr;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_EvmSignerPtr =>
+      wire._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSignerPtr;
 
   CrossPlatformFinalizerArg
       get rust_arc_decrement_strong_count_ExtendedPrivateKeyPtr => wire
@@ -34,8 +44,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       ._rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMnemonicPtr;
 
   @protected
+  Bip44Account
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw);
+
+  @protected
   Bip44Wallet
       dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          dynamic raw);
+
+  @protected
+  EvmAddress
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw);
+
+  @protected
+  EvmSigner
+      dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           dynamic raw);
 
   @protected
@@ -59,8 +84,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  Bip44Account
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw);
+
+  @protected
   Bip44Wallet
       dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          dynamic raw);
+
+  @protected
+  EvmAddress
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw);
+
+  @protected
+  EvmSigner
+      dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           dynamic raw);
 
   @protected
@@ -79,8 +119,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           dynamic raw);
 
   @protected
+  Bip44Account
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          dynamic raw);
+
+  @protected
   Bip44Wallet
       dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          dynamic raw);
+
+  @protected
+  EvmAddress
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          dynamic raw);
+
+  @protected
+  EvmSigner
+      dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           dynamic raw);
 
   @protected
@@ -102,22 +157,55 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String dco_decode_String(dynamic raw);
 
   @protected
-  Bip44Account dco_decode_bip_44_account(dynamic raw);
-
-  @protected
   bool dco_decode_bool(dynamic raw);
 
   @protected
-  Bip44Account dco_decode_box_autoadd_bip_44_account(dynamic raw);
+  ChainId dco_decode_box_autoadd_chain_id(dynamic raw);
 
   @protected
-  CoinType dco_decode_box_autoadd_coin_type(dynamic raw);
+  Eip1559Transaction dco_decode_box_autoadd_eip_1559_transaction(dynamic raw);
 
   @protected
-  ChainType dco_decode_chain_type(dynamic raw);
+  Eip1559TransactionBuilder dco_decode_box_autoadd_eip_1559_transaction_builder(
+      dynamic raw);
+
+  @protected
+  EvmSignature dco_decode_box_autoadd_evm_signature(dynamic raw);
+
+  @protected
+  EvmWei dco_decode_box_autoadd_evm_wei(dynamic raw);
+
+  @protected
+  SignedEvmTransaction dco_decode_box_autoadd_signed_evm_transaction(
+      dynamic raw);
+
+  @protected
+  BigInt dco_decode_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  Chain dco_decode_chain(dynamic raw);
+
+  @protected
+  ChainId dco_decode_chain_id(dynamic raw);
 
   @protected
   CoinType dco_decode_coin_type(dynamic raw);
+
+  @protected
+  Eip1559Transaction dco_decode_eip_1559_transaction(dynamic raw);
+
+  @protected
+  Eip1559TransactionBuilder dco_decode_eip_1559_transaction_builder(
+      dynamic raw);
+
+  @protected
+  EvmAccessListItem dco_decode_evm_access_list_item(dynamic raw);
+
+  @protected
+  EvmSignature dco_decode_evm_signature(dynamic raw);
+
+  @protected
+  EvmWei dco_decode_evm_wei(dynamic raw);
 
   @protected
   int dco_decode_i_32(dynamic raw);
@@ -132,16 +220,28 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw);
 
   @protected
-  NetworkType dco_decode_network_type(dynamic raw);
+  Network dco_decode_network(dynamic raw);
 
   @protected
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
-  PurposeType dco_decode_purpose_type(dynamic raw);
+  ChainId? dco_decode_opt_box_autoadd_chain_id(dynamic raw);
+
+  @protected
+  BigInt? dco_decode_opt_box_autoadd_u_64(dynamic raw);
+
+  @protected
+  Purpose dco_decode_purpose(dynamic raw);
+
+  @protected
+  SignedEvmTransaction dco_decode_signed_evm_transaction(dynamic raw);
 
   @protected
   int dco_decode_u_32(dynamic raw);
+
+  @protected
+  BigInt dco_decode_u_64(dynamic raw);
 
   @protected
   int dco_decode_u_8(dynamic raw);
@@ -156,8 +256,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   WalletResult dco_decode_wallet_result(dynamic raw);
 
   @protected
+  Bip44Account
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer);
+
+  @protected
   Bip44Wallet
       sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmAddress
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmSigner
+      sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           SseDeserializer deserializer);
 
   @protected
@@ -181,8 +296,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Bip44Account
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer);
+
+  @protected
   Bip44Wallet
       sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmAddress
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmSigner
+      sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           SseDeserializer deserializer);
 
   @protected
@@ -201,8 +331,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
           SseDeserializer deserializer);
 
   @protected
+  Bip44Account
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          SseDeserializer deserializer);
+
+  @protected
   Bip44Wallet
       sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmAddress
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          SseDeserializer deserializer);
+
+  @protected
+  EvmSigner
+      sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
           SseDeserializer deserializer);
 
   @protected
@@ -224,23 +369,59 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String sse_decode_String(SseDeserializer deserializer);
 
   @protected
-  Bip44Account sse_decode_bip_44_account(SseDeserializer deserializer);
-
-  @protected
   bool sse_decode_bool(SseDeserializer deserializer);
 
   @protected
-  Bip44Account sse_decode_box_autoadd_bip_44_account(
+  ChainId sse_decode_box_autoadd_chain_id(SseDeserializer deserializer);
+
+  @protected
+  Eip1559Transaction sse_decode_box_autoadd_eip_1559_transaction(
       SseDeserializer deserializer);
 
   @protected
-  CoinType sse_decode_box_autoadd_coin_type(SseDeserializer deserializer);
+  Eip1559TransactionBuilder sse_decode_box_autoadd_eip_1559_transaction_builder(
+      SseDeserializer deserializer);
 
   @protected
-  ChainType sse_decode_chain_type(SseDeserializer deserializer);
+  EvmSignature sse_decode_box_autoadd_evm_signature(
+      SseDeserializer deserializer);
+
+  @protected
+  EvmWei sse_decode_box_autoadd_evm_wei(SseDeserializer deserializer);
+
+  @protected
+  SignedEvmTransaction sse_decode_box_autoadd_signed_evm_transaction(
+      SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  Chain sse_decode_chain(SseDeserializer deserializer);
+
+  @protected
+  ChainId sse_decode_chain_id(SseDeserializer deserializer);
 
   @protected
   CoinType sse_decode_coin_type(SseDeserializer deserializer);
+
+  @protected
+  Eip1559Transaction sse_decode_eip_1559_transaction(
+      SseDeserializer deserializer);
+
+  @protected
+  Eip1559TransactionBuilder sse_decode_eip_1559_transaction_builder(
+      SseDeserializer deserializer);
+
+  @protected
+  EvmAccessListItem sse_decode_evm_access_list_item(
+      SseDeserializer deserializer);
+
+  @protected
+  EvmSignature sse_decode_evm_signature(SseDeserializer deserializer);
+
+  @protected
+  EvmWei sse_decode_evm_wei(SseDeserializer deserializer);
 
   @protected
   int sse_decode_i_32(SseDeserializer deserializer);
@@ -255,16 +436,29 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer);
 
   @protected
-  NetworkType sse_decode_network_type(SseDeserializer deserializer);
+  Network sse_decode_network(SseDeserializer deserializer);
 
   @protected
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
-  PurposeType sse_decode_purpose_type(SseDeserializer deserializer);
+  ChainId? sse_decode_opt_box_autoadd_chain_id(SseDeserializer deserializer);
+
+  @protected
+  BigInt? sse_decode_opt_box_autoadd_u_64(SseDeserializer deserializer);
+
+  @protected
+  Purpose sse_decode_purpose(SseDeserializer deserializer);
+
+  @protected
+  SignedEvmTransaction sse_decode_signed_evm_transaction(
+      SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_32(SseDeserializer deserializer);
+
+  @protected
+  BigInt sse_decode_u_64(SseDeserializer deserializer);
 
   @protected
   int sse_decode_u_8(SseDeserializer deserializer);
@@ -280,8 +474,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer);
 
   @protected
   void
@@ -305,8 +514,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer);
 
   @protected
   void
@@ -325,8 +549,23 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+          Bip44Account self, SseSerializer serializer);
+
+  @protected
+  void
       sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
           Bip44Wallet self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+          EvmAddress self, SseSerializer serializer);
+
+  @protected
+  void
+      sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+          EvmSigner self, SseSerializer serializer);
 
   @protected
   void
@@ -347,24 +586,59 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_String(String self, SseSerializer serializer);
 
   @protected
-  void sse_encode_bip_44_account(Bip44Account self, SseSerializer serializer);
-
-  @protected
   void sse_encode_bool(bool self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_bip_44_account(
-      Bip44Account self, SseSerializer serializer);
+  void sse_encode_box_autoadd_chain_id(ChainId self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_coin_type(
-      CoinType self, SseSerializer serializer);
+  void sse_encode_box_autoadd_eip_1559_transaction(
+      Eip1559Transaction self, SseSerializer serializer);
 
   @protected
-  void sse_encode_chain_type(ChainType self, SseSerializer serializer);
+  void sse_encode_box_autoadd_eip_1559_transaction_builder(
+      Eip1559TransactionBuilder self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_evm_signature(
+      EvmSignature self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_evm_wei(EvmWei self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_signed_evm_transaction(
+      SignedEvmTransaction self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_box_autoadd_u_64(BigInt self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_chain(Chain self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_chain_id(ChainId self, SseSerializer serializer);
 
   @protected
   void sse_encode_coin_type(CoinType self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_eip_1559_transaction(
+      Eip1559Transaction self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_eip_1559_transaction_builder(
+      Eip1559TransactionBuilder self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_evm_access_list_item(
+      EvmAccessListItem self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_evm_signature(EvmSignature self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_evm_wei(EvmWei self, SseSerializer serializer);
 
   @protected
   void sse_encode_i_32(int self, SseSerializer serializer);
@@ -380,16 +654,30 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
       Uint8List self, SseSerializer serializer);
 
   @protected
-  void sse_encode_network_type(NetworkType self, SseSerializer serializer);
+  void sse_encode_network(Network self, SseSerializer serializer);
 
   @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
-  void sse_encode_purpose_type(PurposeType self, SseSerializer serializer);
+  void sse_encode_opt_box_autoadd_chain_id(
+      ChainId? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_u_64(BigInt? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_purpose(Purpose self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_signed_evm_transaction(
+      SignedEvmTransaction self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_32(int self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_u_64(BigInt self, SseSerializer serializer);
 
   @protected
   void sse_encode_u_8(int self, SseSerializer serializer);
@@ -417,6 +705,38 @@ class RustLibWire implements BaseWire {
   /// The symbols are looked up in [dynamicLibrary].
   RustLibWire(ffi.DynamicLibrary dynamicLibrary)
       : _lookup = dynamicLibrary.lookup;
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44AccountPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44AccountPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44AccountPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Account =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44AccountPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void
       rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet(
@@ -448,6 +768,70 @@ class RustLibWire implements BaseWire {
           'frbgen_khodpay_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet');
   late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44Wallet =
       _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBip44WalletPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddressPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddressPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddressPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddress =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmAddressPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSignerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner');
+  late final _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner =
+      _rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSignerPtr
+          .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  void
+      rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner(
+      ptr,
+    );
+  }
+
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSignerPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>(
+          'frbgen_khodpay_bridge_rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner');
+  late final _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSigner =
+      _rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerEvmSignerPtr
           .asFunction<void Function(ffi.Pointer<ffi.Void>)>();
 
   void

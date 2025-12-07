@@ -115,7 +115,7 @@ let mnemonic = Mnemonic::from_phrase(user_phrase.to_string())?;
 let master_key = ExtendedPrivateKey::from_mnemonic(
     &mnemonic,
     Some("optional_passphrase".to_string()),
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 ```
 
@@ -153,7 +153,7 @@ let mnemonic = Mnemonic::generate(12)?;
 let master_key = ExtendedPrivateKey::from_mnemonic(
     &mnemonic,
     None,  // No passphrase
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Now you can derive child keys
@@ -172,12 +172,12 @@ let phrase = generate_mnemonic(12)?;
 let mut wallet = Bip44Wallet::from_mnemonic(
     phrase,
     None,  // No passphrase
-    NetworkType::BitcoinMainnet
+    Network::BitcoinMainnet
 )?;
 
 // Derive accounts
 let account = wallet.get_account(
-    PurposeType::BIP84,
+    Purpose::Bip84,
     CoinType::Bitcoin,
     0
 )?;
@@ -285,4 +285,5 @@ This implementation follows:
 
 - [BIP32_INTEGRATION.md](./BIP32_INTEGRATION.md) - HD key derivation
 - [BIP44_INTEGRATION.md](./BIP44_INTEGRATION.md) - Multi-account hierarchy
+- [SIGNING_INTEGRATION.md](./SIGNING_INTEGRATION.md) - EVM transaction signing
 - [Official BIP39 Specification](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
