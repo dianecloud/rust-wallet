@@ -431,7 +431,7 @@ You may choose either license for your use.
 
 ## 📞 Support
 
-- 📧 Email: support@khodpay.com
+- 📧 Email: diane.steeling@mail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/khodpay/rust-wallet/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/khodpay/rust-wallet/discussions)
 
