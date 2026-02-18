@@ -427,11 +427,11 @@ You may choose either license for your use.
 - [Bitcoin BIP86 Specification](https://github.com/bitcoin/bips/blob/master/bip-0086.mediawiki)
 - [SLIP-44 Coin Types](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
 - [EIP-1559 Specification](https://eips.ethereum.org/EIPS/eip-1559)
-- [EIP-2718 Typed Transactions](https://eips.ethereum.org/EIPS/eip-2718)
+- [EIP-2718 Typed Transactions](https://eips.ethereum.org/EIPS/eip-27180)
 
 ## 📞 Support
 
-- 📧 Email: support@khodpay.com
+- 📧 Email: dianesterling11@mail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/khodpay/rust-wallet/issues)
 - 💬 Discussions: [GitHub Discussions](https://github.com/khodpay/rust-wallet/discussions)
 
